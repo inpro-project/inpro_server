@@ -29,6 +29,11 @@ public enum BaseResponseStatus {
     // Common
     RESPONSE_ERROR(false, 3000, "값을 불러오는데 실패하였습니다."),
 
+    // [POST] /users/logIn
+    FAILED_TO_LOGIN(false,3001,"입력하신 아이디 또는 비밀번호가 일치하지 않습니다."),
+    INACTIVE_USER(false, 3002, "비활성화된 유저입니다."),
+    DELETED_USER(false, 3003, "탈퇴한 유저입니다."),
+
 
     /**
      * 4000 : Database, Server 오류
