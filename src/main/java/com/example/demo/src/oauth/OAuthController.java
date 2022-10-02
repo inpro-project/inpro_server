@@ -22,9 +22,10 @@ public class OAuthController {
      */
     @ResponseBody
     @GetMapping("/kakao")
-    public BaseResponse<OAuthLoginRes> kakaoLogin(@RequestParam String code) throws JsonProcessingException {
+    public BaseResponse<OAuthLoginRes> kakaoLogin() throws JsonProcessingException {
         try {
-            OAuthLoginRes oAuthLoginRes = kakaoService.kakaoLogin(code);
+            String accessToken = kakaoService.getAccessToken();
+            OAuthLoginRes oAuthLoginRes = kakaoService.kakaoLogin(accessToken);
             return new BaseResponse<>(oAuthLoginRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());

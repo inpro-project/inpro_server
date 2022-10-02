@@ -18,6 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
 
@@ -27,66 +31,31 @@ import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
 @Transactional
 public class KakaoService {
 
-    @Value("${kakao.client.id}")
-    private String clientId;
-
-    @Value("${kakao.client.secret}")
-    private String clientSecret;
-
     private final KakaoProvider kakaoProvider;
 
     private final KakaoDao kakaoDao;
 
     private final String CONTENT_TYPE = "application/x-www-form-urlencoded;charset=utf-8";
-    private final String GRANT_TYPE = "authorization_code";
-    private final String REDIRECT_URI = "https://prod.inpro-server.shop/oauth/kakao";
 
-    public OAuthLoginRes kakaoLogin(String code) throws JsonProcessingException, BaseException {
 
-        // 1. 인가 코드로 액세스 토큰 요청
-        String accessToken = getAccessToken(code);
+    public OAuthLoginRes kakaoLogin(String accessToken) throws JsonProcessingException, BaseException {
 
-        // 2. 액세스 토큰으로 카카오 API 호출
+        // 1. 액세스 토큰으로 카카오 API 호출
         KakaoUser kakaoUser = getKakaoUser(accessToken);
 
-        // 3. 존재하지 않는 회원이면 회원 가입 진행
+        // 2. 존재하지 않는 회원이면 회원 가입 진행
         if(kakaoProvider.checkEmail(kakaoUser.getEmail()) == 0){
             createUser(kakaoUser);
         }
 
-        // 4. 로그인
+        // 3. 로그인
         OAuthLoginRes oAuthLoginRes = kakaoProvider.logIn(kakaoUser.getEmail());
         return oAuthLoginRes;
     }
 
-    private String getAccessToken(String code) throws JsonProcessingException {
-        // http header
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type", CONTENT_TYPE);
-
-        // http body
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", GRANT_TYPE);
-        body.add("client_id", clientId);
-        body.add("redirect_uri", REDIRECT_URI);
-        body.add("code", code);
-        body.add("client_secret", clientSecret);
-
-        // http 요청
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
-        RestTemplate rt = new RestTemplate();
-        ResponseEntity<String> response = rt.exchange(
-                "https://kauth.kakao.com/oauth/token",
-                HttpMethod.POST,
-                kakaoTokenRequest,
-                String.class
-        );
-
-        // http 응답 (json) -> 액세스 토큰 parsing
-        String responseBody = response.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(responseBody);
-        return jsonNode.get("access_token").asText();
+    public String getAccessToken(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        return request.getHeader("KAKAO_ACCESS_TOKEN");
     }
 
     private KakaoUser getKakaoUser(String accessToken) throws JsonProcessingException {
