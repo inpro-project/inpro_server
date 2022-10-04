@@ -8,12 +8,15 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @ApiResponses({
-        @ApiResponse(code = 200, message = "Success"),
-        @ApiResponse(code = 400, message = "Bad Request"),
-        @ApiResponse(code = 500, message = "Internal Server Error")
+        @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
+        @ApiResponse(code = 3002, message = "비활성화된 유저입니다."),
+        @ApiResponse(code = 3003, message = "탈퇴한 유저입니다."),
+        @ApiResponse(code = 4000, message = "데이터베이스 연결에 실패하였습니다.")
 })
 @RestController
 @AllArgsConstructor

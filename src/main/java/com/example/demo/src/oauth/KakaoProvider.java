@@ -27,11 +27,6 @@ public class KakaoProvider {
     }
 
     public OAuthLoginRes logIn(String email) throws BaseException {
-        // 이메일 유효성 검사
-        if(kakaoDao.checkEmail(email) == 0){
-            throw new BaseException(FAILED_TO_LOGIN);
-        }
-
         User user = kakaoDao.getUser(email);
 
         // 유저 상태 유효성 검사
