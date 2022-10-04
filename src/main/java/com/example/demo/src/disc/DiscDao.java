@@ -19,11 +19,15 @@ public class DiscDao {
     }
 
     public List<GetDiscTestRes> getDiscTest(){
-        String getDiscTestQuery = "select discIdx, discFeatureIdx, feature from DiscFeature";
+        String getDiscTestQuery = "select D.discIdx, name, discFeatureIdx, feature\n" +
+                "from DiscFeature\n" +
+                "inner join Disc D on DiscFeature.discIdx = D.discIdx\n" +
+                "order by discFeatureIdx";
 
         return this.jdbcTemplate.query(getDiscTestQuery,
                 (rs, rsNum) -> new GetDiscTestRes(
                         rs.getInt("discIdx"),
+                        rs.getString("name"),
                         rs.getInt("discFeatureIdx"),
                         rs.getString("feature")
                 ));

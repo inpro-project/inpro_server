@@ -13,6 +13,9 @@ public class GetDiscTestRes {
     @ApiModelProperty(value = "업무 성향 인덱스", example = "1")
     private int discIdx;
 
+    @ApiModelProperty(value = "업무 성향", example = "di")
+    private String name;
+
     @ApiModelProperty(value = "업무 성향별 특성 인덱스", example = "1")
     private int discFeatureIdx;
 
