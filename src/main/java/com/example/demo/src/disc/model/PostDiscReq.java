@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter @Setter
 @AllArgsConstructor
-public class PostUserDiscReq {
+public class PostDiscReq {
     private List<DiscTest> goodList;
     private List<DiscTest> badList;
 }

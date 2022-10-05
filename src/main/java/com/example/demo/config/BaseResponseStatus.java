@@ -23,10 +23,10 @@ public enum BaseResponseStatus {
     INVALID_USER_JWT(false,2003,"권한이 없는 유저의 접근입니다."),
 
     // [POST] /app/user-discs
-    POST_USERDISC_EMPTY_GOODLIST(false, 2004, "적합에 대한 업무 유형 테스트 결과를 입력해주세요."),
-    POST_USERDISC_EMPTY_BADLIST(false, 2005, "부적합에 대한 업무 유형 테스트 결과를 입력해주세요."),
-    POST_USERDISC_EMPTY_NAME(false, 2006, "업무 유형 name을 입력해주세요"),
-    POST_USERDISC_INVALID_IDX(false, 2007, "올바르지 않은 discFeatureIdx입니다."),
+    POST_DISC_EMPTY_GOODLIST(false, 2004, "적합에 대한 업무 유형 테스트 결과를 입력해주세요."),
+    POST_DISC_EMPTY_BADLIST(false, 2005, "부적합에 대한 업무 유형 테스트 결과를 입력해주세요."),
+    POST_DISC_EMPTY_NAME(false, 2006, "업무 유형 name을 입력해주세요"),
+    POST_DISC_INVALID_IDX(false, 2007, "올바르지 않은 discFeatureIdx입니다."),
 
 
     /**

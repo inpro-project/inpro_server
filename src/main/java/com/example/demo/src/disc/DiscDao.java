@@ -55,4 +55,13 @@ public class DiscDao {
         this.jdbcTemplate.update(createUserDiscTestAsBadQuery, createUserDiscTestAsBadParams);
     }
 
+    public int createSearchDisc(int userIdx, double x, double y){
+        String createSearchDiscQuery = "insert into SearchDisc (userIdx, x, y) VALUES (?, ?, ?);";
+        Object[] createSearchDiscParams = new Object[]{userIdx, x, y};
+        this.jdbcTemplate.update(createSearchDiscQuery, createSearchDiscParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
 }
