@@ -126,7 +126,7 @@ public class UserController {
             }
 
             // 대표 여부 유효성 검사
-            if(postPortfolioReq.getIsRepPortfolio() != null && postPortfolioReq.getIsRepPortfolio() != "Y" && postPortfolioReq.getIsRepPortfolio() != "N"){
+            if(postPortfolioReq.getIsRepPortfolio() != null && !postPortfolioReq.getIsRepPortfolio().equals("Y") && !postPortfolioReq.getIsRepPortfolio().equals("N")){
                 return new BaseResponse<>(PORTFOLIO_INVALID_ISREP);
             }
 
@@ -162,7 +162,7 @@ public class UserController {
             }
 
             // 대표 여부 유효성 검사
-            if(patchPortfolioReq.getIsRepPortfolio() != null && patchPortfolioReq.getIsRepPortfolio() != "Y" && patchPortfolioReq.getIsRepPortfolio() != "N"){
+            if(patchPortfolioReq.getIsRepPortfolio() != null && !patchPortfolioReq.getIsRepPortfolio().equals("Y") && !patchPortfolioReq.getIsRepPortfolio().equals("N")){
                 return new BaseResponse<>(PORTFOLIO_INVALID_ISREP);
             }
 
