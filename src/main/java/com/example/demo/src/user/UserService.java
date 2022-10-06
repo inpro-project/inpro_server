@@ -3,6 +3,7 @@ package com.example.demo.src.user;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.demo.config.BaseException;
+import com.example.demo.src.user.model.PatchPortfolioReq;
 import com.example.demo.src.user.model.PatchUserReq;
 import com.example.demo.src.user.model.PostPortfolioReq;
 import com.example.demo.src.user.model.PostPortfolioRes;
@@ -16,8 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.UUID;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.example.demo.config.BaseResponseStatus.MODIFY_FAIL_USER;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @Slf4j
 @Service
@@ -25,6 +25,7 @@ import static com.example.demo.config.BaseResponseStatus.MODIFY_FAIL_USER;
 @Transactional
 public class UserService {
 
+    private final UserProvider userProvider;
     private final UserDao userDao;
     private final AmazonS3 amazonS3;
 
@@ -71,5 +72,20 @@ public class UserService {
         }
     }
 
+    public void updatePortfolio(int userIdx, int portfolioIdx, PatchPortfolioReq patchPortfolioReq) throws BaseException {
+        // 포트폴리오 인덱스 유효성 검사
+        if(userProvider.checkPortfolioIdx(userIdx, portfolioIdx) != 1){
+            throw new BaseException(PATCH_PORTFOLIO_INVALID_PORTFOLIOIDX);
+        }
+
+        try {
+            int result = userDao.updatePortfolio(portfolioIdx, patchPortfolioReq);
+            if(result == 0){
+                throw new BaseException(MODIFY_FAIL_PORTFOLIO);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
 }

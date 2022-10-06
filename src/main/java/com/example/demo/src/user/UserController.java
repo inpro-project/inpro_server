@@ -2,6 +2,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.user.model.PatchPortfolioReq;
 import com.example.demo.src.user.model.PatchUserReq;
 import com.example.demo.src.user.model.PostPortfolioReq;
 import com.example.demo.src.user.model.PostPortfolioRes;
@@ -102,7 +103,8 @@ public class UserController {
      */
     @ApiOperation(value = "포트폴리오 등록 API", notes = "성공시 포트폴리오 인덱스(portfolioIdx) 출력")
     @ApiResponses({
-            @ApiResponse(code = 2015, message = "포트폴리오 제목을 입력해주세요.")
+            @ApiResponse(code = 2015, message = "포트폴리오 제목을 입력해주세요."),
+            @ApiResponse(code = 2016, message = "올바르지 않은 portfolioCategoryIdx 입니다.")
     })
     @ResponseBody
     @PostMapping("/portfolios/{portfolioCategoryIdx}")
@@ -110,8 +112,14 @@ public class UserController {
         try {
             int userIdx = jwtService.getUserIdx();
 
+            // 포트폴리오 카테고리 인덱스 유효성 검사
+            if(portfolioCategoryIdx != 1 && portfolioCategoryIdx != 2 && portfolioCategoryIdx != 3){
+                return new BaseResponse<>(POST_PORTFOLIO_INVALID_IDX);
+            }
+
+            // 포트폴리오 제목 유효성 검사
             if(postPortfolioReq.getTitle() == null){
-                return new BaseResponse<>(POST_PORTFOLIOS_EMPTY_TITLE);
+                return new BaseResponse<>(POST_PORTFOLIO_EMPTY_TITLE);
             }
 
             PostPortfolioRes postPortfolioRes = userService.createPortfolio(userIdx, portfolioCategoryIdx, postPortfolioReq);
@@ -120,6 +128,38 @@ public class UserController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+
+    /**
+     * 포트폴리오 수정 API
+     * [PATCH] /app/portfolios/:portfolioIdx
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "포트폴리오 수정 API", notes = "성공시 '포트폴리오가 수정되었습니다.' 출력")
+    @ApiResponses({
+            @ApiResponse(code = 2015, message = "포트폴리오 제목을 입력해주세요."),
+            @ApiResponse(code = 2017, message = "올바르지 않은 portfolioIdx입니다."),
+            @ApiResponse(code = 4003, message = "포트폴리오 수정에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PatchMapping("/portfolios/{portfolioIdx}")
+    public BaseResponse<String> updatePortfolio(@PathVariable("portfolioIdx") int portfolioIdx, @RequestBody PatchPortfolioReq patchPortfolioReq){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            // 포트폴리오 제목 유효성 검사
+            if(patchPortfolioReq.getTitle() == null){
+                return new BaseResponse<>(POST_PORTFOLIO_EMPTY_TITLE);
+            }
+
+            userService.updatePortfolio(userIdx, portfolioIdx, patchPortfolioReq);
+            String result = "포트폴리오가 수정되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 
 }

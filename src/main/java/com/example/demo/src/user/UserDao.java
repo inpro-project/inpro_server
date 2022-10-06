@@ -1,5 +1,6 @@
 package com.example.demo.src.user;
 
+import com.example.demo.src.user.model.PatchPortfolioReq;
 import com.example.demo.src.user.model.PatchUserReq;
 import com.example.demo.src.user.model.PostPortfolioReq;
 import com.example.demo.src.user.model.PostPortfolioRes;
@@ -33,6 +34,19 @@ public class UserDao {
 
         String lastInsertIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public int checkPortfolioIdx(int userIdx, int portfolioIdx){
+        String checkPortfolioIdxQuery = "select exists (select portfolioIdx from Portfolio where userIdx = ? and portfolioIdx = ?)";
+        Object[] checkPortfolioIdxParams = new Object[] {userIdx, portfolioIdx};
+
+        return this.jdbcTemplate.queryForObject(checkPortfolioIdxQuery, int.class, checkPortfolioIdxParams);
+    }
+
+    public int updatePortfolio(int portfolioIdx, PatchPortfolioReq patchPortfolioReq){
+        String updatePortfolioQuery = "update Portfolio set title = ?, content = ?, url = ? where portfolioIdx = ?";
+        Object[] updatePortfolioParams = new Object[]{patchPortfolioReq.getTitle(), patchPortfolioReq.getContent(), patchPortfolioReq.getUrl(), portfolioIdx};
+        return this.jdbcTemplate.update(updatePortfolioQuery, updatePortfolioParams);
     }
 
 

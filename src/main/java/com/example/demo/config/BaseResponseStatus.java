@@ -38,7 +38,11 @@ public enum BaseResponseStatus {
     PATCH_USER_EMPTY_IMG(false, 2014, "프로필 사진을 입력해주세요."),
 
     // [POST] /app/portfolios/:portfolioCategoryIdx
-    POST_PORTFOLIOS_EMPTY_TITLE(false, 2015, "포트폴리오 제목을 입력해주세요."),
+    POST_PORTFOLIO_EMPTY_TITLE(false, 2015, "포트폴리오 제목을 입력해주세요."),
+    POST_PORTFOLIO_INVALID_IDX(false, 2016, "올바르지 않은 portfolioCategoryIdx 입니다."),
+
+    // [POST] /app/portfolios/:portfolioIdx
+    PATCH_PORTFOLIO_INVALID_PORTFOLIOIDX(false, 2017, "올바르지 않은 portfolioIdx입니다."),
 
     /**
      * 3000 : Response 오류
@@ -58,7 +62,10 @@ public enum BaseResponseStatus {
     SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
 
     // [PATCH] /app/profiles
-    MODIFY_FAIL_USER(false,4002,"프로필 수정에 실패하였습니다.");
+    MODIFY_FAIL_USER(false,4002,"프로필 수정에 실패하였습니다."),
+
+    // [PATCH] /app/portfolios/:portfolioIdx
+    MODIFY_FAIL_PORTFOLIO(false, 4003, "포트폴리오 수정에 실패하였습니다.");
 
     // 5000
     // 6000
