@@ -2,10 +2,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.user.model.PatchPortfolioReq;
-import com.example.demo.src.user.model.PatchUserReq;
-import com.example.demo.src.user.model.PostPortfolioReq;
-import com.example.demo.src.user.model.PostPortfolioRes;
+import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.isRegexNickName;
@@ -21,6 +19,9 @@ import static com.example.demo.utils.ValidationRegex.isRegexNickName;
 @Slf4j
 @ApiResponses({
         @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
+        @ApiResponse(code = 2001, message = "JWT를 입력해주세요."),
+        @ApiResponse(code = 2002, message = "유효하지 않은 JWT입니다."),
+        @ApiResponse(code = 2003, message = "권한이 없는 유저의 접근입니다."),
         @ApiResponse(code = 4000, message = "데이터베이스 연결에 실패하였습니다.")
 })
 @RestController
@@ -28,6 +29,7 @@ import static com.example.demo.utils.ValidationRegex.isRegexNickName;
 @RequestMapping("/app")
 public class UserController {
 
+    private final UserProvider userProvider;
     private final UserService userService;
     private final JwtService jwtService;
 
@@ -183,6 +185,34 @@ public class UserController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    /**
+     * 자신의 포트폴리오 전체 조회 API
+     * [GET] /app/portfolios/:portfolioCategoryIdx
+     * @return BaseResponse<List<GetPortfolioRes>>
+     */
+    @ApiOperation(value = "자신의 포트폴리오 전체 조회 API")
+    @ApiResponses({
+            @ApiResponse(code = 2017, message = "올바르지 않은 portfolioIdx입니다.")
+    })
+    @ResponseBody
+    @GetMapping("/portfolios/{portfolioCategoryIdx}")
+    public BaseResponse<List<GetPortfolioRes>> getMyPortfolios(@PathVariable("portfolioCategoryIdx") int portfolioCategoryIdx){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            // 포트폴리오 카테고리 인덱스 유효성 검사
+            if(portfolioCategoryIdx != 1 && portfolioCategoryIdx != 2 && portfolioCategoryIdx != 3){
+                return new BaseResponse<>(POST_PORTFOLIO_INVALID_IDX);
+            }
+
+            List<GetPortfolioRes> getPortfolioRes = userProvider.getMyPortfolios(userIdx, portfolioCategoryIdx);
+            return new BaseResponse<>(getPortfolioRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 
 }

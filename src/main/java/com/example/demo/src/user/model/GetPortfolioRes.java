@@ -8,10 +8,13 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-@ApiModel(value = "포트폴리오 수정 API Request")
-public class PatchPortfolioReq {
+@ApiModel("자신의 포트폴리오 전체 조회 API Response")
+public class GetPortfolioRes {
 
-    @ApiModelProperty(value = "포트폴리오 제목", example = "인플 어플 개발 프로젝트", required = true)
+    @ApiModelProperty(value = "포트폴리오 인덱스", example = "1")
+    private int portfolioIdx;
+
+    @ApiModelProperty(value = "포트폴리오 제목", example = "인플 어플 개발 프로젝트")
     private String title;
 
     @ApiModelProperty(value = "포트폴리오 세부 설명", example = "서버 개발 담당 - java, spring-boot 사용")
@@ -19,5 +22,4 @@ public class PatchPortfolioReq {
 
     @ApiModelProperty(value = "포트폴리오 url", example = "https://github.com/inpro-project/inpro_server.git")
     private String url;
-
 }

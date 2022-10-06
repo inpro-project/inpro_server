@@ -1,14 +1,12 @@
 package com.example.demo.src.user;
 
-import com.example.demo.src.user.model.PatchPortfolioReq;
-import com.example.demo.src.user.model.PatchUserReq;
-import com.example.demo.src.user.model.PostPortfolioReq;
-import com.example.demo.src.user.model.PostPortfolioRes;
+import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class UserDao {
@@ -53,6 +51,21 @@ public class UserDao {
         String deletePortfolioQuery = "update Portfolio set status = 'deleted' where portfolioIdx = ?";
         int deletePortfolioParams = portfolioIdx;
         return this.jdbcTemplate.update(deletePortfolioQuery, deletePortfolioParams);
+    }
+
+    public List<GetPortfolioRes> getMyPortfolios(int userIdx, int portfolioCategoryIdx) {
+        String getMyPortfoliosQuery = "select portfolioIdx, title, content, url\n" +
+                "from Portfolio\n" +
+                "where userIdx = ? and portfolioCategoryIdx = ? and status = 'active'";
+        Object[] getMyPortfoliosParams = new Object[]{userIdx, portfolioCategoryIdx};
+
+        return this.jdbcTemplate.query(getMyPortfoliosQuery,
+                (rs, rsNum) -> new GetPortfolioRes(
+                        rs.getInt("portfolioIdx"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getString("url")),
+                getMyPortfoliosParams);
     }
 
 }
