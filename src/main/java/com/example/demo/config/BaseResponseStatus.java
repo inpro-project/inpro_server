@@ -28,6 +28,14 @@ public enum BaseResponseStatus {
     POST_DISC_EMPTY_NAME(false, 2006, "업무 유형 name을 입력해주세요"),
     POST_DISC_INVALID_IDX(false, 2007, "올바르지 않은 discFeatureIdx입니다."),
 
+    // [PATCH] /app/profiles
+    PATCH_USER_EMPTY_NICKNAME(false, 2008, "닉네임은 최소 2자, 최대 10자까지 입력 가능합니다."),
+    PATCH_USER_INVALID_NICKNAME(false, 2009, "닉네임은 띄어쓰기 없이 한글, 영문, 숫자만 가능합니다."),
+    PATCH_USER_EMPTY_REGION(false, 2010, "거주 지역을 입력해주세요."),
+    PATCH_USER_EMPTY_OCCUPATION(false, 2011, "직업군을 입력해주세요."),
+    PATCH_USER_EMPTY_JOB(false, 2012, "직업을 입력해주세요."),
+    PATCH_USER_EMPTY_INTERESTS(false, 2013, "관심 분야를 입력해주세요."),
+    PATCH_USER_EMPTY_IMG(false, 2014, "프로필 사진을 입력해주세요."),
 
     /**
      * 3000 : Response 오류
@@ -44,7 +52,10 @@ public enum BaseResponseStatus {
      * 4000 : Database, Server 오류
      */
     DATABASE_ERROR(false, 4000, "데이터베이스 연결에 실패하였습니다."),
-    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다.");
+    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
+
+    // [PATCH] /app/profiles
+    MODIFY_FAIL_USER(false,4002,"프로필 수정에 실패하였습니다.");
 
     // 5000
     // 6000
