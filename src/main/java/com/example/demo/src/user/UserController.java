@@ -119,7 +119,7 @@ public class UserController {
 
             // 포트폴리오 제목 유효성 검사
             if(postPortfolioReq.getTitle() == null){
-                return new BaseResponse<>(POST_PORTFOLIO_EMPTY_TITLE);
+                return new BaseResponse<>(PORTFOLIO_EMPTY_TITLE);
             }
 
             PostPortfolioRes postPortfolioRes = userService.createPortfolio(userIdx, portfolioCategoryIdx, postPortfolioReq);
@@ -149,7 +149,7 @@ public class UserController {
 
             // 포트폴리오 제목 유효성 검사
             if(patchPortfolioReq.getTitle() == null){
-                return new BaseResponse<>(POST_PORTFOLIO_EMPTY_TITLE);
+                return new BaseResponse<>(PORTFOLIO_EMPTY_TITLE);
             }
 
             userService.updatePortfolio(userIdx, portfolioIdx, patchPortfolioReq);
@@ -160,6 +160,29 @@ public class UserController {
         }
     }
 
+    /**
+     * 포트폴리오 삭제 API
+     * [DELETE] /app/portfolios/:portfolioIdx
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "포트폴리오 삭제 API", notes = "성공시 '포트폴리오가 삭제되었습니다.' 출력")
+    @ApiResponses({
+            @ApiResponse(code = 2017, message = "올바르지 않은 portfolioIdx입니다."),
+            @ApiResponse(code = 4004, message = "포트폴리오 삭제에 실패하였습니다.")
+    })
+    @ResponseBody
+    @DeleteMapping("/portfolios/{portfolioIdx}")
+    public BaseResponse<String> deletePortfolio(@PathVariable("portfolioIdx") int portfolioIdx) {
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            userService.deletePortfolio(userIdx, portfolioIdx);
+            String result = "포트폴리오가 삭제되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 
 }

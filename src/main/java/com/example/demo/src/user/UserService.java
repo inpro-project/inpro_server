@@ -75,13 +75,29 @@ public class UserService {
     public void updatePortfolio(int userIdx, int portfolioIdx, PatchPortfolioReq patchPortfolioReq) throws BaseException {
         // 포트폴리오 인덱스 유효성 검사
         if(userProvider.checkPortfolioIdx(userIdx, portfolioIdx) != 1){
-            throw new BaseException(PATCH_PORTFOLIO_INVALID_PORTFOLIOIDX);
+            throw new BaseException(PORTFOLIO_INVALID_PORTFOLIOIDX);
         }
 
         try {
             int result = userDao.updatePortfolio(portfolioIdx, patchPortfolioReq);
             if(result == 0){
                 throw new BaseException(MODIFY_FAIL_PORTFOLIO);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deletePortfolio(int userIdx, int portfolioIdx) throws BaseException {
+        // 포트폴리오 인덱스 유효성 검사
+        if(userProvider.checkPortfolioIdx(userIdx, portfolioIdx) != 1){
+            throw new BaseException(PORTFOLIO_INVALID_PORTFOLIOIDX);
+        }
+
+        try {
+            int result = userDao.deletePortfolio(portfolioIdx);
+            if(result == 0){
+                throw new BaseException(DELETE_FAIL_PORTFOLIO);
             }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);

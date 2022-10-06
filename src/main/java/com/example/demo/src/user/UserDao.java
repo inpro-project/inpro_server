@@ -49,5 +49,10 @@ public class UserDao {
         return this.jdbcTemplate.update(updatePortfolioQuery, updatePortfolioParams);
     }
 
+    public int deletePortfolio(int portfolioIdx){
+        String deletePortfolioQuery = "update Portfolio set status = 'deleted' where portfolioIdx = ?";
+        int deletePortfolioParams = portfolioIdx;
+        return this.jdbcTemplate.update(deletePortfolioQuery, deletePortfolioParams);
+    }
 
 }
