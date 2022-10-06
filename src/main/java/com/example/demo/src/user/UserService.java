@@ -4,6 +4,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.user.model.PatchUserReq;
+import com.example.demo.src.user.model.PostPortfolioReq;
+import com.example.demo.src.user.model.PostPortfolioRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,6 +60,15 @@ public class UserService {
         String storeFileUrl = amazonS3.getUrl(bucket, key).toString();
 
         return storeFileUrl;
+    }
+
+    public PostPortfolioRes createPortfolio(int userIdx, int portfolioCategoryIdx, PostPortfolioReq postPortfolioReq) throws BaseException {
+        try {
+            int portfolioIdx = userDao.createPortfolio(userIdx, portfolioCategoryIdx, postPortfolioReq);
+            return new PostPortfolioRes(portfolioIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 
 

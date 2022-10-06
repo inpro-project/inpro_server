@@ -3,12 +3,12 @@ package com.example.demo.src.user;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.user.model.PatchUserReq;
+import com.example.demo.src.user.model.PostPortfolioReq;
+import com.example.demo.src.user.model.PostPortfolioRes;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.*;
-import jdk.jfr.ContentType;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -90,6 +90,32 @@ public class UserController {
             userService.modifyUser(userIdx, multipartFile, patchUserReq);
             String result = "프로필이 수정되었습니다.";
             return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 포트폴리오 등록 API
+     * [POST] /app/portfolios/:portfolioCategoryIdx
+     * @return BaseResponse<PostPortfolioRes>
+     */
+    @ApiOperation(value = "포트폴리오 등록 API", notes = "성공시 포트폴리오 인덱스(portfolioIdx) 출력")
+    @ApiResponses({
+            @ApiResponse(code = 2015, message = "포트폴리오 제목을 입력해주세요.")
+    })
+    @ResponseBody
+    @PostMapping("/portfolios/{portfolioCategoryIdx}")
+    public BaseResponse<PostPortfolioRes> createPortfolio(@PathVariable("portfolioCategoryIdx") int portfolioCategoryIdx, @RequestBody PostPortfolioReq postPortfolioReq){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            if(postPortfolioReq.getTitle() == null){
+                return new BaseResponse<>(POST_PORTFOLIOS_EMPTY_TITLE);
+            }
+
+            PostPortfolioRes postPortfolioRes = userService.createPortfolio(userIdx, portfolioCategoryIdx, postPortfolioReq);
+            return new BaseResponse<>(postPortfolioRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
