@@ -106,7 +106,8 @@ public class UserController {
     @ApiOperation(value = "포트폴리오 등록 API", notes = "성공시 포트폴리오 인덱스(portfolioIdx) 출력")
     @ApiResponses({
             @ApiResponse(code = 2015, message = "포트폴리오 제목을 입력해주세요."),
-            @ApiResponse(code = 2016, message = "올바르지 않은 portfolioCategoryIdx 입니다.")
+            @ApiResponse(code = 2016, message = "올바르지 않은 portfolioCategoryIdx 입니다."),
+            @ApiResponse(code = 2018, message = "올바르지 않은 대표 여부입니다. (Y나 N만 가능)")
     })
     @ResponseBody
     @PostMapping("/portfolios/{portfolioCategoryIdx}")
@@ -122,6 +123,11 @@ public class UserController {
             // 포트폴리오 제목 유효성 검사
             if(postPortfolioReq.getTitle() == null){
                 return new BaseResponse<>(PORTFOLIO_EMPTY_TITLE);
+            }
+
+            // 대표 여부 유효성 검사
+            if(postPortfolioReq.getIsRepPortfolio() != null && postPortfolioReq.getIsRepPortfolio() != "Y" && postPortfolioReq.getIsRepPortfolio() != "N"){
+                return new BaseResponse<>(PORTFOLIO_INVALID_ISREP);
             }
 
             PostPortfolioRes postPortfolioRes = userService.createPortfolio(userIdx, portfolioCategoryIdx, postPortfolioReq);
@@ -141,6 +147,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(code = 2015, message = "포트폴리오 제목을 입력해주세요."),
             @ApiResponse(code = 2017, message = "올바르지 않은 portfolioIdx입니다."),
+            @ApiResponse(code = 2018, message = "올바르지 않은 대표 여부입니다. (Y나 N만 가능)"),
             @ApiResponse(code = 4003, message = "포트폴리오 수정에 실패하였습니다.")
     })
     @ResponseBody
@@ -152,6 +159,11 @@ public class UserController {
             // 포트폴리오 제목 유효성 검사
             if(patchPortfolioReq.getTitle() == null){
                 return new BaseResponse<>(PORTFOLIO_EMPTY_TITLE);
+            }
+
+            // 대표 여부 유효성 검사
+            if(patchPortfolioReq.getIsRepPortfolio() != null && patchPortfolioReq.getIsRepPortfolio() != "Y" && patchPortfolioReq.getIsRepPortfolio() != "N"){
+                return new BaseResponse<>(PORTFOLIO_INVALID_ISREP);
             }
 
             userService.updatePortfolio(userIdx, portfolioIdx, patchPortfolioReq);
@@ -187,11 +199,11 @@ public class UserController {
     }
 
     /**
-     * 자신의 포트폴리오 전체 조회 API
+     * 자신의 포트폴리오 조회 API
      * [GET] /app/portfolios/:portfolioCategoryIdx
      * @return BaseResponse<List<GetPortfolioRes>>
      */
-    @ApiOperation(value = "자신의 포트폴리오 전체 조회 API")
+    @ApiOperation(value = "자신의 포트폴리오 조회 API")
     @ApiResponses({
             @ApiResponse(code = 2017, message = "올바르지 않은 portfolioIdx입니다.")
     })

@@ -44,6 +44,8 @@ public enum BaseResponseStatus {
     // [POST] /app/portfolios/:portfolioIdx
     PORTFOLIO_INVALID_PORTFOLIOIDX(false, 2017, "올바르지 않은 portfolioIdx입니다."),
 
+    PORTFOLIO_INVALID_ISREP(false, 2018, "올바르지 않은 대표 여부입니다. (Y나 N만 가능)"),
+
     /**
      * 3000 : Response 오류
      */

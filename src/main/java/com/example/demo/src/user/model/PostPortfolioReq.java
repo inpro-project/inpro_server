@@ -20,4 +20,7 @@ public class PostPortfolioReq {
     @ApiModelProperty(value = "포트폴리오 url", example = "https://github.com/inpro-project/inpro_server.git")
     private String url;
 
+    @ApiModelProperty(value = "대표 여부(하나만 외부 노출)", example = "N", notes = "Y : 대표, N : 대표 아님")
+    private String isRepPortfolio;
+
 }

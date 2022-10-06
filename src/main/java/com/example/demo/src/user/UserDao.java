@@ -54,7 +54,7 @@ public class UserDao {
     }
 
     public List<GetPortfolioRes> getMyPortfolios(int userIdx, int portfolioCategoryIdx) {
-        String getMyPortfoliosQuery = "select portfolioIdx, title, content, url\n" +
+        String getMyPortfoliosQuery = "select portfolioIdx, title, content, url, isRepPortfolio\n" +
                 "from Portfolio\n" +
                 "where userIdx = ? and portfolioCategoryIdx = ? and status = 'active'";
         Object[] getMyPortfoliosParams = new Object[]{userIdx, portfolioCategoryIdx};
@@ -64,7 +64,8 @@ public class UserDao {
                         rs.getInt("portfolioIdx"),
                         rs.getString("title"),
                         rs.getString("content"),
-                        rs.getString("url")),
+                        rs.getString("url"),
+                        rs.getString("isRepPortfolio")),
                 getMyPortfoliosParams);
     }
 

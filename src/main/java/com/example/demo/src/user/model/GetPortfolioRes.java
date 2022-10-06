@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-@ApiModel("자신의 포트폴리오 전체 조회 API Response")
+@ApiModel("자신의 포트폴리오 조회 API Response")
 public class GetPortfolioRes {
 
     @ApiModelProperty(value = "포트폴리오 인덱스", example = "1")
@@ -22,4 +22,7 @@ public class GetPortfolioRes {
 
     @ApiModelProperty(value = "포트폴리오 url", example = "https://github.com/inpro-project/inpro_server.git")
     private String url;
+
+    @ApiModelProperty(value = "대표 여부(하나만 외부 노출)", example = "N", notes = "Y : 대표, N : 대표 아님")
+    private String isRepPortfolio;
 }
