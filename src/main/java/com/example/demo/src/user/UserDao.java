@@ -69,4 +69,20 @@ public class UserDao {
                 getMyPortfoliosParams);
     }
 
+    public int createUserTags(int userIdx, String name){
+        String createUserTagsQuery = "insert into UserTag (userIdx, name) VALUES (?, ?);";
+        Object[] createUserTagsParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createUserTagsQuery, createUserTagsParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public int getNumOfUserTag(int userIdx){
+        String getNumOfUserTagQuery = "select COUNT(*) from UserTag where userIdx = ?";
+        int getNumOfUserTagParams = userIdx;
+
+        return this.jdbcTemplate.queryForObject(getNumOfUserTagQuery, int.class, userIdx);
+    }
+
 }

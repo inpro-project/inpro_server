@@ -34,4 +34,12 @@ public class UserProvider {
         }
     }
 
+    public int getNumOfUserTag(int userIdx) throws BaseException {
+        try {
+            return userDao.getNumOfUserTag(userIdx);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

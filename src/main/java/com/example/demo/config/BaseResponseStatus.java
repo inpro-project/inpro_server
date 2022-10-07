@@ -46,6 +46,11 @@ public enum BaseResponseStatus {
 
     PORTFOLIO_INVALID_ISREP(false, 2018, "올바르지 않은 대표 여부입니다. (Y나 N만 가능)"),
 
+    // [POST] /app/usertags
+    POST_USERTAG_EMPTY_NAME(false, 2019, "태그 이름을 입력해주세요."),
+    POST_USERTAG_INVALID_SIZE(false, 2020, "태그는 최대 3개까지 추가 가능합니다."),
+    POST_USERTAG_INVALID_LENGTH(false, 2021, "태그 이름은 5글자 이하로 입력이 가능합니다."),
+
     /**
      * 3000 : Response 오류
      */

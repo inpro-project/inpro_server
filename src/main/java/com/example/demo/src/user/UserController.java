@@ -126,7 +126,7 @@ public class UserController {
             }
 
             // 대표 여부 유효성 검사
-            if(postPortfolioReq.getIsRepPortfolio() != null && postPortfolioReq.getIsRepPortfolio() != "Y" && postPortfolioReq.getIsRepPortfolio() != "N"){
+            if(postPortfolioReq.getIsRepPortfolio() != null && !postPortfolioReq.getIsRepPortfolio().equals("Y") && !postPortfolioReq.getIsRepPortfolio().equals("N")){
                 return new BaseResponse<>(PORTFOLIO_INVALID_ISREP);
             }
 
@@ -162,7 +162,7 @@ public class UserController {
             }
 
             // 대표 여부 유효성 검사
-            if(patchPortfolioReq.getIsRepPortfolio() != null && patchPortfolioReq.getIsRepPortfolio() != "Y" && patchPortfolioReq.getIsRepPortfolio() != "N"){
+            if(patchPortfolioReq.getIsRepPortfolio() != null && !patchPortfolioReq.getIsRepPortfolio().equals("Y") && !patchPortfolioReq.getIsRepPortfolio().equals("N")){
                 return new BaseResponse<>(PORTFOLIO_INVALID_ISREP);
             }
 
@@ -220,6 +220,42 @@ public class UserController {
 
             List<GetPortfolioRes> getPortfolioRes = userProvider.getMyPortfolios(userIdx, portfolioCategoryIdx);
             return new BaseResponse<>(getPortfolioRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 유저 프로필 태그 등록 API
+     * [POST] /app/usertags
+     * @return
+     */
+    @ApiOperation(value = "유저 프로필 태그 등록 API", notes = "성공시 등록된 태그의 userTagIdx를 응답으로 줌")
+    @ApiResponses({
+            @ApiResponse(code = 2019, message = "태그 이름을 입력해주세요."),
+            @ApiResponse(code = 2020, message = "태그는 최대 3개까지 추가 가능합니다."),
+            @ApiResponse(code = 2021, message = "태그 이름은 5글자 이하로 입력이 가능합니다.")
+    })
+    @ApiImplicitParam(name = "name", value = "태그 이름", example = "웹개발")
+    @ResponseBody
+    @PostMapping("/usertags")
+    public BaseResponse<PostUserTagRes> createUserTags(@RequestParam String name){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            // 태그 유효성 검사
+            if(name == null){
+                return new BaseResponse<>(POST_USERTAG_EMPTY_NAME);
+            }
+            if(userProvider.getNumOfUserTag(userIdx) > 2){
+                return new BaseResponse<>(POST_USERTAG_INVALID_SIZE);
+            }
+            if(name.length() > 5){
+                return new BaseResponse<>(POST_USERTAG_INVALID_LENGTH);
+            }
+
+            PostUserTagRes postUserTagRes = userService.createUserTags(userIdx, name);
+            return new BaseResponse<>(postUserTagRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
