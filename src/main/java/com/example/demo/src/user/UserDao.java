@@ -186,7 +186,7 @@ public class UserDao {
                 "         when ageRange = '40~49' then '40대'\n" +
                 "         when ageRange = '50~59' then '50대'\n" +
                 "         when ageRange = '60~69' then '60대'\n" +
-                "        else '60대 이상' end as ageRange\n" +
+                "        else '없음' end as ageRange\n" +
                 "     , comment, region, occupation, job, interests\n" +
                 "from User\n" +
                 "where userIdx = ?";
