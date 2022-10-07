@@ -53,5 +53,5 @@ public class GetProfileRes {
     private List<GetUserTagRes> userTags;
 
     @ApiModelProperty(value = "대표 포트폴리오")
-    private List<GetRepPortfolioRes> RepPortfolio;
+    private List<GetRepPortfolioRes> repPortfolio;
 }
