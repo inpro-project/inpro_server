@@ -34,9 +34,9 @@ public class DiscDao {
                 ));
     }
 
-    public int createUserDisc(int userIdx, double x, double y){
-        String createUserDiscQuery = "insert into UserDisc (userIdx, x, y) VALUES (?, ?, ?);";
-        Object[] createUserDiscParams = new Object[]{userIdx, x, y};
+    public int createUserDisc(int userIdx, double x, double y, String isRepDisc){
+        String createUserDiscQuery = "insert into UserDisc (userIdx, x, y, isRepDisc) VALUES (?, ?, ?, ?);";
+        Object[] createUserDiscParams = new Object[]{userIdx, x, y, isRepDisc};
         this.jdbcTemplate.update(createUserDiscQuery, createUserDiscParams);
 
         String lastInsertIdQuery = "select last_insert_id()";
@@ -55,13 +55,27 @@ public class DiscDao {
         this.jdbcTemplate.update(createUserDiscTestAsBadQuery, createUserDiscTestAsBadParams);
     }
 
-    public int createSearchDisc(int userIdx, double x, double y){
-        String createSearchDiscQuery = "insert into SearchDisc (userIdx, x, y) VALUES (?, ?, ?);";
-        Object[] createSearchDiscParams = new Object[]{userIdx, x, y};
+    public int createSearchDisc(int userIdx, double x, double y, String isRepDisc){
+        String createSearchDiscQuery = "insert into SearchDisc (userIdx, x, y, isRepDisc) VALUES (?, ?, ?, ?);";
+        Object[] createSearchDiscParams = new Object[]{userIdx, x, y, isRepDisc};
         this.jdbcTemplate.update(createSearchDiscQuery, createSearchDiscParams);
 
         String lastInsertIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public int checkUserDisc(int userIdx){
+        String checkUserDiscQuery = "select exists(select userDiscIdx from UserDisc where userIdx = ? and status = 'active')";
+        int checkUserDiscParams = userIdx;
+
+        return this.jdbcTemplate.queryForObject(checkUserDiscQuery, int.class, checkUserDiscParams);
+    }
+
+    public int checkSearchDisc(int userIdx){
+        String checkSearchDiscQuery = "select exists(select searchDiscIdx from SearchDisc where userIdx = ? and status = 'active')";
+        int checkSearchDiscParams = userIdx;
+
+        return this.jdbcTemplate.queryForObject(checkSearchDiscQuery, int.class, checkSearchDiscParams);
     }
 
 }

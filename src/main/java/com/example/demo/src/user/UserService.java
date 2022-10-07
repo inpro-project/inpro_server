@@ -3,10 +3,8 @@ package com.example.demo.src.user;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.demo.config.BaseException;
-import com.example.demo.src.user.model.PatchPortfolioReq;
-import com.example.demo.src.user.model.PatchUserReq;
-import com.example.demo.src.user.model.PostPortfolioReq;
-import com.example.demo.src.user.model.PostPortfolioRes;
+import com.example.demo.config.BaseResponse;
+import com.example.demo.src.user.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -98,6 +98,31 @@ public class UserService {
             int result = userDao.deletePortfolio(portfolioIdx);
             if(result == 0){
                 throw new BaseException(DELETE_FAIL_PORTFOLIO);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostUserTagRes createUserTags(int userIdx, String name) throws BaseException {
+        try {
+            int userTagIdx = userDao.createUserTags(userIdx, name);
+            return new PostUserTagRes(userTagIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteUserTag(int userIdx, int userTagIdx) throws BaseException {
+        // 유저 태그 인덱스 유효성 검사
+        if(userProvider.checkUserTagIdx(userIdx, userTagIdx) != 1){
+            throw new BaseException(DELETE_USERTAG_INVALID_USERTAGIDX);
+        }
+
+        try {
+            int result = userDao.deleteUserTag(userTagIdx);
+            if(result == 0){
+                throw new BaseException(DELETE_FAIL_USERTAG);
             }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);

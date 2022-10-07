@@ -99,7 +99,14 @@ public class DiscController {
             }
 
             int userIdx = jwtService.getUserIdx();
-            PostUserDiscRes postUserDiscRes = discService.createUserDisc(userIdx, postDiscReq);
+
+            // 첫 테스트는 자동으로 대표로 지정
+            if(discProvider.checkUserDisc(userIdx) == 0){
+                PostUserDiscRes postUserDiscRes = discService.createUserDisc(userIdx, "Y", postDiscReq);
+                return new BaseResponse<>(postUserDiscRes);
+            }
+
+            PostUserDiscRes postUserDiscRes = discService.createUserDisc(userIdx, "N", postDiscReq);
             return new BaseResponse<>(postUserDiscRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
@@ -153,7 +160,14 @@ public class DiscController {
             }
 
             int userIdx = jwtService.getUserIdx();
-            PostSearchDiscRes postSearchDiscRes = discService.createSearchDisc(userIdx, postDiscReq);
+
+            // 첫 테스트는 자동으로 대표로 지정
+            if(discProvider.checkSearchDisc(userIdx) == 0){
+                PostSearchDiscRes postSearchDiscRes = discService.createSearchDisc(userIdx, "Y", postDiscReq);
+                return new BaseResponse<>(postSearchDiscRes);
+            }
+
+            PostSearchDiscRes postSearchDiscRes = discService.createSearchDisc(userIdx, "N", postDiscReq);
             return new BaseResponse<>(postSearchDiscRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
