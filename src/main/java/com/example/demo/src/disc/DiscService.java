@@ -120,13 +120,13 @@ public class DiscService {
     }
 
     // user disc 결과 저장 - x, y 좌표
-    public PostUserDiscRes createUserDisc(int userIdx, PostDiscReq postDiscReq) throws BaseException {
+    public PostUserDiscRes createUserDisc(int userIdx, String isRepDisc, PostDiscReq postDiscReq) throws BaseException {
         try {
             // x, y 좌표 계산
             double[] xy = calGoodList(postDiscReq);
             double[] xy2 = calBadList(xy, postDiscReq);
 
-            int userDiscIdx = discDao.createUserDisc(userIdx, xy2[0], xy2[1]);
+            int userDiscIdx = discDao.createUserDisc(userIdx, xy2[0], xy2[1], isRepDisc);
             createUserDiscTestAsGood(userDiscIdx, postDiscReq);
             createUserDiscTestAsBad(userDiscIdx, postDiscReq);
             return new PostUserDiscRes(userDiscIdx);
@@ -158,13 +158,13 @@ public class DiscService {
     }
 
     // Search disc 결과 저장 - x, y 좌표
-    public PostSearchDiscRes createSearchDisc(int userIdx, PostDiscReq postDiscReq) throws BaseException {
+    public PostSearchDiscRes createSearchDisc(int userIdx, String isRepDisc, PostDiscReq postDiscReq) throws BaseException {
         try {
             // x, y 좌표 계산
             double[] xy = calGoodList(postDiscReq);
             double[] xy2 = calBadList(xy, postDiscReq);
 
-            int searchDiscIdx = discDao.createSearchDisc(userIdx, xy2[0], xy2[1]);
+            int searchDiscIdx = discDao.createSearchDisc(userIdx, xy2[0], xy2[1], isRepDisc);
             return new PostSearchDiscRes(searchDiscIdx);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);

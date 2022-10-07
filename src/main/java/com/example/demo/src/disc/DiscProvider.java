@@ -28,5 +28,20 @@ public class DiscProvider {
         }
     }
 
+    public int checkUserDisc(int userIdx) throws BaseException {
+        try {
+            return discDao.checkUserDisc(userIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkSearchDisc(int userIdx) throws BaseException {
+        try {
+            return discDao.checkSearchDisc(userIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
 }
