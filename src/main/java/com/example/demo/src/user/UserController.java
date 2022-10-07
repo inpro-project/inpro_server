@@ -228,7 +228,7 @@ public class UserController {
     /**
      * 유저 프로필 태그 등록 API
      * [POST] /app/usertags
-     * @return
+     * @return BaseResponse<PostUserTagRes>
      */
     @ApiOperation(value = "유저 프로필 태그 등록 API", notes = "성공시 등록된 태그의 userTagIdx를 응답으로 줌")
     @ApiResponses({
@@ -261,6 +261,31 @@ public class UserController {
         }
     }
 
+    /**
+     * 유저 프로필 태그 삭제 API
+     * [DELETE] /app/usertags/:userTagIdx
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "유저 프로필 태그 삭제 API", notes = "성공시 '태그가 삭제되었습니다.' 출력")
+    @ApiResponses({
+            @ApiResponse(code = 2022, message = "올바르지 않은 userTagIdx입니다."),
+            @ApiResponse(code = 4005, message = "태그 삭제에 실패하였습니다.")
+    })
+    @ApiImplicitParam(name = "userTagIdx", value = "유저 태그 인덱스", example = "1")
+    @ResponseBody
+    @DeleteMapping("/usertags/{userTagIdx}")
+    public BaseResponse<String> createUserTags(@PathVariable("userTagIdx") int userTagIdx){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            userService.deleteUserTag(userIdx, userTagIdx);
+
+            String result = "태그가 삭제되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 
 }

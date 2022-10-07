@@ -51,6 +51,9 @@ public enum BaseResponseStatus {
     POST_USERTAG_INVALID_SIZE(false, 2020, "태그는 최대 3개까지 추가 가능합니다."),
     POST_USERTAG_INVALID_LENGTH(false, 2021, "태그 이름은 5글자 이하로 입력이 가능합니다."),
 
+    // [DELETE] /app/usertags/:userTagIdx
+    DELETE_USERTAG_INVALID_USERTAGIDX(false, 2022, "올바르지 않은 userTagIdx입니다."),
+
     /**
      * 3000 : Response 오류
      */
@@ -75,7 +78,10 @@ public enum BaseResponseStatus {
     MODIFY_FAIL_PORTFOLIO(false, 4003, "포트폴리오 수정에 실패하였습니다."),
 
     // [DELETE] /app/portfolios/:portfolioIdx
-    DELETE_FAIL_PORTFOLIO(false, 4004, "포트폴리오 삭제에 실패하였습니다.");
+    DELETE_FAIL_PORTFOLIO(false, 4004, "포트폴리오 삭제에 실패하였습니다."),
+
+    // [DELETE] /app/usertags/:userTagIdx
+    DELETE_FAIL_USERTAG(false, 4005, "태그 삭제에 실패하였습니다.");
 
     // 5000
     // 6000

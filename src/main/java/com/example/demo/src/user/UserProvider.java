@@ -42,4 +42,12 @@ public class UserProvider {
         }
     }
 
+    public int checkUserTagIdx(int userIdx, int userTagIdx) throws BaseException {
+        try {
+            return userDao.checkUserTagIdx(userIdx, userTagIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

@@ -35,7 +35,7 @@ public class UserDao {
     }
 
     public int checkPortfolioIdx(int userIdx, int portfolioIdx){
-        String checkPortfolioIdxQuery = "select exists (select portfolioIdx from Portfolio where userIdx = ? and portfolioIdx = ?)";
+        String checkPortfolioIdxQuery = "select exists (select portfolioIdx from Portfolio where userIdx = ? and portfolioIdx = ? and status = 'active')";
         Object[] checkPortfolioIdxParams = new Object[] {userIdx, portfolioIdx};
 
         return this.jdbcTemplate.queryForObject(checkPortfolioIdxQuery, int.class, checkPortfolioIdxParams);
@@ -79,10 +79,24 @@ public class UserDao {
     }
 
     public int getNumOfUserTag(int userIdx){
-        String getNumOfUserTagQuery = "select COUNT(*) from UserTag where userIdx = ?";
+        String getNumOfUserTagQuery = "select COUNT(*) from UserTag where userIdx = ? and status = 'active'";
         int getNumOfUserTagParams = userIdx;
 
         return this.jdbcTemplate.queryForObject(getNumOfUserTagQuery, int.class, userIdx);
     }
+
+    public int checkUserTagIdx(int userIdx, int userTagIdx){
+        String checkUserTagIdxQuery = "select exists(select userTagIdx from UserTag where userIdx = ? and userTagIdx = ? and status = 'active')";
+        Object[] checkUserTagIdxParams = new Object[] {userIdx, userTagIdx};
+
+        return this.jdbcTemplate.queryForObject(checkUserTagIdxQuery, int.class, checkUserTagIdxParams);
+    }
+
+    public int deleteUserTag(int userTagIdx){
+        String deleteUserTagQuery = "update UserTag set status = 'deleted' where userTagIdx = ?";
+        int deleteUserTagParams = userTagIdx;
+        return this.jdbcTemplate.update(deleteUserTagQuery, deleteUserTagParams);
+    }
+
 
 }
