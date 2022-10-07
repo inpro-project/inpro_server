@@ -2,6 +2,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.user.model.GetPortfolioRes;
+import com.example.demo.src.user.model.GetProfileRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,15 @@ public class UserProvider {
     public int checkUserTagIdx(int userIdx, int userTagIdx) throws BaseException {
         try {
             return userDao.checkUserTagIdx(userIdx, userTagIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetProfileRes getProfile(int userIdx) throws BaseException {
+        try{
+            GetProfileRes getProfileRes = userDao.getProfile(userIdx);
+            return getProfileRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

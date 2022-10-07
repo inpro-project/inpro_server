@@ -287,5 +287,23 @@ public class UserController {
         }
     }
 
+    /**
+     * 유저 프로필 조회 API
+     * [GET] /app/profiles
+     * @return BaseResponse<GetProfileRes>
+     */
+    @ApiOperation(value = "유저 프로필 조회 API")
+    @ResponseBody
+    @GetMapping("/profiles")
+    public BaseResponse<GetProfileRes> getProfile(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+            GetProfileRes getProfileRes = userProvider.getProfile(userIdx);
+            return new BaseResponse<>(getProfileRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 }
