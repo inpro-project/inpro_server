@@ -64,6 +64,18 @@ public class DiscDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
+    public void createSearchDiscTestAsGood(int searchDiscIdx, int discFeatureIdx){
+        String createSearchDiscTestAsGoodQuery = "insert into SearchDiscTest (searchDiscIdx, discFeatureIdx, fitOrNot) VALUES (?, ?, ?);";
+        Object[] createSearchDiscTestAsGoodParams = new Object[]{searchDiscIdx, discFeatureIdx, "Y"};
+        this.jdbcTemplate.update(createSearchDiscTestAsGoodQuery, createSearchDiscTestAsGoodParams);
+    }
+
+    public void createSearchDiscTestAsBad(int searchDiscIdx, int discFeatureIdx){
+        String createSearchDiscTestAsBadQuery = "insert into SearchDiscTest (searchDiscIdx, discFeatureIdx, fitOrNot) VALUES (?, ?, ?);";
+        Object[] createSearchDiscTestAsBadParams = new Object[]{searchDiscIdx, discFeatureIdx, "N"};
+        this.jdbcTemplate.update(createSearchDiscTestAsBadQuery, createSearchDiscTestAsBadParams);
+    }
+
     public int checkUserDisc(int userIdx){
         String checkUserDiscQuery = "select exists(select userDiscIdx from UserDisc where userIdx = ? and status = 'active')";
         int checkUserDiscParams = userIdx;

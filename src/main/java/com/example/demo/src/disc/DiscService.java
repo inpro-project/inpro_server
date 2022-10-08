@@ -135,7 +135,7 @@ public class DiscService {
         }
     }
 
-    // disc 결과 중 적합에 대한 정보 저장
+    // User disc 결과 중 적합에 대한 정보 저장
     public void createUserDiscTestAsGood(int userDiscIdx, PostDiscReq postDiscReq) throws BaseException {
         try {
             for(int i = 0; i < postDiscReq.getGoodList().size(); i++){
@@ -146,7 +146,7 @@ public class DiscService {
         }
     }
 
-    // disc 결과 중 부적합에 대한 정보 저장
+    // User disc 결과 중 부적합에 대한 정보 저장
     public void createUserDiscTestAsBad(int userDiscIdx, PostDiscReq postDiscReq) throws BaseException {
         try {
             for(int i = 0; i < postDiscReq.getBadList().size(); i++){
@@ -165,7 +165,31 @@ public class DiscService {
             double[] xy2 = calBadList(xy, postDiscReq);
 
             int searchDiscIdx = discDao.createSearchDisc(userIdx, xy2[0], xy2[1], isRepDisc);
+            createSearchDiscTestAsGood(searchDiscIdx, postDiscReq);
+            createSearchDiscTestAsBad(searchDiscIdx, postDiscReq);
             return new PostSearchDiscRes(searchDiscIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // Search disc 결과 중 적합에 대한 정보 저장
+    public void createSearchDiscTestAsGood(int searchDiscIdx, PostDiscReq postDiscReq) throws BaseException {
+        try {
+            for(int i = 0; i < postDiscReq.getGoodList().size(); i++){
+                discDao.createSearchDiscTestAsGood(searchDiscIdx, postDiscReq.getGoodList().get(i).getDiscFeatureIdx());
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // Search disc 결과 중 부적합에 대한 정보 저장
+    public void createSearchDiscTestAsBad(int searchDiscIdx, PostDiscReq postDiscReq) throws BaseException {
+        try {
+            for(int i = 0; i < postDiscReq.getBadList().size(); i++){
+                discDao.createSearchDiscTestAsBad(searchDiscIdx, postDiscReq.getBadList().get(i).getDiscFeatureIdx());
+            }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
