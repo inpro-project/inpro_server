@@ -54,6 +54,12 @@ public enum BaseResponseStatus {
     // [DELETE] /app/usertags/:userTagIdx
     DELETE_USERTAG_INVALID_USERTAGIDX(false, 2022, "올바르지 않은 userTagIdx입니다."),
 
+    // [GET] /app/user-discs/:userDiscIdx
+    GET_USERDISC_INVALID_USERDISCIDX(false, 2023, "올바르지 않은 userDiscIdx입니다."),
+
+    // [GET] /app/search-discs/:searchDiscIdx
+    GET_SEARCHDISC_INVALID_SEARCHDISCIDX(false, 2024, "올바르지 않은 searchDiscIdx입니다."),
+
     /**
      * 3000 : Response 오류
      */
