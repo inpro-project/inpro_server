@@ -2,11 +2,9 @@ package com.example.demo.src.disc;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.disc.model.GetDiscTestRes;
-import com.example.demo.src.disc.model.PostDiscReq;
-import com.example.demo.src.disc.model.PostSearchDiscRes;
-import com.example.demo.src.disc.model.PostUserDiscRes;
+import com.example.demo.src.disc.model.*;
 import com.example.demo.utils.JwtService;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -169,6 +167,62 @@ public class DiscController {
 
             PostSearchDiscRes postSearchDiscRes = discService.createSearchDisc(userIdx, "N", postDiscReq);
             return new BaseResponse<>(postSearchDiscRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * User Disc 결과 상세 조회 API
+     * [GET] /app/user-discs/:userDiscIdx
+     * @return BaseResponse<GetDiscResultRes>
+     */
+    @ApiOperation(value = "User Disc 결과 상세 조회 API")
+    @ApiResponses({
+            @ApiResponse(code = 2023, message = "올바르지 않은 userDiscIdx입니다.")
+    })
+    @ApiImplicitParam(name = "userDiscIdx", value = "유저 업무 성향 인덱스", example = "1")
+    @ResponseBody
+    @GetMapping("/user-discs/{userDiscIdx}")
+    public BaseResponse<GetDiscResultRes> getUserDiscResult(@PathVariable("userDiscIdx") int userDiscIdx) {
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            // userDiscIdx 유효성 검사
+            if(discProvider.checkUserDiscIdx(userIdx, userDiscIdx) != 1){
+                throw new BaseException(GET_USERDISC_INVALID_USERDISCIDX);
+            }
+
+            GetDiscResultRes getDiscResultRes = discProvider.getUserDiscResult(userDiscIdx);
+            return new BaseResponse<>(getDiscResultRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * Search Disc 결과 상세 조회 API
+     * [GET] /app/search-discs/:searchDiscIdx
+     * @return BaseResponse<GetDiscResultRes>
+     */
+    @ApiOperation(value = "Search Disc 결과 상세 조회 API")
+    @ApiResponses({
+            @ApiResponse(code = 2024, message = "올바르지 않은 searchDiscIdx입니다.")
+    })
+    @ApiImplicitParam(name = "searchDiscIdx", value = "유저가 찾는 업무 성향 인덱스", example = "1")
+    @ResponseBody
+    @GetMapping("/search-discs/{searchDiscIdx}")
+    public BaseResponse<GetDiscResultRes> getSearchDiscResult(@PathVariable("searchDiscIdx") int searchDiscIdx) {
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            // searchDiscIdx 유효성 검사
+            if(discProvider.checkSearchDiscIdx(userIdx, searchDiscIdx) != 1){
+                throw new BaseException(GET_SEARCHDISC_INVALID_SEARCHDISCIDX);
+            }
+
+            GetDiscResultRes getDiscResultRes = discProvider.getSearchDiscResult(searchDiscIdx);
+            return new BaseResponse<>(getDiscResultRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

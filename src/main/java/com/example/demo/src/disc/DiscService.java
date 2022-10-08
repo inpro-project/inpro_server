@@ -23,6 +23,8 @@ public class DiscService {
 
     private final double weights [] = {WEIGHT1, WEIGHT2, WEIGHT3};
 
+    private final double percentWeights [] = {PERCENTWEIGHT1, PERCENTWEIGHT2};
+
     // 적합 - 가중치 증가
     public double[] calGoodList(PostDiscReq postDiscReq) {
         double x = 0.0;
@@ -119,6 +121,98 @@ public class DiscService {
         return xy2;
     }
 
+    // disc 유형별 비중(퍼센트) 계산
+    public double[] calDiscPercent(PostDiscReq postDiscReq) throws BaseException {
+        double dWeight = 0;
+        double iWeight = 0;
+        double sWeight = 0;
+        double cWeight = 0;
+
+        // 적합인 경우 가중치 조정
+        for(int i = 0; i < postDiscReq.getGoodList().size(); i++){
+            if (postDiscReq.getGoodList().get(i).getName().equals("id")) {
+               iWeight += percentWeights[0];
+               dWeight += percentWeights[1];
+            } else if (postDiscReq.getGoodList().get(i).getName().equals("di")) {
+                dWeight += percentWeights[0];
+                iWeight += percentWeights[1];
+            } else if (postDiscReq.getGoodList().get(i).getName().equals("cs")) {
+                cWeight += percentWeights[0];
+                sWeight += percentWeights[1];
+            } else if (postDiscReq.getGoodList().get(i).getName().equals("sc")) {
+                sWeight += percentWeights[0];
+                cWeight += percentWeights[1];
+            } else if (postDiscReq.getGoodList().get(i).getName().equals("is")) {
+                iWeight += percentWeights[0];
+                sWeight += percentWeights[1];
+            } else if (postDiscReq.getGoodList().get(i).getName().equals("si")) {
+                sWeight += percentWeights[0];
+                iWeight += percentWeights[1];
+            } else if (postDiscReq.getGoodList().get(i).getName().equals("dc")) {
+                dWeight += percentWeights[0];
+                cWeight += percentWeights[1];
+            } else if (postDiscReq.getGoodList().get(i).getName().equals("cd")) {
+                cWeight += percentWeights[0];
+                dWeight += percentWeights[1];
+            } else if (postDiscReq.getGoodList().get(i).getName().equals("i")) {
+                iWeight += 1;
+            } else if (postDiscReq.getGoodList().get(i).getName().equals("d")) {
+                dWeight += 1;
+            } else if (postDiscReq.getGoodList().get(i).getName().equals("c")) {
+                cWeight += 1;
+            } else if (postDiscReq.getGoodList().get(i).getName().equals("s")) {
+                sWeight += 1;
+            }
+        }
+
+        // 부적합인 경우 가중치 조정
+        for(int j = 0; j < postDiscReq.getBadList().size(); j++) {
+            if(postDiscReq.getBadList().get(j).getName().equals("id")){
+                cWeight += percentWeights[0];
+                sWeight += percentWeights[1];
+            } else if(postDiscReq.getBadList().get(j).getName().equals("di")){
+                sWeight += percentWeights[0];
+                cWeight += percentWeights[1];
+            } else if(postDiscReq.getBadList().get(j).getName().equals("cs")){
+                iWeight += percentWeights[0];
+                dWeight += percentWeights[1];
+            } else if(postDiscReq.getBadList().get(j).getName().equals("sc")){
+                dWeight += percentWeights[0];
+                iWeight += percentWeights[1];
+            } else if(postDiscReq.getBadList().get(j).getName().equals("is")){
+                cWeight += percentWeights[0];
+                dWeight += percentWeights[1];
+            } else if(postDiscReq.getBadList().get(j).getName().equals("si")){
+                dWeight += percentWeights[0];
+                cWeight += percentWeights[1];
+            } else if(postDiscReq.getBadList().get(j).getName().equals("dc")){
+                sWeight += percentWeights[0];
+                iWeight += percentWeights[1];
+            } else if(postDiscReq.getBadList().get(j).getName().equals("cd")){
+                iWeight += percentWeights[0];
+                sWeight += percentWeights[1];
+            } else if(postDiscReq.getBadList().get(j).getName().equals("i")){
+                cWeight += 1;
+            } else if(postDiscReq.getBadList().get(j).getName().equals("d")){
+                sWeight += 1;
+            } else if(postDiscReq.getBadList().get(j).getName().equals("c")){
+                iWeight += 1;
+            } else if(postDiscReq.getBadList().get(j).getName().equals("s")){
+                dWeight += 1;
+            }
+        }
+
+        // 유형별 비중 계산
+        double totalWeight = dWeight + iWeight + sWeight + cWeight;
+        double dPercent = (dWeight/totalWeight) * 100;
+        double iPercent = (iWeight/totalWeight) * 100;
+        double sPercent = (sWeight/totalWeight) * 100;
+        double cPercent = (cWeight/totalWeight) * 100;
+
+        double[] discPercent = {dPercent, iPercent, sPercent, cPercent};
+        return discPercent;
+    }
+
     // user disc 결과 저장 - x, y 좌표
     public PostUserDiscRes createUserDisc(int userIdx, String isRepDisc, PostDiscReq postDiscReq) throws BaseException {
         try {
@@ -126,7 +220,10 @@ public class DiscService {
             double[] xy = calGoodList(postDiscReq);
             double[] xy2 = calBadList(xy, postDiscReq);
 
-            int userDiscIdx = discDao.createUserDisc(userIdx, xy2[0], xy2[1], isRepDisc);
+            // disc 유형별 비중 계산
+            double[] discPercent = calDiscPercent(postDiscReq);
+
+            int userDiscIdx = discDao.createUserDisc(userIdx, xy2, isRepDisc, discPercent);
             createUserDiscTestAsGood(userDiscIdx, postDiscReq);
             createUserDiscTestAsBad(userDiscIdx, postDiscReq);
             return new PostUserDiscRes(userDiscIdx);
@@ -135,7 +232,7 @@ public class DiscService {
         }
     }
 
-    // disc 결과 중 적합에 대한 정보 저장
+    // User disc 결과 중 적합에 대한 정보 저장
     public void createUserDiscTestAsGood(int userDiscIdx, PostDiscReq postDiscReq) throws BaseException {
         try {
             for(int i = 0; i < postDiscReq.getGoodList().size(); i++){
@@ -146,7 +243,7 @@ public class DiscService {
         }
     }
 
-    // disc 결과 중 부적합에 대한 정보 저장
+    // User disc 결과 중 부적합에 대한 정보 저장
     public void createUserDiscTestAsBad(int userDiscIdx, PostDiscReq postDiscReq) throws BaseException {
         try {
             for(int i = 0; i < postDiscReq.getBadList().size(); i++){
@@ -164,8 +261,35 @@ public class DiscService {
             double[] xy = calGoodList(postDiscReq);
             double[] xy2 = calBadList(xy, postDiscReq);
 
-            int searchDiscIdx = discDao.createSearchDisc(userIdx, xy2[0], xy2[1], isRepDisc);
+            // disc 유형별 비중 계산
+            double[] discPercent = calDiscPercent(postDiscReq);
+
+            int searchDiscIdx = discDao.createSearchDisc(userIdx, xy2, isRepDisc, discPercent);
+            createSearchDiscTestAsGood(searchDiscIdx, postDiscReq);
+            createSearchDiscTestAsBad(searchDiscIdx, postDiscReq);
             return new PostSearchDiscRes(searchDiscIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // Search disc 결과 중 적합에 대한 정보 저장
+    public void createSearchDiscTestAsGood(int searchDiscIdx, PostDiscReq postDiscReq) throws BaseException {
+        try {
+            for(int i = 0; i < postDiscReq.getGoodList().size(); i++){
+                discDao.createSearchDiscTestAsGood(searchDiscIdx, postDiscReq.getGoodList().get(i).getDiscFeatureIdx());
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // Search disc 결과 중 부적합에 대한 정보 저장
+    public void createSearchDiscTestAsBad(int searchDiscIdx, PostDiscReq postDiscReq) throws BaseException {
+        try {
+            for(int i = 0; i < postDiscReq.getBadList().size(); i++){
+                discDao.createSearchDiscTestAsBad(searchDiscIdx, postDiscReq.getBadList().get(i).getDiscFeatureIdx());
+            }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
