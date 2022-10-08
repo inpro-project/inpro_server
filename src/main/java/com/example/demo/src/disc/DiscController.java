@@ -18,10 +18,6 @@ import static com.example.demo.config.BaseResponseStatus.*;
 
 @Slf4j
 @ApiResponses({
-        @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
-        @ApiResponse(code = 2001, message = "JWT를 입력해주세요."),
-        @ApiResponse(code = 2002, message = "유효하지 않은 JWT입니다."),
-        @ApiResponse(code = 2003, message = "권한이 없는 유저의 접근입니다."),
         @ApiResponse(code = 4000, message = "데이터베이스 연결에 실패하였습니다.")
 })
 @RestController
@@ -57,6 +53,9 @@ public class DiscController {
      */
     @ApiOperation(value = "유저 업무 성향 테스트 API")
     @ApiResponses({
+            @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
+            @ApiResponse(code = 2001, message = "JWT를 입력해주세요."),
+            @ApiResponse(code = 2002, message = "유효하지 않은 JWT입니다."),
             @ApiResponse(code = 2004, message = "적합에 대한 업무 유형 테스트 결과를 입력해주세요."),
             @ApiResponse(code = 2005, message = "부적합에 대한 업무 유형 테스트 결과를 입력해주세요."),
             @ApiResponse(code = 2006, message = "업무 유형 name을 입력해주세요"),
@@ -118,6 +117,9 @@ public class DiscController {
      */
     @ApiOperation(value = "유저가 찾는 팀원 업무성향 테스트 API")
     @ApiResponses({
+            @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
+            @ApiResponse(code = 2001, message = "JWT를 입력해주세요."),
+            @ApiResponse(code = 2002, message = "유효하지 않은 JWT입니다."),
             @ApiResponse(code = 2004, message = "적합에 대한 업무 유형 테스트 결과를 입력해주세요."),
             @ApiResponse(code = 2005, message = "부적합에 대한 업무 유형 테스트 결과를 입력해주세요."),
             @ApiResponse(code = 2006, message = "업무 유형 name을 입력해주세요"),
@@ -179,6 +181,9 @@ public class DiscController {
      */
     @ApiOperation(value = "User Disc 결과 상세 조회 API")
     @ApiResponses({
+            @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
+            @ApiResponse(code = 2001, message = "JWT를 입력해주세요."),
+            @ApiResponse(code = 2002, message = "유효하지 않은 JWT입니다."),
             @ApiResponse(code = 2023, message = "올바르지 않은 userDiscIdx입니다.")
     })
     @ApiImplicitParam(name = "userDiscIdx", value = "유저 업무 성향 인덱스", example = "1")
@@ -207,6 +212,9 @@ public class DiscController {
      */
     @ApiOperation(value = "Search Disc 결과 상세 조회 API")
     @ApiResponses({
+            @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
+            @ApiResponse(code = 2001, message = "JWT를 입력해주세요."),
+            @ApiResponse(code = 2002, message = "유효하지 않은 JWT입니다."),
             @ApiResponse(code = 2024, message = "올바르지 않은 searchDiscIdx입니다.")
     })
     @ApiImplicitParam(name = "searchDiscIdx", value = "유저가 찾는 업무 성향 인덱스", example = "1")
