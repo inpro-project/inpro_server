@@ -34,9 +34,9 @@ public class DiscDao {
                 ));
     }
 
-    public int createUserDisc(int userIdx, double x, double y, String isRepDisc){
-        String createUserDiscQuery = "insert into UserDisc (userIdx, x, y, isRepDisc) VALUES (?, ?, ?, ?);";
-        Object[] createUserDiscParams = new Object[]{userIdx, x, y, isRepDisc};
+    public int createUserDisc(int userIdx, double xy[], String isRepDisc, double discPercent[]){
+        String createUserDiscQuery = "insert into UserDisc (userIdx, x, y, isRepDisc, dPercent, iPercent, sPercent, cPercent) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        Object[] createUserDiscParams = new Object[]{userIdx, xy[0], xy[1], isRepDisc, discPercent[0], discPercent[1], discPercent[2], discPercent[3]};
         this.jdbcTemplate.update(createUserDiscQuery, createUserDiscParams);
 
         String lastInsertIdQuery = "select last_insert_id()";
@@ -55,9 +55,9 @@ public class DiscDao {
         this.jdbcTemplate.update(createUserDiscTestAsBadQuery, createUserDiscTestAsBadParams);
     }
 
-    public int createSearchDisc(int userIdx, double x, double y, String isRepDisc){
-        String createSearchDiscQuery = "insert into SearchDisc (userIdx, x, y, isRepDisc) VALUES (?, ?, ?, ?);";
-        Object[] createSearchDiscParams = new Object[]{userIdx, x, y, isRepDisc};
+    public int createSearchDisc(int userIdx, double xy[], String isRepDisc, double discPercent[]){
+        String createSearchDiscQuery = "insert into SearchDisc (userIdx, x, y, isRepDisc, dPercent, iPercent, sPercent, cPercent) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        Object[] createSearchDiscParams = new Object[]{userIdx, xy[0], xy[1], isRepDisc, discPercent[0], discPercent[1], discPercent[2], discPercent[3]};
         this.jdbcTemplate.update(createSearchDiscQuery, createSearchDiscParams);
 
         String lastInsertIdQuery = "select last_insert_id()";
