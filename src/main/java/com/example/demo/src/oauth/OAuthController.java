@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @ApiResponses({
-        @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
-        @ApiResponse(code = 3002, message = "비활성화된 유저입니다."),
-        @ApiResponse(code = 3003, message = "탈퇴한 유저입니다."),
-        @ApiResponse(code = 4000, message = "데이터베이스 연결에 실패하였습니다.")
+        @ApiResponse(code = 200, message = "요청에 성공하였습니다."),
+        @ApiResponse(code = 403, message = "비활성화된 유저입니다."),
+        @ApiResponse(code = 404, message = "탈퇴한 유저입니다."),
+        @ApiResponse(code = 400, message = "데이터베이스 연결에 실패하였습니다.")
 })
 @RestController
 @AllArgsConstructor
