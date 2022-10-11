@@ -18,10 +18,10 @@ import static com.example.demo.utils.ValidationRegex.isRegexNickName;
 
 @Slf4j
 @ApiResponses({
-        @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
-        @ApiResponse(code = 2001, message = "JWT를 입력해주세요."),
-        @ApiResponse(code = 2002, message = "유효하지 않은 JWT입니다."),
-        @ApiResponse(code = 4000, message = "데이터베이스 연결에 실패하였습니다.")
+        @ApiResponse(code = 200, message = "요청에 성공하였습니다."),
+        @ApiResponse(code = 301, message = "JWT를 입력해주세요."),
+        @ApiResponse(code = 302, message = "유효하지 않은 JWT입니다."),
+        @ApiResponse(code = 400, message = "데이터베이스 연결에 실패하였습니다.")
 })
 @RestController
 @AllArgsConstructor
@@ -39,13 +39,13 @@ public class UserController {
      */
     @ApiOperation(value = "유저 프로필 수정 API", notes = "profileImg와 별개로 patchUserReq는 Content-type을 application/json으로 설정해야 하기 때문에\n 테스트는 Postman에서만 가능합니다. (자세한 사항은 노션 참조)")
     @ApiResponses({
-            @ApiResponse(code = 2008, message = "닉네임은 최소 2자, 최대 10자까지 입력 가능합니다."),
-            @ApiResponse(code = 2009, message = "닉네임은 띄어쓰기 없이 한글, 영문, 숫자만 가능합니다."),
-            @ApiResponse(code = 2010, message = "거주 지역을 입력해주세요."),
-            @ApiResponse(code = 2011, message = "직업군을 입력해주세요."),
-            @ApiResponse(code = 2012, message = "직업을 입력해주세요."),
-            @ApiResponse(code = 2013, message = "관심 분야를 입력해주세요."),
-            @ApiResponse(code = 2014, message = "프로필 사진을 입력해주세요.")
+            @ApiResponse(code = 308, message = "닉네임은 최소 2자, 최대 10자까지 입력 가능합니다."),
+            @ApiResponse(code = 309, message = "닉네임은 띄어쓰기 없이 한글, 영문, 숫자만 가능합니다."),
+            @ApiResponse(code = 310, message = "거주 지역을 입력해주세요."),
+            @ApiResponse(code = 311, message = "직업군을 입력해주세요."),
+            @ApiResponse(code = 312, message = "직업을 입력해주세요."),
+            @ApiResponse(code = 313, message = "관심 분야를 입력해주세요."),
+            @ApiResponse(code = 314, message = "프로필 사진을 입력해주세요.")
     })
     @ResponseBody
     @PatchMapping("/profiles")
@@ -104,9 +104,9 @@ public class UserController {
      */
     @ApiOperation(value = "포트폴리오 등록 API", notes = "성공시 포트폴리오 인덱스(portfolioIdx) 출력")
     @ApiResponses({
-            @ApiResponse(code = 2015, message = "포트폴리오 제목을 입력해주세요."),
-            @ApiResponse(code = 2016, message = "올바르지 않은 portfolioCategoryIdx 입니다."),
-            @ApiResponse(code = 2018, message = "올바르지 않은 대표 여부입니다. (Y나 N만 가능)")
+            @ApiResponse(code = 315, message = "포트폴리오 제목을 입력해주세요."),
+            @ApiResponse(code = 316, message = "올바르지 않은 portfolioCategoryIdx 입니다."),
+            @ApiResponse(code = 318, message = "올바르지 않은 대표 여부입니다. (Y나 N만 가능)")
     })
     @ResponseBody
     @PostMapping("/portfolios/{portfolioCategoryIdx}")
@@ -144,10 +144,10 @@ public class UserController {
      */
     @ApiOperation(value = "포트폴리오 수정 API", notes = "성공시 '포트폴리오가 수정되었습니다.' 출력")
     @ApiResponses({
-            @ApiResponse(code = 2015, message = "포트폴리오 제목을 입력해주세요."),
-            @ApiResponse(code = 2017, message = "올바르지 않은 portfolioIdx입니다."),
-            @ApiResponse(code = 2018, message = "올바르지 않은 대표 여부입니다. (Y나 N만 가능)"),
-            @ApiResponse(code = 4003, message = "포트폴리오 수정에 실패하였습니다.")
+            @ApiResponse(code = 315, message = "포트폴리오 제목을 입력해주세요."),
+            @ApiResponse(code = 317, message = "올바르지 않은 portfolioIdx입니다."),
+            @ApiResponse(code = 318, message = "올바르지 않은 대표 여부입니다. (Y나 N만 가능)"),
+            @ApiResponse(code = 406, message = "포트폴리오 수정에 실패하였습니다.")
     })
     @ResponseBody
     @PatchMapping("/portfolios/{portfolioIdx}")
@@ -180,8 +180,8 @@ public class UserController {
      */
     @ApiOperation(value = "포트폴리오 삭제 API", notes = "성공시 '포트폴리오가 삭제되었습니다.' 출력")
     @ApiResponses({
-            @ApiResponse(code = 2017, message = "올바르지 않은 portfolioIdx입니다."),
-            @ApiResponse(code = 4004, message = "포트폴리오 삭제에 실패하였습니다.")
+            @ApiResponse(code = 317, message = "올바르지 않은 portfolioIdx입니다."),
+            @ApiResponse(code = 407, message = "포트폴리오 삭제에 실패하였습니다.")
     })
     @ResponseBody
     @DeleteMapping("/portfolios/{portfolioIdx}")
@@ -204,7 +204,7 @@ public class UserController {
      */
     @ApiOperation(value = "자신의 포트폴리오 조회 API")
     @ApiResponses({
-            @ApiResponse(code = 2017, message = "올바르지 않은 portfolioIdx입니다.")
+            @ApiResponse(code = 317, message = "올바르지 않은 portfolioIdx입니다.")
     })
     @ResponseBody
     @GetMapping("/portfolios/{portfolioCategoryIdx}")
@@ -231,9 +231,9 @@ public class UserController {
      */
     @ApiOperation(value = "유저 프로필 태그 등록 API", notes = "성공시 등록된 태그의 userTagIdx를 응답으로 줌")
     @ApiResponses({
-            @ApiResponse(code = 2019, message = "태그 이름을 입력해주세요."),
-            @ApiResponse(code = 2020, message = "태그는 최대 3개까지 추가 가능합니다."),
-            @ApiResponse(code = 2021, message = "태그 이름은 5글자 이하로 입력이 가능합니다.")
+            @ApiResponse(code = 319, message = "태그 이름을 입력해주세요."),
+            @ApiResponse(code = 320, message = "태그는 최대 3개까지 추가 가능합니다."),
+            @ApiResponse(code = 321, message = "태그 이름은 5글자 이하로 입력이 가능합니다.")
     })
     @ApiImplicitParam(name = "name", value = "태그 이름", example = "웹개발")
     @ResponseBody
@@ -267,8 +267,8 @@ public class UserController {
      */
     @ApiOperation(value = "유저 프로필 태그 삭제 API", notes = "성공시 '태그가 삭제되었습니다.' 출력")
     @ApiResponses({
-            @ApiResponse(code = 2022, message = "올바르지 않은 userTagIdx입니다."),
-            @ApiResponse(code = 4005, message = "태그 삭제에 실패하였습니다.")
+            @ApiResponse(code = 322, message = "올바르지 않은 userTagIdx입니다."),
+            @ApiResponse(code = 408, message = "태그 삭제에 실패하였습니다.")
     })
     @ApiImplicitParam(name = "userTagIdx", value = "유저 태그 인덱스", example = "1")
     @ResponseBody
