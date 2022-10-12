@@ -60,6 +60,10 @@ public enum BaseResponseStatus {
     // [GET] /app/search-discs/:searchDiscIdx
     GET_SEARCHDISC_INVALID_SEARCHDISCIDX(false, 324, "올바르지 않은 searchDiscIdx입니다."),
 
+    // [POST] /app/user-likes/:likingIdx
+    USERLIKE_INVALID_LIKINGIDX(false, 325, "이미 좋아요를 누른 유저입니다."),
+    INVALID_USERIDX(false, 326, "유효하지 않은 유저 인덱스입니다."),
+
     /**
      * 400 : Response, Database, Server 오류
      */
@@ -82,7 +86,10 @@ public enum BaseResponseStatus {
     DELETE_FAIL_PORTFOLIO(false, 407, "포트폴리오 삭제에 실패하였습니다."),
 
     // [DELETE] /app/usertags/:userTagIdx
-    DELETE_FAIL_USERTAG(false, 408, "태그 삭제에 실패하였습니다.");
+    DELETE_FAIL_USERTAG(false, 408, "태그 삭제에 실패하였습니다."),
+
+    // [POST] /app/user-likes/:likingIdx
+    FAIL_USERLIKE(false, 409, "유저 좋아요에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;
