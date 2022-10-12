@@ -25,9 +25,9 @@ public class UserDao {
         return this.jdbcTemplate.update(modifyUserQuery, modifyUserParams);
     }
 
-    public int createPortfolio(int userIdx, int portfolioCategoryIdx, PostPortfolioReq postPortfolioReq){
-        String createPortfolioQuery = "insert into Portfolio (userIdx, portfolioCategoryIdx, title, content, url) VALUES (?, ?, ?, ?, ?);";
-        Object[] createPortfolioParams = new Object[]{userIdx, portfolioCategoryIdx, postPortfolioReq.getTitle(), postPortfolioReq.getContent(), postPortfolioReq.getUrl()};
+    public int createPortfolio(int userIdx, int portfolioCategoryIdx, PostPortfolioReq postPortfolioReq, String isRepPortfolio){
+        String createPortfolioQuery = "insert into Portfolio (userIdx, portfolioCategoryIdx, title, content, url, isRepPortfolio) VALUES (?, ?, ?, ?, ?, ?);";
+        Object[] createPortfolioParams = new Object[]{userIdx, portfolioCategoryIdx, postPortfolioReq.getTitle(), postPortfolioReq.getContent(), postPortfolioReq.getUrl(), isRepPortfolio};
         this.jdbcTemplate.update(createPortfolioQuery, createPortfolioParams);
 
         String lastInsertIdQuery = "select last_insert_id()";
@@ -209,6 +209,13 @@ public class UserDao {
                         getUserTags(userIdx),
                         getRepPortfolios(userIdx)),
                 getProfileParams);
+    }
+
+    public int checkPortfolio(int userIdx, int portfolioCategoryIdx){
+        String checkPortfolioQuery = "select exists (select portfolioIdx from Portfolio where userIdx = ? and portfolioCategoryIdx = ? and status = 'active')";
+        Object[] checkPortfolioParams = new Object[] {userIdx, portfolioCategoryIdx};
+
+        return this.jdbcTemplate.queryForObject(checkPortfolioQuery, int.class, checkPortfolioParams);
     }
 
 }

@@ -63,9 +63,9 @@ public class UserService {
         return storeFileUrl;
     }
 
-    public PostPortfolioRes createPortfolio(int userIdx, int portfolioCategoryIdx, PostPortfolioReq postPortfolioReq) throws BaseException {
+    public PostPortfolioRes createPortfolio(int userIdx, int portfolioCategoryIdx, PostPortfolioReq postPortfolioReq, String isRepPortfolio) throws BaseException {
         try {
-            int portfolioIdx = userDao.createPortfolio(userIdx, portfolioCategoryIdx, postPortfolioReq);
+            int portfolioIdx = userDao.createPortfolio(userIdx, portfolioCategoryIdx, postPortfolioReq, isRepPortfolio);
             return new PostPortfolioRes(portfolioIdx);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
