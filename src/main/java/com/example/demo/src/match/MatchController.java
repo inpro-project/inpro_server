@@ -11,8 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.demo.config.BaseResponseStatus.INVALID_USERIDX;
-import static com.example.demo.config.BaseResponseStatus.USERLIKE_INVALID_LIKINGIDX;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @Slf4j
 @ApiResponses({
@@ -49,24 +48,6 @@ public class MatchController {
         try {
             int likerIdx = jwtService.getUserIdx();
 
-            // likingIdx 유효성 검사
-            if(matchProvider.checkUserIdx(likingIdx) == 0){
-                return new BaseResponse<>(INVALID_USERIDX);
-            }
-
-            // 중복 좋아요 유효성 검사
-            if(matchProvider.checkPreUserLike(likerIdx, likingIdx) == 1){
-                return new BaseResponse<>(USERLIKE_INVALID_LIKINGIDX);
-            }
-
-            // 이전에 비활성화나 좋아요 취소를 했던 유저의 경우
-            int userLikeIdx = matchProvider.checkUserLikeHist(likerIdx, likingIdx);
-            if(userLikeIdx != 0){
-                // active 업데이트
-                PostUserLikeRes postUserLikeRes = matchService.updateUserLike(userLikeIdx);
-                return new BaseResponse<>(postUserLikeRes);
-            }
-
             PostUserLikeRes postUserLikeRes = matchService.createUserLike(likerIdx, likingIdx);
             return new BaseResponse<>(postUserLikeRes);
         } catch (BaseException exception){
@@ -74,4 +55,29 @@ public class MatchController {
         }
     }
 
+    /**
+     * 유저 좋아요 취소 API
+     * [PATCH] /app/user-likes/:likingIdx
+     * @return BaseResponse<String>
+     *
+     **/
+    @ApiOperation(value = "유저 좋아요 취소 API", notes = "성공 시 result로 '좋아요가 취소되었습니다.' 출력")
+    @ApiResponses({
+            @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
+            @ApiResponse(code = 327, message = "기존에 좋아요를 누르지 않은 유저입니다."),
+            @ApiResponse(code = 410, message = "유저 좋아요 취소에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PatchMapping("/user-likes/{likingIdx}")
+    public BaseResponse<String> deleteUserLike(@PathVariable("likingIdx") int likingIdx) {
+        try {
+            int likerIdx = jwtService.getUserIdx();
+
+            matchService.deleteUserLike(likerIdx, likingIdx);
+            String result = "좋아요가 취소되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }

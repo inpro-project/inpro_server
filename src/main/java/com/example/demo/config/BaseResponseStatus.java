@@ -62,7 +62,11 @@ public enum BaseResponseStatus {
 
     // [POST] /app/user-likes/:likingIdx
     USERLIKE_INVALID_LIKINGIDX(false, 325, "이미 좋아요를 누른 유저입니다."),
+
     INVALID_USERIDX(false, 326, "유효하지 않은 유저 인덱스입니다."),
+
+    // [PATCH] /app/user-likes/:likingIdx
+    UNUSERLIKE_INVALID_LIKINGIDX(false, 327, "기존에 좋아요를 누르지 않은 유저입니다."),
 
     /**
      * 400 : Response, Database, Server 오류
@@ -89,7 +93,10 @@ public enum BaseResponseStatus {
     DELETE_FAIL_USERTAG(false, 408, "태그 삭제에 실패하였습니다."),
 
     // [POST] /app/user-likes/:likingIdx
-    FAIL_USERLIKE(false, 409, "유저 좋아요에 실패하였습니다.");
+    FAIL_USERLIKE(false, 409, "유저 좋아요에 실패하였습니다."),
+
+    // [PATCH] /app/user-likes/:likingIdx
+    FAIL_UNUSERLIKE(false, 410, "유저 좋아요 취소에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;

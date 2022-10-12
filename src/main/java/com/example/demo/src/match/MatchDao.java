@@ -59,4 +59,11 @@ public class MatchDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
+    public int deleteUserLike(int likerIdx, int likingIdx){
+        String deleteUserLikeQuery = "update UserLike set status = 'deleted' where likerIdx = ? and likingIdx = ?";
+        Object[] deleteUserLikeParams = new Object[]{likerIdx, likingIdx};
+
+        return this.jdbcTemplate.update(deleteUserLikeQuery, deleteUserLikeParams);
+    }
+
 }
