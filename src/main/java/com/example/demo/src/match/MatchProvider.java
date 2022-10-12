@@ -1,8 +1,8 @@
 package com.example.demo.src.match;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.match.model.GetLikerRes;
-import com.example.demo.src.match.model.GetLikingRes;
+import com.example.demo.src.match.model.GetUserLikerRes;
+import com.example.demo.src.match.model.GetUserLikingRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -60,19 +60,19 @@ public class MatchProvider {
         }
     }
 
-    public List<GetLikingRes> getLikings(int userIdx) throws BaseException {
+    public List<GetUserLikingRes> getUserLikings(int userIdx) throws BaseException {
         try {
-            List<GetLikingRes> getLikingResList = matchDao.getLikings(userIdx);
-            return getLikingResList;
+            List<GetUserLikingRes> getUserLikingResList = matchDao.getUserLikings(userIdx);
+            return getUserLikingResList;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public List<GetLikerRes> getLikers(int userIdx) throws BaseException {
+    public List<GetUserLikerRes> getUserLikers(int userIdx) throws BaseException {
         try {
-            List<GetLikerRes> getLikerResList = matchDao.getLikers(userIdx);
-            return getLikerResList;
+            List<GetUserLikerRes> getUserLikerResList = matchDao.getUserLikers(userIdx);
+            return getUserLikerResList;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

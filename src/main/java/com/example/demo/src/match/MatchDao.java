@@ -1,8 +1,7 @@
 package com.example.demo.src.match;
 
-import com.example.demo.src.match.model.GetLikerRes;
-import com.example.demo.src.match.model.GetLikingRes;
-import com.example.demo.src.user.model.GetProfileRes;
+import com.example.demo.src.match.model.GetUserLikerRes;
+import com.example.demo.src.match.model.GetUserLikingRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -105,8 +104,8 @@ public class MatchDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
-    public List<GetLikingRes> getLikings(int userIdx){
-        String getLikingsQuery = "select userIdx as likingIdx, nickName, userImgUrl\n" +
+    public List<GetUserLikingRes> getUserLikings(int userIdx){
+        String getUserLikingsQuery = "select userIdx as likingIdx, nickName, userImgUrl\n" +
                 "     , case\n" +
                 "         when gender = 'female' then '여'\n" +
                 "         when gender = 'male' then '남'\n" +
@@ -123,10 +122,10 @@ public class MatchDao {
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likingIdx\n" +
                 "where likerIdx = ? and UL.status = 'active'";
-        int getLikingsParams = userIdx;
+        int getUserLikingsParams = userIdx;
 
-        return this.jdbcTemplate.query(getLikingsQuery,
-                (rs, rsNum) -> new GetLikingRes(
+        return this.jdbcTemplate.query(getUserLikingsQuery,
+                (rs, rsNum) -> new GetUserLikingRes(
                         rs.getInt("likingIdx"),
                         rs.getString("nickName"),
                         rs.getString("userImgUrl"),
@@ -136,11 +135,11 @@ public class MatchDao {
                         rs.getString("occupation"),
                         rs.getString("job"),
                         rs.getString("interests")),
-                getLikingsParams);
+                getUserLikingsParams);
     }
 
-    public List<GetLikerRes> getLikers(int userIdx){
-        String getLikersQuery = "select userIdx as likerIdx, nickName, userImgUrl\n" +
+    public List<GetUserLikerRes> getUserLikers(int userIdx){
+        String getUserLikersQuery = "select userIdx as likerIdx, nickName, userImgUrl\n" +
                 "     , case\n" +
                 "         when gender = 'female' then '여'\n" +
                 "         when gender = 'male' then '남'\n" +
@@ -157,10 +156,10 @@ public class MatchDao {
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likerIdx\n" +
                 "where likingIdx = ? and UL.status = 'active'";
-        int getLikersParams = userIdx;
+        int getUserLikersParams = userIdx;
 
-        return this.jdbcTemplate.query(getLikersQuery,
-                (rs, rsNum) -> new GetLikerRes(
+        return this.jdbcTemplate.query(getUserLikersQuery,
+                (rs, rsNum) -> new GetUserLikerRes(
                         rs.getInt("likerIdx"),
                         rs.getString("nickName"),
                         rs.getString("userImgUrl"),
@@ -170,7 +169,7 @@ public class MatchDao {
                         rs.getString("occupation"),
                         rs.getString("job"),
                         rs.getString("interests")),
-                getLikersParams);
+                getUserLikersParams);
     }
 
 }

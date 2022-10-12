@@ -2,8 +2,8 @@ package com.example.demo.src.match;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.match.model.GetLikerRes;
-import com.example.demo.src.match.model.GetLikingRes;
+import com.example.demo.src.match.model.GetUserLikerRes;
+import com.example.demo.src.match.model.GetUserLikingRes;
 import com.example.demo.src.match.model.PostUserLikeRes;
 import com.example.demo.src.match.model.PostUserPassRes;
 import com.example.demo.utils.JwtService;
@@ -108,36 +108,36 @@ public class MatchController {
     }
 
     /**
-     * 내가 보낸 좋아요 조회 API
-     * [GET] /app/likings
-     * @return BaseResponse<List<GetLikingsRes>>
+     * 내가 보낸 UserLike 조회 API
+     * [GET] /app/user-likings
+     * @return BaseResponse<List<GetUserLikingRes>>
      */
-    @ApiOperation(value = "내가 보낸 좋아요 조회 API")
+    @ApiOperation(value = "내가 보낸 UserLike 조회 API")
     @ResponseBody
-    @GetMapping("/likings")
-    public BaseResponse<List<GetLikingRes>> getLikings(){
+    @GetMapping("/user-likings")
+    public BaseResponse<List<GetUserLikingRes>> getUserLikings(){
         try {
             int userIdx = jwtService.getUserIdx();
-            List<GetLikingRes> getLikingResList = matchProvider.getLikings(userIdx);
-            return new BaseResponse<>(getLikingResList);
+            List<GetUserLikingRes> getUserLikingResList = matchProvider.getUserLikings(userIdx);
+            return new BaseResponse<>(getUserLikingResList);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
     }
 
     /**
-     * 나에게 보낸 좋아요 조회 API
-     * [GET] /app/likers
-     * @return BaseResponse<List<GetLikerRes>>
+     * 나에게 보낸 UserLike 조회 API
+     * [GET] /app/user-likers
+     * @return BaseResponse<List<GetUserLikerRes>>
      */
-    @ApiOperation(value = "나에게 보낸 좋아요 조회 API")
+    @ApiOperation(value = "나에게 보낸 UserLike 조회 API")
     @ResponseBody
-    @GetMapping("/likers")
-    public BaseResponse<List<GetLikerRes>> getLikers(){
+    @GetMapping("/user-likers")
+    public BaseResponse<List<GetUserLikerRes>> getUserLikers(){
         try {
             int userIdx = jwtService.getUserIdx();
-            List<GetLikerRes> getLikerResList = matchProvider.getLikers(userIdx);
-            return new BaseResponse<>(getLikerResList);
+            List<GetUserLikerRes> getUserLikerResList = matchProvider.getUserLikers(userIdx);
+            return new BaseResponse<>(getUserLikerResList);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

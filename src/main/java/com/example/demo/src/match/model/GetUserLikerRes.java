@@ -6,12 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 @AllArgsConstructor
-@ApiModel(value = "내가 보낸 좋아요 조회 API response")
-public class GetLikingRes {
-    @ApiModelProperty(value = "내가 좋아요를 보낸 유저 인덱스", example = "1")
-    private int likingIdx;
+@ApiModel(value = "나에게 보낸 좋아요 조회 API response")
+public class GetUserLikerRes {
+    @ApiModelProperty(value = "나에게 좋아요를 보낸 유저 인덱스", example = "1")
+    private int likerIdx;
 
     @ApiModelProperty(value = "닉네임", example = "신예빈")
     private String nickName;
