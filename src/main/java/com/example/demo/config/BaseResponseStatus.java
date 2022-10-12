@@ -33,7 +33,6 @@ public enum BaseResponseStatus {
     PATCH_USER_INVALID_NICKNAME(false, 309, "닉네임은 띄어쓰기 없이 한글, 영문, 숫자만 가능합니다."),
     PATCH_USER_EMPTY_REGION(false, 310, "거주 지역을 입력해주세요."),
     PATCH_USER_EMPTY_OCCUPATION(false, 311, "직업군을 입력해주세요."),
-    PATCH_USER_EMPTY_JOB(false, 312, "직업을 입력해주세요."),
     PATCH_USER_EMPTY_INTERESTS(false, 313, "관심 분야를 입력해주세요."),
     PATCH_USER_EMPTY_IMG(false, 314, "프로필 사진을 입력해주세요."),
 

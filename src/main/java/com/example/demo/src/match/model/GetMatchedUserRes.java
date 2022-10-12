@@ -31,9 +31,6 @@ public class GetMatchedUserRes {
     @ApiModelProperty(value = "직업군", example = "직장인")
     private String occupation;
 
-    @ApiModelProperty(value = "직업", example = "개발자")
-    private String job;
-
     @ApiModelProperty(value = "관심 분야", example = "IT")
     private String interests;
 }

@@ -23,9 +23,6 @@ public class PatchUserReq {
     @ApiModelProperty(value = "직업군", example = "직장인", required = true)
     private String occupation;
 
-    @ApiModelProperty(value = "직업", example = "개발자", required = true)
-    private String job;
-
     @ApiModelProperty(value = "관심 분야", example = "IT", required = true)
     private String interests;
 

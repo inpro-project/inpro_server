@@ -119,7 +119,7 @@ public class MatchDao {
                 "         when ageRange = '50~59' then '50대'\n" +
                 "         when ageRange = '60~69' then '60대'\n" +
                 "        else '없음' end as ageRange\n" +
-                "     , region, occupation, job, interests\n" +
+                "     , region, occupation, interests\n" +
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likingIdx\n" +
                 "where likerIdx = ? and UL.status = 'active'\n" +
@@ -135,7 +135,6 @@ public class MatchDao {
                         rs.getString("ageRange"),
                         rs.getString("region"),
                         rs.getString("occupation"),
-                        rs.getString("job"),
                         rs.getString("interests")),
                 getUserLikingsParams);
     }
@@ -154,7 +153,7 @@ public class MatchDao {
                 "         when ageRange = '50~59' then '50대'\n" +
                 "         when ageRange = '60~69' then '60대'\n" +
                 "        else '없음' end as ageRange\n" +
-                "     , region, occupation, job, interests\n" +
+                "     , region, occupation, interests\n" +
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likerIdx\n" +
                 "where likingIdx = ? and UL.status = 'active'\n" +
@@ -170,7 +169,6 @@ public class MatchDao {
                         rs.getString("ageRange"),
                         rs.getString("region"),
                         rs.getString("occupation"),
-                        rs.getString("job"),
                         rs.getString("interests")),
                 getUserLikersParams);
     }
@@ -189,8 +187,8 @@ public class MatchDao {
                 "         when ageRange = '50~59' then '50대'\n" +
                 "         when ageRange = '60~69' then '60대'\n" +
                 "        else '없음' end as ageRange\n" +
-                "     , region, occupation, job, interests\n" +
-                "from (select userIdx, nickName, userImgUrl, gender, ageRange, region, occupation, job, interests\n" +
+                "     , region, occupation, interests\n" +
+                "from (select userIdx, nickName, userImgUrl, gender, ageRange, region, occupation, interests\n" +
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likerIdx and UL.status = 'active'\n" +
                 "where likingIdx = ?\n" +
@@ -209,7 +207,6 @@ public class MatchDao {
                         rs.getString("ageRange"),
                         rs.getString("region"),
                         rs.getString("occupation"),
-                        rs.getString("job"),
                         rs.getString("interests")),
                 getMatchedUsersParams);
     }

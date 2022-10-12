@@ -44,7 +44,6 @@ public class UserController {
             @ApiResponse(code = 309, message = "닉네임은 띄어쓰기 없이 한글, 영문, 숫자만 가능합니다."),
             @ApiResponse(code = 310, message = "거주 지역을 입력해주세요."),
             @ApiResponse(code = 311, message = "직업군을 입력해주세요."),
-            @ApiResponse(code = 312, message = "직업을 입력해주세요."),
             @ApiResponse(code = 313, message = "관심 분야를 입력해주세요."),
             @ApiResponse(code = 314, message = "프로필 사진을 입력해주세요.")
     })
@@ -73,11 +72,6 @@ public class UserController {
             // 직업군 유효성 검사
             if(patchUserReq.getOccupation() == null){
                 return new BaseResponse<>(PATCH_USER_EMPTY_OCCUPATION);
-            }
-
-            // 직업 유효성 검사
-            if(patchUserReq.getJob() == null){
-                return new BaseResponse<>(PATCH_USER_EMPTY_JOB);
             }
 
             // 관심 분야 유효성 검사
