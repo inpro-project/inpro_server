@@ -60,4 +60,12 @@ public class UserProvider {
         }
     }
 
+    public int checkPortfolio(int userIdx, int portfolioCategoryIdx) throws BaseException {
+        try {
+            return userDao.checkPortfolio(userIdx, portfolioCategoryIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

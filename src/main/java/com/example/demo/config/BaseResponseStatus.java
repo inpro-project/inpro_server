@@ -33,7 +33,6 @@ public enum BaseResponseStatus {
     PATCH_USER_INVALID_NICKNAME(false, 309, "닉네임은 띄어쓰기 없이 한글, 영문, 숫자만 가능합니다."),
     PATCH_USER_EMPTY_REGION(false, 310, "거주 지역을 입력해주세요."),
     PATCH_USER_EMPTY_OCCUPATION(false, 311, "직업군을 입력해주세요."),
-    PATCH_USER_EMPTY_JOB(false, 312, "직업을 입력해주세요."),
     PATCH_USER_EMPTY_INTERESTS(false, 313, "관심 분야를 입력해주세요."),
     PATCH_USER_EMPTY_IMG(false, 314, "프로필 사진을 입력해주세요."),
 
@@ -60,6 +59,17 @@ public enum BaseResponseStatus {
     // [GET] /app/search-discs/:searchDiscIdx
     GET_SEARCHDISC_INVALID_SEARCHDISCIDX(false, 324, "올바르지 않은 searchDiscIdx입니다."),
 
+    // [POST] /app/user-likes/:likingIdx
+    USERLIKE_INVALID_LIKINGIDX(false, 325, "이미 좋아요를 누른 유저입니다."),
+
+    INVALID_USERIDX(false, 326, "유효하지 않은 유저 인덱스입니다."),
+
+    // [PATCH] /app/user-likes/:likingIdx
+    UNUSERLIKE_INVALID_LIKINGIDX(false, 327, "기존에 좋아요를 누르지 않은 유저입니다."),
+
+    // [POST] /app/user-passes/:passingIdx
+    USERPASS_INVALID_PASSINGIDX(false, 328, "이미 넘기기를 누른 유저입니다."),
+
     /**
      * 400 : Response, Database, Server 오류
      */
@@ -82,7 +92,16 @@ public enum BaseResponseStatus {
     DELETE_FAIL_PORTFOLIO(false, 407, "포트폴리오 삭제에 실패하였습니다."),
 
     // [DELETE] /app/usertags/:userTagIdx
-    DELETE_FAIL_USERTAG(false, 408, "태그 삭제에 실패하였습니다.");
+    DELETE_FAIL_USERTAG(false, 408, "태그 삭제에 실패하였습니다."),
+
+    // [POST] /app/user-likes/:likingIdx
+    FAIL_USERLIKE(false, 409, "유저 좋아요에 실패하였습니다."),
+
+    // [PATCH] /app/user-likes/:likingIdx
+    FAIL_UNUSERLIKE(false, 410, "유저 좋아요 취소에 실패하였습니다."),
+
+    // [POST] /app/user-passes/:passingIdx
+    FAIL_USERPASS(false, 411, "유저 넘기기에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;

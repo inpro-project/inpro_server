@@ -2,6 +2,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.disc.model.PostSearchDiscRes;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.*;
@@ -43,7 +44,6 @@ public class UserController {
             @ApiResponse(code = 309, message = "닉네임은 띄어쓰기 없이 한글, 영문, 숫자만 가능합니다."),
             @ApiResponse(code = 310, message = "거주 지역을 입력해주세요."),
             @ApiResponse(code = 311, message = "직업군을 입력해주세요."),
-            @ApiResponse(code = 312, message = "직업을 입력해주세요."),
             @ApiResponse(code = 313, message = "관심 분야를 입력해주세요."),
             @ApiResponse(code = 314, message = "프로필 사진을 입력해주세요.")
     })
@@ -74,11 +74,6 @@ public class UserController {
                 return new BaseResponse<>(PATCH_USER_EMPTY_OCCUPATION);
             }
 
-            // 직업 유효성 검사
-            if(patchUserReq.getJob() == null){
-                return new BaseResponse<>(PATCH_USER_EMPTY_JOB);
-            }
-
             // 관심 분야 유효성 검사
             if(patchUserReq.getInterests() == null){
                 return new BaseResponse<>(PATCH_USER_EMPTY_INTERESTS);
@@ -105,8 +100,7 @@ public class UserController {
     @ApiOperation(value = "포트폴리오 등록 API", notes = "성공시 포트폴리오 인덱스(portfolioIdx) 출력")
     @ApiResponses({
             @ApiResponse(code = 315, message = "포트폴리오 제목을 입력해주세요."),
-            @ApiResponse(code = 316, message = "올바르지 않은 portfolioCategoryIdx 입니다."),
-            @ApiResponse(code = 318, message = "올바르지 않은 대표 여부입니다. (Y나 N만 가능)")
+            @ApiResponse(code = 316, message = "올바르지 않은 portfolioCategoryIdx 입니다.")
     })
     @ResponseBody
     @PostMapping("/portfolios/{portfolioCategoryIdx}")
@@ -124,12 +118,13 @@ public class UserController {
                 return new BaseResponse<>(PORTFOLIO_EMPTY_TITLE);
             }
 
-            // 대표 여부 유효성 검사
-            if(postPortfolioReq.getIsRepPortfolio() != null && !postPortfolioReq.getIsRepPortfolio().equals("Y") && !postPortfolioReq.getIsRepPortfolio().equals("N")){
-                return new BaseResponse<>(PORTFOLIO_INVALID_ISREP);
+            // 카테고리별 첫 포트폴리오는 자동으로 대표로 지정
+            if(userProvider.checkPortfolio(userIdx, portfolioCategoryIdx) == 0){
+                PostPortfolioRes postPortfolioRes = userService.createPortfolio(userIdx, portfolioCategoryIdx, postPortfolioReq, "Y");
+                return new BaseResponse<>(postPortfolioRes);
             }
 
-            PostPortfolioRes postPortfolioRes = userService.createPortfolio(userIdx, portfolioCategoryIdx, postPortfolioReq);
+            PostPortfolioRes postPortfolioRes = userService.createPortfolio(userIdx, portfolioCategoryIdx, postPortfolioReq, "N");
             return new BaseResponse<>(postPortfolioRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());

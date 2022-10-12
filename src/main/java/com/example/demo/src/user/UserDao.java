@@ -19,15 +19,15 @@ public class UserDao {
     }
 
     public int modifyUser(int userIdx, String storeFileUrl, PatchUserReq patchUserReq){
-        String modifyUserQuery = "update User set nickName = ?, userImgUrl = ?, comment = ?, region = ?, occupation = ?, job = ?, interests = ? where userIdx = ?";
+        String modifyUserQuery = "update User set nickName = ?, userImgUrl = ?, comment = ?, region = ?, occupation = ?, interests = ? where userIdx = ?";
         Object[] modifyUserParams = new Object[]{patchUserReq.getNickName(), storeFileUrl, patchUserReq.getComment(), patchUserReq.getRegion(),
-                patchUserReq.getOccupation(), patchUserReq.getJob(), patchUserReq.getInterests(), userIdx};
+                patchUserReq.getOccupation(), patchUserReq.getInterests(), userIdx};
         return this.jdbcTemplate.update(modifyUserQuery, modifyUserParams);
     }
 
-    public int createPortfolio(int userIdx, int portfolioCategoryIdx, PostPortfolioReq postPortfolioReq){
-        String createPortfolioQuery = "insert into Portfolio (userIdx, portfolioCategoryIdx, title, content, url) VALUES (?, ?, ?, ?, ?);";
-        Object[] createPortfolioParams = new Object[]{userIdx, portfolioCategoryIdx, postPortfolioReq.getTitle(), postPortfolioReq.getContent(), postPortfolioReq.getUrl()};
+    public int createPortfolio(int userIdx, int portfolioCategoryIdx, PostPortfolioReq postPortfolioReq, String isRepPortfolio){
+        String createPortfolioQuery = "insert into Portfolio (userIdx, portfolioCategoryIdx, title, content, url, isRepPortfolio) VALUES (?, ?, ?, ?, ?, ?);";
+        Object[] createPortfolioParams = new Object[]{userIdx, portfolioCategoryIdx, postPortfolioReq.getTitle(), postPortfolioReq.getContent(), postPortfolioReq.getUrl(), isRepPortfolio};
         this.jdbcTemplate.update(createPortfolioQuery, createPortfolioParams);
 
         String lastInsertIdQuery = "select last_insert_id()";
@@ -187,7 +187,7 @@ public class UserDao {
                 "         when ageRange = '50~59' then '50대'\n" +
                 "         when ageRange = '60~69' then '60대'\n" +
                 "        else '없음' end as ageRange\n" +
-                "     , comment, region, occupation, job, interests\n" +
+                "     , comment, region, occupation, interests\n" +
                 "from User\n" +
                 "where userIdx = ?";
         int getProfileParams = userIdx;
@@ -201,7 +201,6 @@ public class UserDao {
                         rs.getString("comment"),
                         rs.getString("region"),
                         rs.getString("occupation"),
-                        rs.getString("job"),
                         rs.getString("interests"),
                         getUserDisc(userIdx),
                         getSearchDisc(userIdx),
@@ -209,6 +208,13 @@ public class UserDao {
                         getUserTags(userIdx),
                         getRepPortfolios(userIdx)),
                 getProfileParams);
+    }
+
+    public int checkPortfolio(int userIdx, int portfolioCategoryIdx){
+        String checkPortfolioQuery = "select exists (select portfolioIdx from Portfolio where userIdx = ? and portfolioCategoryIdx = ? and status = 'active')";
+        Object[] checkPortfolioParams = new Object[] {userIdx, portfolioCategoryIdx};
+
+        return this.jdbcTemplate.queryForObject(checkPortfolioQuery, int.class, checkPortfolioParams);
     }
 
 }

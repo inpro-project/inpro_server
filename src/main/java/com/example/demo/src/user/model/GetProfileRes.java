@@ -19,7 +19,7 @@ public class GetProfileRes {
     @ApiModelProperty(value = "프로필 이미지 주소", example = "http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_110x110.jpg")
     private String userImgUrl;
 
-    @ApiModelProperty(value = "성별", example = "female")
+    @ApiModelProperty(value = "성별", example = "여")
     private String gender;
 
     @ApiModelProperty(value = "연령대", example = "20대")
@@ -33,9 +33,6 @@ public class GetProfileRes {
 
     @ApiModelProperty(value = "직업군", example = "직장인")
     private String occupation;
-
-    @ApiModelProperty(value = "직업", example = "개발자")
-    private String job;
 
     @ApiModelProperty(value = "관심 분야", example = "IT")
     private String interests;
