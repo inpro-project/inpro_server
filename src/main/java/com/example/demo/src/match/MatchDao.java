@@ -1,10 +1,14 @@
 package com.example.demo.src.match;
 
+import com.example.demo.src.match.model.GetLikerRes;
+import com.example.demo.src.match.model.GetLikingRes;
+import com.example.demo.src.user.model.GetProfileRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class MatchDao {
@@ -99,6 +103,74 @@ public class MatchDao {
 
         String lastInsertIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public List<GetLikingRes> getLikings(int userIdx){
+        String getLikingsQuery = "select userIdx as likingIdx, nickName, userImgUrl\n" +
+                "     , case\n" +
+                "         when gender = 'female' then '여'\n" +
+                "         when gender = 'male' then '남'\n" +
+                "         else '없음' end as gender\n" +
+                "     , case\n" +
+                "         when ageRange = '10~19' then '10대'\n" +
+                "         when ageRange = '20~29' then '20대'\n" +
+                "         when ageRange = '30~39' then '30대'\n" +
+                "         when ageRange = '40~49' then '40대'\n" +
+                "         when ageRange = '50~59' then '50대'\n" +
+                "         when ageRange = '60~69' then '60대'\n" +
+                "        else '없음' end as ageRange\n" +
+                "     , region, occupation, job, interests\n" +
+                "from User\n" +
+                "inner join UserLike UL on User.userIdx = UL.likingIdx\n" +
+                "where likerIdx = ? and UL.status = 'active'";
+        int getLikingsParams = userIdx;
+
+        return this.jdbcTemplate.query(getLikingsQuery,
+                (rs, rsNum) -> new GetLikingRes(
+                        rs.getInt("likingIdx"),
+                        rs.getString("nickName"),
+                        rs.getString("userImgUrl"),
+                        rs.getString("gender"),
+                        rs.getString("ageRange"),
+                        rs.getString("region"),
+                        rs.getString("occupation"),
+                        rs.getString("job"),
+                        rs.getString("interests")),
+                getLikingsParams);
+    }
+
+    public List<GetLikerRes> getLikers(int userIdx){
+        String getLikersQuery = "select userIdx as likerIdx, nickName, userImgUrl\n" +
+                "     , case\n" +
+                "         when gender = 'female' then '여'\n" +
+                "         when gender = 'male' then '남'\n" +
+                "         else '없음' end as gender\n" +
+                "     , case\n" +
+                "         when ageRange = '10~19' then '10대'\n" +
+                "         when ageRange = '20~29' then '20대'\n" +
+                "         when ageRange = '30~39' then '30대'\n" +
+                "         when ageRange = '40~49' then '40대'\n" +
+                "         when ageRange = '50~59' then '50대'\n" +
+                "         when ageRange = '60~69' then '60대'\n" +
+                "        else '없음' end as ageRange\n" +
+                "     , region, occupation, job, interests\n" +
+                "from User\n" +
+                "inner join UserLike UL on User.userIdx = UL.likerIdx\n" +
+                "where likingIdx = ? and UL.status = 'active'";
+        int getLikersParams = userIdx;
+
+        return this.jdbcTemplate.query(getLikersQuery,
+                (rs, rsNum) -> new GetLikerRes(
+                        rs.getInt("likerIdx"),
+                        rs.getString("nickName"),
+                        rs.getString("userImgUrl"),
+                        rs.getString("gender"),
+                        rs.getString("ageRange"),
+                        rs.getString("region"),
+                        rs.getString("occupation"),
+                        rs.getString("job"),
+                        rs.getString("interests")),
+                getLikersParams);
     }
 
 }

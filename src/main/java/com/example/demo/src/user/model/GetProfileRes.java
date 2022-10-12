@@ -19,7 +19,7 @@ public class GetProfileRes {
     @ApiModelProperty(value = "프로필 이미지 주소", example = "http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_110x110.jpg")
     private String userImgUrl;
 
-    @ApiModelProperty(value = "성별", example = "female")
+    @ApiModelProperty(value = "성별", example = "여")
     private String gender;
 
     @ApiModelProperty(value = "연령대", example = "20대")

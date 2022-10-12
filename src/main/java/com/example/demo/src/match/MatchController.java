@@ -2,6 +2,8 @@ package com.example.demo.src.match;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.match.model.GetLikerRes;
+import com.example.demo.src.match.model.GetLikingRes;
 import com.example.demo.src.match.model.PostUserLikeRes;
 import com.example.demo.src.match.model.PostUserPassRes;
 import com.example.demo.utils.JwtService;
@@ -12,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.demo.config.BaseResponseStatus.*;
+import java.util.List;
 
 @Slf4j
 @ApiResponses({
@@ -100,6 +102,42 @@ public class MatchController {
 
             PostUserPassRes postUserPassRes = matchService.createUserPass(passerIdx, passingIdx);
             return new BaseResponse<>(postUserPassRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 내가 보낸 좋아요 조회 API
+     * [GET] /app/likings
+     * @return BaseResponse<List<GetLikingsRes>>
+     */
+    @ApiOperation(value = "내가 보낸 좋아요 조회 API")
+    @ResponseBody
+    @GetMapping("/likings")
+    public BaseResponse<List<GetLikingRes>> getLikings(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+            List<GetLikingRes> getLikingResList = matchProvider.getLikings(userIdx);
+            return new BaseResponse<>(getLikingResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 나에게 보낸 좋아요 조회 API
+     * [GET] /app/likers
+     * @return BaseResponse<List<GetLikerRes>>
+     */
+    @ApiOperation(value = "나에게 보낸 좋아요 조회 API")
+    @ResponseBody
+    @GetMapping("/likers")
+    public BaseResponse<List<GetLikerRes>> getLikers(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+            List<GetLikerRes> getLikerResList = matchProvider.getLikers(userIdx);
+            return new BaseResponse<>(getLikerResList);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
