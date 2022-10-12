@@ -2,6 +2,7 @@ package com.example.demo.src.match;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.match.model.PostUserLikeRes;
+import com.example.demo.src.match.model.PostUserPassRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -73,6 +74,44 @@ public class MatchService {
                 throw new BaseException(FAIL_UNUSERLIKE);
             }
         } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateUserPass(int userPassIdx) throws BaseException {
+        try {
+            int result = matchDao.updateUserPass(userPassIdx);
+            if(result == 0){
+                throw new BaseException(FAIL_USERPASS);
+            }
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostUserPassRes createUserPass(int passerIdx, int passingIdx) throws BaseException {
+        // passingIdx 유효성 검사
+        if(matchProvider.checkUserIdx(passingIdx) == 0){
+            throw new BaseException(INVALID_USERIDX);
+        }
+
+        // 중복 넘기기 유효성 검사
+        if(matchProvider.checkPreUserPass(passerIdx, passingIdx) == 1){
+            throw new BaseException(USERPASS_INVALID_PASSINGIDX);
+        }
+
+        try {
+            // 이전에 비활성화나 넘기기 취소를 했던 유저의 경우
+            int preUserPassIdx = matchProvider.checkUserPassHist(passerIdx, passingIdx);
+            if(preUserPassIdx != 0){
+                // active 업데이트
+                updateUserPass(preUserPassIdx);
+                return new PostUserPassRes(preUserPassIdx);
+            }
+
+            int userPassIdx = matchDao.createUserPass(passerIdx, passingIdx);
+            return new PostUserPassRes(userPassIdx);
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }

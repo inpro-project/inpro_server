@@ -68,6 +68,9 @@ public enum BaseResponseStatus {
     // [PATCH] /app/user-likes/:likingIdx
     UNUSERLIKE_INVALID_LIKINGIDX(false, 327, "기존에 좋아요를 누르지 않은 유저입니다."),
 
+    // [POST] /app/user-passes/:passingIdx
+    USERPASS_INVALID_PASSINGIDX(false, 328, "이미 넘기기를 누른 유저입니다."),
+
     /**
      * 400 : Response, Database, Server 오류
      */
@@ -96,7 +99,10 @@ public enum BaseResponseStatus {
     FAIL_USERLIKE(false, 409, "유저 좋아요에 실패하였습니다."),
 
     // [PATCH] /app/user-likes/:likingIdx
-    FAIL_UNUSERLIKE(false, 410, "유저 좋아요 취소에 실패하였습니다.");
+    FAIL_UNUSERLIKE(false, 410, "유저 좋아요 취소에 실패하였습니다."),
+
+    // [POST] /app/user-passes/:passingIdx
+    FAIL_USERPASS(false, 411, "유저 넘기기에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;

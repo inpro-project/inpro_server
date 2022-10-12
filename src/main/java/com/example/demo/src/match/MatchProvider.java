@@ -39,4 +39,21 @@ public class MatchProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public int checkPreUserPass(int passerIdx, int passingIdx) throws BaseException {
+        try {
+            return matchDao.checkPreUserPass(passerIdx, passingIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkUserPassHist(int passerIdx, int passingIdx) throws BaseException {
+        try {
+            return matchDao.checkUserPassHist(passerIdx, passingIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

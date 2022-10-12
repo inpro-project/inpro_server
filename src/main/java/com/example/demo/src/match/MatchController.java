@@ -3,6 +3,7 @@ package com.example.demo.src.match;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.match.model.PostUserLikeRes;
+import com.example.demo.src.match.model.PostUserPassRes;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -59,8 +60,7 @@ public class MatchController {
      * 유저 좋아요 취소 API
      * [PATCH] /app/user-likes/:likingIdx
      * @return BaseResponse<String>
-     *
-     **/
+     */
     @ApiOperation(value = "유저 좋아요 취소 API", notes = "성공 시 result로 '좋아요가 취소되었습니다.' 출력")
     @ApiResponses({
             @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
@@ -80,4 +80,30 @@ public class MatchController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    /**
+     * 유저 넘기기 API
+     * [POST] /app/user-passes/:passingIdx
+     * @return BaseResponse<PostUserPassRes>
+     */
+    @ApiOperation(value = "유저 넘기기 API")
+    @ApiResponses({
+            @ApiResponse(code = 328, message = "이미 넘기기를 누른 유저입니다."),
+            @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
+            @ApiResponse(code = 411, message = "유저 넘기기에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PostMapping("/user-passes/{passingIdx}")
+    public BaseResponse<PostUserPassRes> createUserPass(@PathVariable("passingIdx") int passingIdx) {
+        try {
+            int passerIdx = jwtService.getUserIdx();
+
+            PostUserPassRes postUserPassRes = matchService.createUserPass(passerIdx, passingIdx);
+            return new BaseResponse<>(postUserPassRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
 }
