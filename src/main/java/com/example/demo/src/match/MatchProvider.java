@@ -1,6 +1,7 @@
 package com.example.demo.src.match;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.match.model.GetMatchedUserRes;
 import com.example.demo.src.match.model.GetUserLikerRes;
 import com.example.demo.src.match.model.GetUserLikingRes;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +74,15 @@ public class MatchProvider {
         try {
             List<GetUserLikerRes> getUserLikerResList = matchDao.getUserLikers(userIdx);
             return getUserLikerResList;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetMatchedUserRes> getMatchedUsers(int userIdx) throws BaseException{
+        try {
+            List<GetMatchedUserRes> getMatchedUserResList = matchDao.getMatchedUsers(userIdx);
+            return getMatchedUserResList;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

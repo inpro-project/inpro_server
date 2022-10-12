@@ -1,5 +1,6 @@
 package com.example.demo.src.match;
 
+import com.example.demo.src.match.model.GetMatchedUserRes;
 import com.example.demo.src.match.model.GetUserLikerRes;
 import com.example.demo.src.match.model.GetUserLikingRes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,7 +122,8 @@ public class MatchDao {
                 "     , region, occupation, job, interests\n" +
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likingIdx\n" +
-                "where likerIdx = ? and UL.status = 'active'";
+                "where likerIdx = ? and UL.status = 'active'\n" +
+                "order by UL.updatedAt DESC";
         int getUserLikingsParams = userIdx;
 
         return this.jdbcTemplate.query(getUserLikingsQuery,
@@ -155,7 +157,8 @@ public class MatchDao {
                 "     , region, occupation, job, interests\n" +
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likerIdx\n" +
-                "where likingIdx = ? and UL.status = 'active'";
+                "where likingIdx = ? and UL.status = 'active'\n" +
+                "order by UL.updatedAt DESC";
         int getUserLikersParams = userIdx;
 
         return this.jdbcTemplate.query(getUserLikersQuery,
@@ -170,6 +173,45 @@ public class MatchDao {
                         rs.getString("job"),
                         rs.getString("interests")),
                 getUserLikersParams);
+    }
+
+    public List<GetMatchedUserRes> getMatchedUsers(int userIdx){
+        String getMatchedUsersQuery = "select userIdx as matchedUserIdx, nickName, userImgUrl\n" +
+                "     , case\n" +
+                "         when gender = 'female' then '여'\n" +
+                "         when gender = 'male' then '남'\n" +
+                "         else '없음' end as gender\n" +
+                "     , case\n" +
+                "         when ageRange = '10~19' then '10대'\n" +
+                "         when ageRange = '20~29' then '20대'\n" +
+                "         when ageRange = '30~39' then '30대'\n" +
+                "         when ageRange = '40~49' then '40대'\n" +
+                "         when ageRange = '50~59' then '50대'\n" +
+                "         when ageRange = '60~69' then '60대'\n" +
+                "        else '없음' end as ageRange\n" +
+                "     , region, occupation, job, interests\n" +
+                "from (select userIdx, nickName, userImgUrl, gender, ageRange, region, occupation, job, interests\n" +
+                "from User\n" +
+                "inner join UserLike UL on User.userIdx = UL.likerIdx and UL.status = 'active'\n" +
+                "where likingIdx = ?\n" +
+                "order by UL.updatedAt DESC) as User\n" +
+                "inner join UserLike UL on User.userIdx = UL.likingIdx and status = 'active'\n" +
+                "where likerIdx = ?\n" +
+                "order by UL.updatedAt DESC";
+        Object[] getMatchedUsersParams = new Object[]{userIdx, userIdx};
+
+        return this.jdbcTemplate.query(getMatchedUsersQuery,
+                (rs, rsNum) -> new GetMatchedUserRes(
+                        rs.getInt("matchedUserIdx"),
+                        rs.getString("nickName"),
+                        rs.getString("userImgUrl"),
+                        rs.getString("gender"),
+                        rs.getString("ageRange"),
+                        rs.getString("region"),
+                        rs.getString("occupation"),
+                        rs.getString("job"),
+                        rs.getString("interests")),
+                getMatchedUsersParams);
     }
 
 }

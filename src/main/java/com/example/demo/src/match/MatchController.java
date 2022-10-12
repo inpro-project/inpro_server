@@ -2,10 +2,7 @@ package com.example.demo.src.match;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.match.model.GetUserLikerRes;
-import com.example.demo.src.match.model.GetUserLikingRes;
-import com.example.demo.src.match.model.PostUserLikeRes;
-import com.example.demo.src.match.model.PostUserPassRes;
+import com.example.demo.src.match.model.*;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -138,6 +135,23 @@ public class MatchController {
             int userIdx = jwtService.getUserIdx();
             List<GetUserLikerRes> getUserLikerResList = matchProvider.getUserLikers(userIdx);
             return new BaseResponse<>(getUserLikerResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 나와 매칭된 유저 조회 API
+     * [GET] /app/matched-users
+     * @return BaseResponse<List<GetMatchedUserRes>>
+     */
+    @ResponseBody
+    @GetMapping("/matched-users")
+    public BaseResponse<List<GetMatchedUserRes>> getMatchedUsers(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+            List<GetMatchedUserRes> getMatchedUserResList = matchProvider.getMatchedUsers(userIdx);
+            return new BaseResponse<>(getMatchedUserResList);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
