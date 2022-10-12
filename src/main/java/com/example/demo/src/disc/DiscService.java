@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.config.Constant.*;
 
 @Slf4j
@@ -19,6 +19,7 @@ import static com.example.demo.config.Constant.*;
 @Transactional
 public class DiscService {
 
+    private final DiscProvider discProvider;
     private final DiscDao discDao;
 
     private final double weights [] = {WEIGHT1, WEIGHT2, WEIGHT3};
@@ -291,6 +292,21 @@ public class DiscService {
                 discDao.createSearchDiscTestAsBad(searchDiscIdx, postDiscReq.getBadList().get(i).getDiscFeatureIdx());
             }
         } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createUserDiscName(int userIdx, int userDiscIdx, String name) throws BaseException {
+        // userDiscIdx 유효성 검사
+        if(discProvider.checkUserDiscIdx(userIdx, userDiscIdx) == 0){
+            throw new BaseException(GET_USERDISC_INVALID_USERDISCIDX);
+        }
+        try {
+            int result = discDao.createUserDiscName(userDiscIdx, name);
+            if(result == 0){
+                throw new BaseException(FAIL_USERDISCNAME);
+            }
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }

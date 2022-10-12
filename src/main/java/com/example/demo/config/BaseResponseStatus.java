@@ -101,7 +101,10 @@ public enum BaseResponseStatus {
     FAIL_UNUSERLIKE(false, 410, "유저 좋아요 취소에 실패하였습니다."),
 
     // [POST] /app/user-passes/:passingIdx
-    FAIL_USERPASS(false, 411, "유저 넘기기에 실패하였습니다.");
+    FAIL_USERPASS(false, 411, "유저 넘기기에 실패하였습니다."),
+
+    // [PATCH] /app/user-discs/:userDiscIdx
+    FAIL_USERDISCNAME(false, 412, "user disc 이름 등록 및 수정에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;

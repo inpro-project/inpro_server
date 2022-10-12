@@ -80,4 +80,12 @@ public class DiscProvider {
         }
     }
 
+    public int getUserDiscCount(int userIdx) throws BaseException {
+        try {
+            return discDao.getUserDiscCount(userIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }
