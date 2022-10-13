@@ -299,12 +299,39 @@ public class DiscService {
     public void createUserDiscName(int userIdx, int userDiscIdx, String name) throws BaseException {
         // userDiscIdx 유효성 검사
         if(discProvider.checkUserDiscIdx(userIdx, userDiscIdx) == 0){
-            throw new BaseException(GET_USERDISC_INVALID_USERDISCIDX);
+            throw new BaseException(USERDISC_INVALID_USERDISCIDX);
         }
         try {
+            // Query string으로 전달된 이름이 null이면 임의로 순차적인 이름으로 설정
+            if(name == null){
+                int count = discProvider.getUserDiscCount(userIdx);
+                name = "user disc(" + count + ")";
+            }
+
             int result = discDao.createUserDiscName(userDiscIdx, name);
             if(result == 0){
                 throw new BaseException(FAIL_USERDISCNAME);
+            }
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createSearchDiscName(int userIdx, int searchDiscIdx, String name) throws BaseException {
+        // searchDiscIdx 유효성 검사
+        if(discProvider.checkSearchDiscIdx(userIdx, searchDiscIdx) == 0){
+            throw new BaseException(SEARCHDISC_INVALID_SEARCHDISCIDX);
+        }
+        try {
+            // Query string으로 전달된 이름이 null이면 임의로 순차적인 이름으로 설정
+            if(name == null){
+                int count = discProvider.getSearchDiscCount(userIdx);
+                name = "search disc(" + count + ")";
+            }
+
+            int result = discDao.createSearchDiscName(searchDiscIdx, name);
+            if(result == 0){
+                throw new BaseException(FAIL_SEARCHDISCNAME);
             }
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);

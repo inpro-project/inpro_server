@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.example.demo.config.BaseResponseStatus.GET_USERDISC_INVALID_USERDISCIDX;
 
 @Slf4j
 @Service
@@ -83,6 +82,14 @@ public class DiscProvider {
     public int getUserDiscCount(int userIdx) throws BaseException {
         try {
             return discDao.getUserDiscCount(userIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int getSearchDiscCount(int userIdx) throws BaseException {
+        try {
+            return discDao.getSearchDiscCount(userIdx);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

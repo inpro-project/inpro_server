@@ -157,4 +157,16 @@ public class DiscDao {
         return this.jdbcTemplate.update(createUserNameQuery, createUserNameParams);
     }
 
+    public int getSearchDiscCount(int userIdx){
+        String getSearchDiscCountQuery = "select COUNT(*) as count from SearchDisc where userIdx = ?";
+        int getSearchDiscCountParams = userIdx;
+        return this.jdbcTemplate.queryForObject(getSearchDiscCountQuery, int.class, getSearchDiscCountParams);
+    }
+
+    public int createSearchDiscName(int searchDiscIdx, String name){
+        String createSearchNameQuery = "update SearchDisc set name = ? where searchDiscIdx = ?";
+        Object[] createSearchNameParams = new Object[]{name, searchDiscIdx};
+        return this.jdbcTemplate.update(createSearchNameQuery, createSearchNameParams);
+    }
+
 }
