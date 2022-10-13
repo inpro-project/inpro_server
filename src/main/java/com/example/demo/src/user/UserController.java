@@ -193,26 +193,25 @@ public class UserController {
     }
 
     /**
-     * 자신의 포트폴리오 조회 API
-     * [GET] /app/portfolios/:portfolioCategoryIdx
+     * 포트폴리오 조회 API
+     * [GET] /app/portfolios/:userIdx/:portfolioCategoryIdx
      * @return BaseResponse<List<GetPortfolioRes>>
      */
-    @ApiOperation(value = "자신의 포트폴리오 조회 API")
+    @ApiOperation(value = "포트폴리오 조회 API")
     @ApiResponses({
-            @ApiResponse(code = 317, message = "올바르지 않은 portfolioIdx입니다.")
+            @ApiResponse(code = 317, message = "올바르지 않은 portfolioIdx입니다."),
+            @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
     })
     @ResponseBody
-    @GetMapping("/portfolios/{portfolioCategoryIdx}")
-    public BaseResponse<List<GetPortfolioRes>> getMyPortfolios(@PathVariable("portfolioCategoryIdx") int portfolioCategoryIdx){
+    @GetMapping("/portfolios/{userIdx}/{portfolioCategoryIdx}")
+    public BaseResponse<List<GetPortfolioRes>> getPortfolios(@PathVariable("userIdx") int userIdx, @PathVariable("portfolioCategoryIdx") int portfolioCategoryIdx){
         try {
-            int userIdx = jwtService.getUserIdx();
-
             // 포트폴리오 카테고리 인덱스 유효성 검사
             if(portfolioCategoryIdx != 1 && portfolioCategoryIdx != 2 && portfolioCategoryIdx != 3){
                 return new BaseResponse<>(POST_PORTFOLIO_INVALID_IDX);
             }
 
-            List<GetPortfolioRes> getPortfolioRes = userProvider.getMyPortfolios(userIdx, portfolioCategoryIdx);
+            List<GetPortfolioRes> getPortfolioRes = userProvider.getPortfolios(userIdx, portfolioCategoryIdx);
             return new BaseResponse<>(getPortfolioRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());

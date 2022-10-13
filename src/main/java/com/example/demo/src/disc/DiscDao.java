@@ -1,8 +1,8 @@
 package com.example.demo.src.disc;
 
-import com.example.demo.src.disc.model.GetDiscResultRes;
 import com.example.demo.src.disc.model.GetDiscTestRes;
-import com.example.demo.src.oauth.model.KakaoUser;
+import com.example.demo.src.disc.model.GetSearchDiscResultRes;
+import com.example.demo.src.disc.model.GetUserDiscResultRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -98,8 +98,8 @@ public class DiscDao {
         return this.jdbcTemplate.queryForObject(checkUserDiscIdxQuery, int.class, checkUserDiscIdxParams);
     }
 
-    public GetDiscResultRes getUserDiscResult(int userDiscIdx){
-        String getUserDiscResultQuery = "select x, y, isRepDisc\n" +
+    public GetUserDiscResultRes getUserDiscResult(int userDiscIdx){
+        String getUserDiscResultQuery = "select userDiscIdx, name, x, y, isRepDisc\n" +
                 "     , ROUND(dPercent) as dPercent, ROUND(ipercent) as iPercent\n" +
                 "     , ROUND(sPercent) as sPercent, ROUND(cPercent) as cPercent\n" +
                 "from UserDisc\n" +
@@ -107,7 +107,9 @@ public class DiscDao {
         int getUserDiscResultParams = userDiscIdx;
 
         return this.jdbcTemplate.queryForObject(getUserDiscResultQuery,
-                (rs, rsNum) -> new GetDiscResultRes(
+                (rs, rsNum) -> new GetUserDiscResultRes(
+                        rs.getInt("userDiscIdx"),
+                        rs.getString("name"),
                         rs.getDouble("x"),
                         rs.getDouble("y"),
                         rs.getString("isRepDisc"),
@@ -125,8 +127,8 @@ public class DiscDao {
         return this.jdbcTemplate.queryForObject(checkSearchDiscIdxQuery, int.class, checkSearchDiscIdxParams);
     }
 
-    public GetDiscResultRes getSearchDiscResult(int searchDiscIdx){
-        String getSearchDiscResultQuery = "select x, y, isRepDisc\n" +
+    public GetSearchDiscResultRes getSearchDiscResult(int searchDiscIdx){
+        String getSearchDiscResultQuery = "select searchDiscIdx, name, x, y, isRepDisc\n" +
                 "     , ROUND(dPercent) as dPercent, ROUND(ipercent) as iPercent\n" +
                 "     , ROUND(sPercent) as sPercent, ROUND(cPercent) as cPercent\n" +
                 "from SearchDisc\n" +
@@ -134,7 +136,9 @@ public class DiscDao {
         int getSearchDiscResultParams = searchDiscIdx;
 
         return this.jdbcTemplate.queryForObject(getSearchDiscResultQuery,
-                (rs, rsNum) -> new GetDiscResultRes(
+                (rs, rsNum) -> new GetSearchDiscResultRes(
+                        rs.getInt("searchDiscIdx"),
+                        rs.getString("name"),
                         rs.getDouble("x"),
                         rs.getDouble("y"),
                         rs.getString("isRepDisc"),
@@ -167,6 +171,50 @@ public class DiscDao {
         String createSearchNameQuery = "update SearchDisc set name = ? where searchDiscIdx = ?";
         Object[] createSearchNameParams = new Object[]{name, searchDiscIdx};
         return this.jdbcTemplate.update(createSearchNameQuery, createSearchNameParams);
+    }
+
+    public List<GetUserDiscResultRes> getUserDiscResultList(int userIdx){
+        String getUserDiscResultListQuery = "select userDiscIdx, name, x, y, isRepDisc\n" +
+                "     , ROUND(dPercent) as dPercent, ROUND(ipercent) as iPercent\n" +
+                "     , ROUND(sPercent) as sPercent, ROUND(cPercent) as cPercent\n" +
+                "from UserDisc\n" +
+                "where userIdx = ? and status = 'active'";
+        int getUserDiscResultListParams = userIdx;
+
+        return this.jdbcTemplate.query(getUserDiscResultListQuery,
+                (rs, rsNum) -> new GetUserDiscResultRes(
+                        rs.getInt("userDiscIdx"),
+                        rs.getString("name"),
+                        rs.getDouble("x"),
+                        rs.getDouble("y"),
+                        rs.getString("isRepDisc"),
+                        rs.getInt("dPercent"),
+                        rs.getInt("iPercent"),
+                        rs.getInt("sPercent"),
+                        rs.getInt("cPercent")),
+                getUserDiscResultListParams);
+    }
+
+    public List<GetSearchDiscResultRes> getSearchDiscResultList(int userIdx){
+        String getSearchDiscResultListQuery = "select searchDiscIdx, name, x, y, isRepDisc\n" +
+                "     , ROUND(dPercent) as dPercent, ROUND(ipercent) as iPercent\n" +
+                "     , ROUND(sPercent) as sPercent, ROUND(cPercent) as cPercent\n" +
+                "from SearchDisc\n" +
+                "where userIdx = ? and status = 'active'";
+        int getSearchDiscResultListParams = userIdx;
+
+        return this.jdbcTemplate.query(getSearchDiscResultListQuery,
+                (rs, rsNum) -> new GetSearchDiscResultRes(
+                        rs.getInt("searchDiscIdx"),
+                        rs.getString("name"),
+                        rs.getDouble("x"),
+                        rs.getDouble("y"),
+                        rs.getString("isRepDisc"),
+                        rs.getInt("dPercent"),
+                        rs.getInt("iPercent"),
+                        rs.getInt("sPercent"),
+                        rs.getInt("cPercent")),
+                getSearchDiscResultListParams);
     }
 
 }

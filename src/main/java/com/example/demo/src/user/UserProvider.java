@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.example.demo.config.BaseResponseStatus.INACTIVE_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +27,21 @@ public class UserProvider {
         }
     }
 
-    public List<GetPortfolioRes> getMyPortfolios(int userIdx, int portfolioCategoryIdx) throws BaseException {
+    public int checkUserIdx(int userIdx) throws BaseException {
         try {
-            List<GetPortfolioRes> getPortfolioRes = userDao.getMyPortfolios(userIdx, portfolioCategoryIdx);
+            return userDao.checkUserIdx(userIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetPortfolioRes> getPortfolios(int userIdx, int portfolioCategoryIdx) throws BaseException {
+        // userIdx 유효성 검사
+        if(checkUserIdx(userIdx) != 1){
+            throw new BaseException(INACTIVE_USER);
+        }
+        try {
+            List<GetPortfolioRes> getPortfolioRes = userDao.getPortfolios(userIdx, portfolioCategoryIdx);
             return getPortfolioRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
