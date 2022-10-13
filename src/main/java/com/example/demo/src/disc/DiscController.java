@@ -234,10 +234,10 @@ public class DiscController {
     @ApiImplicitParam(name = "name", value = "설정할 이름", example = "user disc")
     @ResponseBody
     @PatchMapping("/user-discs/{userDiscIdx}")
-    public BaseResponse<String> createUserDiscName(@PathVariable("userDiscIdx") int userDiscIdx, @RequestParam(value = "name", required = false) String name){
+    public BaseResponse<String> updateUserDiscName(@PathVariable("userDiscIdx") int userDiscIdx, @RequestParam(value = "name", required = false) String name){
         try {
             int userIdx = jwtService.getUserIdx();
-            discService.createUserDiscName(userIdx, userDiscIdx, name);
+            discService.updateUserDiscName(userIdx, userDiscIdx, name);
             String result = "User Disc 이름이 등록 및 수정되었습니다.";
             return new BaseResponse<>(result);
         } catch (BaseException exception){
@@ -258,10 +258,10 @@ public class DiscController {
     @ApiImplicitParam(name = "name", value = "설정할 이름", example = "search disc")
     @ResponseBody
     @PatchMapping("/search-discs/{searchDiscIdx}")
-    public BaseResponse<String> createSearchDiscName(@PathVariable("searchDiscIdx") int searchDiscIdx, @RequestParam(value = "name", required = false) String name){
+    public BaseResponse<String> updateSearchDiscName(@PathVariable("searchDiscIdx") int searchDiscIdx, @RequestParam(value = "name", required = false) String name){
         try {
             int userIdx = jwtService.getUserIdx();
-            discService.createSearchDiscName(userIdx, searchDiscIdx, name);
+            discService.updateSearchDiscName(userIdx, searchDiscIdx, name);
             String result = "Search Disc 이름이 등록 및 수정되었습니다.";
             return new BaseResponse<>(result);
         } catch (BaseException exception){

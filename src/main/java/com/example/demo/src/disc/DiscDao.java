@@ -155,10 +155,10 @@ public class DiscDao {
         return this.jdbcTemplate.queryForObject(getUserDiscCountQuery, int.class, getUserDiscCountParams);
     }
 
-    public int createUserDiscName(int userDiscIdx, String name){
-        String createUserNameQuery = "update UserDisc set name = ? where userDiscIdx = ?";
-        Object[] createUserNameParams = new Object[]{name, userDiscIdx};
-        return this.jdbcTemplate.update(createUserNameQuery, createUserNameParams);
+    public int updateUserDiscName(int userDiscIdx, String name){
+        String updateUserNameQuery = "update UserDisc set name = ? where userDiscIdx = ?";
+        Object[] updateUserNameParams = new Object[]{name, userDiscIdx};
+        return this.jdbcTemplate.update(updateUserNameQuery, updateUserNameParams);
     }
 
     public int getSearchDiscCount(int userIdx){
@@ -167,10 +167,10 @@ public class DiscDao {
         return this.jdbcTemplate.queryForObject(getSearchDiscCountQuery, int.class, getSearchDiscCountParams);
     }
 
-    public int createSearchDiscName(int searchDiscIdx, String name){
-        String createSearchNameQuery = "update SearchDisc set name = ? where searchDiscIdx = ?";
-        Object[] createSearchNameParams = new Object[]{name, searchDiscIdx};
-        return this.jdbcTemplate.update(createSearchNameQuery, createSearchNameParams);
+    public int updateSearchDiscName(int searchDiscIdx, String name){
+        String updateSearchNameQuery = "update SearchDisc set name = ? where searchDiscIdx = ?";
+        Object[] updateSearchNameParams = new Object[]{name, searchDiscIdx};
+        return this.jdbcTemplate.update(updateSearchNameQuery, updateSearchNameParams);
     }
 
     public List<GetUserDiscResultRes> getUserDiscResultList(int userIdx){
