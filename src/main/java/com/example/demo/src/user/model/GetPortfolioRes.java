@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-@ApiModel("자신의 포트폴리오 조회 API Response")
+@ApiModel("포트폴리오 조회 API Response")
 public class GetPortfolioRes {
 
     @ApiModelProperty(value = "포트폴리오 인덱스", example = "1")

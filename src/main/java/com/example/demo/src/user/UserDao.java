@@ -53,7 +53,14 @@ public class UserDao {
         return this.jdbcTemplate.update(deletePortfolioQuery, deletePortfolioParams);
     }
 
-    public List<GetPortfolioRes> getMyPortfolios(int userIdx, int portfolioCategoryIdx) {
+    public int checkUserIdx(int userIdx){
+        String checkUserIdxQuery = "select exists(select * from User where userIdx = ? and status = 'active')";
+        int checkUserIdxParams = userIdx;
+
+        return this.jdbcTemplate.queryForObject(checkUserIdxQuery, int.class, checkUserIdxParams);
+    }
+
+    public List<GetPortfolioRes> getPortfolios(int userIdx, int portfolioCategoryIdx) {
         String getMyPortfoliosQuery = "select portfolioIdx, title, content, url, isRepPortfolio\n" +
                 "from Portfolio\n" +
                 "where userIdx = ? and portfolioCategoryIdx = ? and status = 'active'";

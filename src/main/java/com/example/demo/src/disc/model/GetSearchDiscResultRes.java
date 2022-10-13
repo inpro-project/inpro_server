@@ -8,8 +8,14 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-@ApiModel(value = "Disc 결과 상세 조회 response")
-public class GetDiscResultRes {
+@ApiModel(value = "Search Disc 결과 조회 API response")
+public class GetSearchDiscResultRes {
+    @ApiModelProperty(value = "search disc 인덱스", example = "1")
+    private int searchDiscIdx;
+
+    @ApiModelProperty(value = "이름", example = "search disc(1)")
+    private String name;
+
     @ApiModelProperty(value = "x 좌표", example = "2.3107890345411475")
     private double x;
 

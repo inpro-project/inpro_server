@@ -4,6 +4,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.match.model.*;
 import com.example.demo.utils.JwtService;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @Slf4j
 @ApiResponses({
@@ -145,6 +147,7 @@ public class MatchController {
      * [GET] /app/matched-users
      * @return BaseResponse<List<GetMatchedUserRes>>
      */
+    @ApiOperation(value = "나와 매칭된 유저 조회 API")
     @ResponseBody
     @GetMapping("/matched-users")
     public BaseResponse<List<GetMatchedUserRes>> getMatchedUsers(){
@@ -156,6 +159,5 @@ public class MatchController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
-
 
 }

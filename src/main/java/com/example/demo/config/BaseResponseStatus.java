@@ -53,11 +53,11 @@ public enum BaseResponseStatus {
     // [DELETE] /app/usertags/:userTagIdx
     DELETE_USERTAG_INVALID_USERTAGIDX(false, 322, "올바르지 않은 userTagIdx입니다."),
 
-    // [GET] /app/user-discs/:userDiscIdx
-    GET_USERDISC_INVALID_USERDISCIDX(false, 323, "올바르지 않은 userDiscIdx입니다."),
+    // [GET] /app/user-discs/:userDiscIdx [PATCH] /app/user-discs/:userDiscIdx
+    USERDISC_INVALID_USERDISCIDX(false, 323, "올바르지 않은 userDiscIdx입니다."),
 
-    // [GET] /app/search-discs/:searchDiscIdx
-    GET_SEARCHDISC_INVALID_SEARCHDISCIDX(false, 324, "올바르지 않은 searchDiscIdx입니다."),
+    // [GET] /app/search-discs/:searchDiscIdx [PATCH] /app/search-discs/:searchDiscIdx
+    SEARCHDISC_INVALID_SEARCHDISCIDX(false, 324, "올바르지 않은 searchDiscIdx입니다."),
 
     // [POST] /app/user-likes/:likingIdx
     USERLIKE_INVALID_LIKINGIDX(false, 325, "이미 좋아요를 누른 유저입니다."),
@@ -69,6 +69,7 @@ public enum BaseResponseStatus {
 
     // [POST] /app/user-passes/:passingIdx
     USERPASS_INVALID_PASSINGIDX(false, 328, "이미 넘기기를 누른 유저입니다."),
+
 
     /**
      * 400 : Response, Database, Server 오류
@@ -101,7 +102,13 @@ public enum BaseResponseStatus {
     FAIL_UNUSERLIKE(false, 410, "유저 좋아요 취소에 실패하였습니다."),
 
     // [POST] /app/user-passes/:passingIdx
-    FAIL_USERPASS(false, 411, "유저 넘기기에 실패하였습니다.");
+    FAIL_USERPASS(false, 411, "유저 넘기기에 실패하였습니다."),
+
+    // [PATCH] /app/user-discs/:userDiscIdx
+    FAIL_USERDISCNAME(false, 412, "user disc 이름 등록 및 수정에 실패하였습니다."),
+
+    // [PATCH] /app/search-discs/:searchDiscIdx
+    FAIL_SEARCHDISCNAME(false, 413, "search disc 이름 등록 및 수정에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;

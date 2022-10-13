@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.config.Constant.*;
 
 @Slf4j
@@ -19,6 +19,7 @@ import static com.example.demo.config.Constant.*;
 @Transactional
 public class DiscService {
 
+    private final DiscProvider discProvider;
     private final DiscDao discDao;
 
     private final double weights [] = {WEIGHT1, WEIGHT2, WEIGHT3};
@@ -291,6 +292,48 @@ public class DiscService {
                 discDao.createSearchDiscTestAsBad(searchDiscIdx, postDiscReq.getBadList().get(i).getDiscFeatureIdx());
             }
         } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateUserDiscName(int userIdx, int userDiscIdx, String name) throws BaseException {
+        // userDiscIdx 유효성 검사
+        if(discProvider.checkUserDiscIdx(userIdx, userDiscIdx) == 0){
+            throw new BaseException(USERDISC_INVALID_USERDISCIDX);
+        }
+        try {
+            // Query string으로 전달된 이름이 null이면 임의로 순차적인 이름으로 설정
+            if(name == null){
+                int count = discProvider.getUserDiscCount(userIdx);
+                name = "user disc(" + count + ")";
+            }
+
+            int result = discDao.updateUserDiscName(userDiscIdx, name);
+            if(result == 0){
+                throw new BaseException(FAIL_USERDISCNAME);
+            }
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateSearchDiscName(int userIdx, int searchDiscIdx, String name) throws BaseException {
+        // searchDiscIdx 유효성 검사
+        if(discProvider.checkSearchDiscIdx(userIdx, searchDiscIdx) == 0){
+            throw new BaseException(SEARCHDISC_INVALID_SEARCHDISCIDX);
+        }
+        try {
+            // Query string으로 전달된 이름이 null이면 임의로 순차적인 이름으로 설정
+            if(name == null){
+                int count = discProvider.getSearchDiscCount(userIdx);
+                name = "search disc(" + count + ")";
+            }
+
+            int result = discDao.updateSearchDiscName(searchDiscIdx, name);
+            if(result == 0){
+                throw new BaseException(FAIL_SEARCHDISCNAME);
+            }
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
