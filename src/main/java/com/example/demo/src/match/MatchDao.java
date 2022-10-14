@@ -175,4 +175,28 @@ public class MatchDao {
                 getMatchedUsersParams);
     }
 
+    public void createAgeRangeFilter(int userIdx, String name){
+        String createAgeRangeFilterQuery = "insert into UserFilter (userIdx, category, name) values (?, 1, ?)";
+        Object[] createAgeRangeFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createAgeRangeFilterQuery, createAgeRangeFilterParams);
+    }
+
+    public void createRegionFilter(int userIdx, String name){
+        String createRegionFilterQuery = "insert into UserFilter (userIdx, category, name) values (?, 2, ?)";
+        Object[] createRegionFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createRegionFilterQuery, createRegionFilterParams);
+    }
+
+    public void createOccupationFilter(int userIdx, String name){
+        String createOccupationFilterQuery = "insert into UserFilter (userIdx, category, name) values (?, 3, ?)";
+        Object[] createOccupationFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createOccupationFilterQuery, createOccupationFilterParams);
+    }
+
+    public void createInterestsFilter(int userIdx, String name){
+        String createInterestsFilterQuery = "insert into UserFilter (userIdx, category, name) values (?, 4, ?)";
+        Object[] createInterestsFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createInterestsFilterQuery, createInterestsFilterParams);
+    }
+
 }
