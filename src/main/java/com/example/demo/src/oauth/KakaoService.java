@@ -82,8 +82,34 @@ public class KakaoService {
         String email = jsonNode.get("kakao_account").get("email").asText();
         String nickName = jsonNode.get("properties").get("nickname").asText();
         String userImgUrl = jsonNode.get("kakao_account").get("profile").get("thumbnail_image_url").asText();
+
         String age_range = jsonNode.get("kakao_account").get("age_range").asText();
+        // 연령대 값 변경
+        if(age_range.equals("10~19")){
+            age_range = "10대";
+        } else if(age_range.equals("20~29")){
+            age_range = "20대";
+        } else if(age_range.equals("30~39")){
+            age_range = "30대";
+        } else if(age_range.equals("40~49")){
+            age_range = "40대";
+        } else if(age_range.equals("50~59")){
+            age_range = "50대";
+        } else if(age_range.equals("60~69")){
+            age_range = "60대";
+        } else {
+            age_range = "정보없음";
+        }
+
         String gender = jsonNode.get("kakao_account").get("gender").asText();
+        // 성별 값 변경
+        if(gender.equals("female")){
+            gender = "여";
+        } else if(gender.equals("male")){
+            gender = "남";
+        } else{
+            gender = "정보없음";
+        }
 
         return new KakaoUser(email, nickName, userImgUrl, age_range, gender);
     }

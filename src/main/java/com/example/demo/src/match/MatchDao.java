@@ -107,19 +107,7 @@ public class MatchDao {
 
     public List<GetUserLikingRes> getUserLikings(int userIdx){
         String getUserLikingsQuery = "select userIdx as likingIdx, nickName, userImgUrl\n" +
-                "     , case\n" +
-                "         when gender = 'female' then '여'\n" +
-                "         when gender = 'male' then '남'\n" +
-                "         else '없음' end as gender\n" +
-                "     , case\n" +
-                "         when ageRange = '10~19' then '10대'\n" +
-                "         when ageRange = '20~29' then '20대'\n" +
-                "         when ageRange = '30~39' then '30대'\n" +
-                "         when ageRange = '40~49' then '40대'\n" +
-                "         when ageRange = '50~59' then '50대'\n" +
-                "         when ageRange = '60~69' then '60대'\n" +
-                "        else '없음' end as ageRange\n" +
-                "     , region, occupation, interests\n" +
+                ", gender, ageRange, region, occupation, interests\n" +
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likingIdx\n" +
                 "where likerIdx = ? and UL.status = 'active'\n" +
@@ -141,19 +129,7 @@ public class MatchDao {
 
     public List<GetUserLikerRes> getUserLikers(int userIdx){
         String getUserLikersQuery = "select userIdx as likerIdx, nickName, userImgUrl\n" +
-                "     , case\n" +
-                "         when gender = 'female' then '여'\n" +
-                "         when gender = 'male' then '남'\n" +
-                "         else '없음' end as gender\n" +
-                "     , case\n" +
-                "         when ageRange = '10~19' then '10대'\n" +
-                "         when ageRange = '20~29' then '20대'\n" +
-                "         when ageRange = '30~39' then '30대'\n" +
-                "         when ageRange = '40~49' then '40대'\n" +
-                "         when ageRange = '50~59' then '50대'\n" +
-                "         when ageRange = '60~69' then '60대'\n" +
-                "        else '없음' end as ageRange\n" +
-                "     , region, occupation, interests\n" +
+                ", gender, ageRange, region, occupation, interests\n" +
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likerIdx\n" +
                 "where likingIdx = ? and UL.status = 'active'\n" +
@@ -175,19 +151,7 @@ public class MatchDao {
 
     public List<GetMatchedUserRes> getMatchedUsers(int userIdx){
         String getMatchedUsersQuery = "select userIdx as matchedUserIdx, nickName, userImgUrl\n" +
-                "     , case\n" +
-                "         when gender = 'female' then '여'\n" +
-                "         when gender = 'male' then '남'\n" +
-                "         else '없음' end as gender\n" +
-                "     , case\n" +
-                "         when ageRange = '10~19' then '10대'\n" +
-                "         when ageRange = '20~29' then '20대'\n" +
-                "         when ageRange = '30~39' then '30대'\n" +
-                "         when ageRange = '40~49' then '40대'\n" +
-                "         when ageRange = '50~59' then '50대'\n" +
-                "         when ageRange = '60~69' then '60대'\n" +
-                "        else '없음' end as ageRange\n" +
-                "     , region, occupation, interests\n" +
+                ", gender, ageRange, region, occupation, interests\n" +
                 "from (select userIdx, nickName, userImgUrl, gender, ageRange, region, occupation, interests\n" +
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likerIdx and UL.status = 'active'\n" +
