@@ -10,6 +10,6 @@ public class KakaoUser {
     private String email;
     private String nickName;
     private String userImgUrl;
-    private String age_range;
+    private String ageRange;
     private String gender;
 }
