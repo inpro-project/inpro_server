@@ -19,8 +19,8 @@ public class KakaoDao {
     }
 
     public void createUser(KakaoUser kakaoUser){
-        String createUserQuery = "insert into User (email, nickname, userImgUrl, age_range, gender) VALUES (?,?,?,?,?)";
-        Object[] createUserParams = new Object[]{kakaoUser.getEmail(), kakaoUser.getNickName(), kakaoUser.getUserImgUrl(), kakaoUser.getAge_range(), kakaoUser.getGender()};
+        String createUserQuery = "insert into User (email, nickname, userImgUrl, ageRange, gender) VALUES (?,?,?,?,?)";
+        Object[] createUserParams = new Object[]{kakaoUser.getEmail(), kakaoUser.getNickName(), kakaoUser.getUserImgUrl(), kakaoUser.getAgeRange(), kakaoUser.getGender()};
         this.jdbcTemplate.update(createUserQuery, createUserParams);
     }
 
@@ -33,7 +33,7 @@ public class KakaoDao {
     }
 
     public User getUser(String email){
-        String getUserQuery = "select userIdx, email, nickname, userImgUrl, age_range, gender, status from User where email = ?";
+        String getUserQuery = "select userIdx, email, nickname, userImgUrl, ageRange, gender, status from User where email = ?";
         String getUserParams = email;
 
         return this.jdbcTemplate.queryForObject(getUserQuery,
@@ -42,7 +42,7 @@ public class KakaoDao {
                         rs.getString("email"),
                         rs.getString("nickName"),
                         rs.getString("userImgUrl"),
-                        rs.getString("age_range"),
+                        rs.getString("ageRange"),
                         rs.getString("gender"),
                         rs.getString("status")),
                 getUserParams
