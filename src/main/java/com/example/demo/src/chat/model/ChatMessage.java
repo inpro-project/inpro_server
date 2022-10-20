@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessage {
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
   public enum MessageType {
     ENTER, TALK
   }
