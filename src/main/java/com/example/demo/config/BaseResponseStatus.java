@@ -70,6 +70,9 @@ public enum BaseResponseStatus {
     // [POST] /app/user-passes/:passingIdx
     USERPASS_INVALID_PASSINGIDX(false, 328, "이미 넘기기를 누른 유저입니다."),
 
+    // [POST] /app/blocks/:blockedUserIdx
+    BLOCK_INVALID_BLOCKEDUSERIDX(false, 329, "이미 차단을 누른 유저입니다."),
+
 
     /**
      * 400 : Response, Database, Server 오류
@@ -108,7 +111,10 @@ public enum BaseResponseStatus {
     FAIL_USERDISCNAME(false, 412, "user disc 이름 등록 및 수정에 실패하였습니다."),
 
     // [PATCH] /app/search-discs/:searchDiscIdx
-    FAIL_SEARCHDISCNAME(false, 413, "search disc 이름 등록 및 수정에 실패하였습니다.");
+    FAIL_SEARCHDISCNAME(false, 413, "search disc 이름 등록 및 수정에 실패하였습니다."),
+
+    // [POST] /app/blocks/:blockedUserIdx
+    FAIL_BLOCK(false, 414, "유저 차단에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;
