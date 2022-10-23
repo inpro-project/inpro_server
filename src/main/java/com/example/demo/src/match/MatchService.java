@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.example.demo.config.BaseResponseStatus.*;
 
 @Slf4j
@@ -112,6 +114,46 @@ public class MatchService {
             int userPassIdx = matchDao.createUserPass(passerIdx, passingIdx);
             return new PostUserPassRes(userPassIdx);
         } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createAgeRangeFilter(int userIdx, List<String> ageRange) throws BaseException {
+        try {
+            for(int i = 0; i < ageRange.size(); i++){
+                matchDao.createAgeRangeFilter(userIdx, ageRange.get(i));
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createRegionFilter(int userIdx, List<String> region) throws BaseException {
+        try {
+            for(int i = 0; i < region.size(); i++){
+                matchDao.createRegionFilter(userIdx, region.get(i));
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createOccupationFilter(int userIdx, List<String> occupation) throws BaseException {
+        try {
+            for(int i = 0; i < occupation.size(); i++){
+                matchDao.createOccupationFilter(userIdx, occupation.get(i));
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createInterestsFilter(int userIdx, List<String> interests) throws BaseException {
+        try {
+            for(int i = 0; i < interests.size(); i++){
+                matchDao.createInterestsFilter(userIdx, interests.get(i));
+            }
+        } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
     }

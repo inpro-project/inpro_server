@@ -160,4 +160,58 @@ public class MatchController {
         }
     }
 
+    /**
+     * 팀원 매칭 필터링 등록 API
+     * [POST] /app/user-filters
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "팀원 매칭 필터링 등록 API", notes = "성공시 '팀원 매칭 필터링이 등록되었습니다.' 출력")
+    @ResponseBody
+    @PostMapping("/user-filters")
+    public BaseResponse<String> createUserFilter(@RequestBody PostUserFilterReq postUserFilterReq){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            if(postUserFilterReq.getAgeRange() != null){
+                matchService.createAgeRangeFilter(userIdx, postUserFilterReq.getAgeRange());
+            }
+
+            if(postUserFilterReq.getRegion() != null){
+                matchService.createRegionFilter(userIdx, postUserFilterReq.getRegion());
+            }
+
+            if(postUserFilterReq.getOccupation() != null){
+                matchService.createOccupationFilter(userIdx, postUserFilterReq.getOccupation());
+            }
+
+            if(postUserFilterReq.getInterests() != null){
+                matchService.createInterestsFilter(userIdx, postUserFilterReq.getInterests());
+            }
+
+            String result = "팀원 매칭 필터링이 등록되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 팀원 매칭 필터링 조회 API
+     * [GET] /app/user-filters
+     * @return BaseResponse<List<GetUserFilterRes>>
+     */
+    @ApiOperation(value = "팀원 매칭 필터링 조회 API")
+    @ResponseBody
+    @GetMapping("/user-filters")
+    public BaseResponse<List<GetUserFilterRes>> getUserFilters(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            List<GetUserFilterRes> getUserFilterResList = matchProvider.getUserFilters(userIdx);
+            return new BaseResponse<>(getUserFilterResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }

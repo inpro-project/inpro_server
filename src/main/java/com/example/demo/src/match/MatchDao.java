@@ -1,6 +1,7 @@
 package com.example.demo.src.match;
 
 import com.example.demo.src.match.model.GetMatchedUserRes;
+import com.example.demo.src.match.model.GetUserFilterRes;
 import com.example.demo.src.match.model.GetUserLikerRes;
 import com.example.demo.src.match.model.GetUserLikingRes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,6 +174,44 @@ public class MatchDao {
                         rs.getString("occupation"),
                         rs.getString("interests")),
                 getMatchedUsersParams);
+    }
+
+    public void createAgeRangeFilter(int userIdx, String name){
+        String createAgeRangeFilterQuery = "insert into UserFilter (userIdx, category, name) values (?, 1, ?)";
+        Object[] createAgeRangeFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createAgeRangeFilterQuery, createAgeRangeFilterParams);
+    }
+
+    public void createRegionFilter(int userIdx, String name){
+        String createRegionFilterQuery = "insert into UserFilter (userIdx, category, name) values (?, 2, ?)";
+        Object[] createRegionFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createRegionFilterQuery, createRegionFilterParams);
+    }
+
+    public void createOccupationFilter(int userIdx, String name){
+        String createOccupationFilterQuery = "insert into UserFilter (userIdx, category, name) values (?, 3, ?)";
+        Object[] createOccupationFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createOccupationFilterQuery, createOccupationFilterParams);
+    }
+
+    public void createInterestsFilter(int userIdx, String name){
+        String createInterestsFilterQuery = "insert into UserFilter (userIdx, category, name) values (?, 4, ?)";
+        Object[] createInterestsFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createInterestsFilterQuery, createInterestsFilterParams);
+    }
+
+    public List<GetUserFilterRes> getUserFilters(int userIdx){
+        String getUserFiltersQuery = "select userFilterIdx, category, name\n" +
+                "from UserFilter\n" +
+                "where userIdx = ? and status = 'active'\n" +
+                "order by category";
+        int getUserFiltersParams = userIdx;
+        return this.jdbcTemplate.query(getUserFiltersQuery,
+                (rs, rsNum) -> new GetUserFilterRes(
+                        rs.getInt("userFilterIdx"),
+                        rs.getInt("category"),
+                        rs.getString("name")),
+                getUserFiltersParams);
     }
 
 }
