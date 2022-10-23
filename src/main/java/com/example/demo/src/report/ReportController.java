@@ -50,4 +50,29 @@ public class ReportController {
         }
     }
 
+    /**
+     * 유저 차단 해제 API
+     * [PATCH] /app/blocks/:blockedUserIdx
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "유저 차단 해제 API", notes = "성공 시 result로 '유저 차단이 해제되었습니다.' 출력")
+    @ApiResponses({
+            @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
+            @ApiResponse(code = 330, message = "기존에 차단을 하지 않은 유저입니다."),
+            @ApiResponse(code = 415, message = "유저 차단 해제에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PatchMapping("/blocks/{blockedUserIdx}")
+    public BaseResponse<String> deleteBlock(@PathVariable("blockedUserIdx") int blockedUserIdx) {
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            reportService.deleteBlock(userIdx, blockedUserIdx);
+            String result = "유저 차단이 해제되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }

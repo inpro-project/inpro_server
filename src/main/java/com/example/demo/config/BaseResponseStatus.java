@@ -73,6 +73,9 @@ public enum BaseResponseStatus {
     // [POST] /app/blocks/:blockedUserIdx
     BLOCK_INVALID_BLOCKEDUSERIDX(false, 329, "이미 차단을 누른 유저입니다."),
 
+    // [PATCH] /app/blocks/:blockedUserIdx
+    UNBLOCK_INVALID_BLOCKEDUSERIDX(false, 330, "기존에 차단을 하지 않은 유저입니다."),
+
 
     /**
      * 400 : Response, Database, Server 오류
@@ -114,7 +117,10 @@ public enum BaseResponseStatus {
     FAIL_SEARCHDISCNAME(false, 413, "search disc 이름 등록 및 수정에 실패하였습니다."),
 
     // [POST] /app/blocks/:blockedUserIdx
-    FAIL_BLOCK(false, 414, "유저 차단에 실패하였습니다.");
+    FAIL_BLOCK(false, 414, "유저 차단에 실패하였습니다."),
+
+    // [PATCH] /app/blocks/:blockedUserIdx
+    FAIL_UNBLOCK(false, 415, "유저 차단 해제에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;

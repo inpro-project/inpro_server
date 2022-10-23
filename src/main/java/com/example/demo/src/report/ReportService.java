@@ -57,4 +57,25 @@ public class ReportService {
         }
     }
 
+    public void deleteBlock(int userIdx, int blockedUserIdx) throws BaseException {
+        // blockedUserIdx 유효성 검사
+        if(reportProvider.checkUserIdx(blockedUserIdx) == 0){
+            throw new BaseException(INVALID_USERIDX);
+        }
+
+        // 차단하지 않은 유저에 대해 차단 취소 요청을 할 경우
+        if(reportProvider.checkPreBlock(userIdx, blockedUserIdx) == 0){
+            throw new BaseException(UNBLOCK_INVALID_BLOCKEDUSERIDX);
+        }
+
+        try {
+            int result = reportDao.deleteBlock(userIdx, blockedUserIdx);
+            if(result == 0){
+                throw new BaseException(FAIL_UNBLOCK);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

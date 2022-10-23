@@ -58,4 +58,11 @@ public class ReportDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
+    public int deleteBlock(int userIdx, int blockedUserIdx){
+        String deleteBlockQuery = "update Block set status = 'deleted' where blockUserIdx = ? and blockedUserIdx = ?";
+        Object[] deleteBlockParams = new Object[]{userIdx, blockedUserIdx};
+
+        return this.jdbcTemplate.update(deleteBlockQuery, deleteBlockParams);
+    }
+
 }
