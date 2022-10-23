@@ -245,4 +245,23 @@ public class MatchController {
         }
     }
 
+    /**
+     * 팀 매칭 필터링 조회 API
+     * [GET] /app/project-filters
+     * @return BaseResponse<List<GetProjectFilterRes>>
+     */
+    @ApiOperation(value = "팀 매칭 필터링 조회 API")
+    @ResponseBody
+    @GetMapping("/project-filters")
+    public BaseResponse<List<GetProjectFilterRes>> getProjectFilters(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            List<GetProjectFilterRes> getProjectFilterResList = matchProvider.getProjectFilters(userIdx);
+            return new BaseResponse<>(getProjectFilterResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
