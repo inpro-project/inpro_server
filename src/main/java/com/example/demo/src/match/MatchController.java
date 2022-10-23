@@ -195,4 +195,23 @@ public class MatchController {
         }
     }
 
+    /**
+     * 팀원 매칭 필터링 조회 API
+     * [GET] /app/user-filters
+     * @return BaseResponse<List<GetUserFilterRes>>
+     */
+    @ApiOperation(value = "팀원 매칭 필터링 조회 API")
+    @ResponseBody
+    @GetMapping("/user-filters")
+    public BaseResponse<List<GetUserFilterRes>> getUserFilters(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            List<GetUserFilterRes> getUserFilterResList = matchProvider.getUserFilters(userIdx);
+            return new BaseResponse<>(getUserFilterResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.demo.src.match;
 
 import com.example.demo.src.match.model.GetMatchedUserRes;
+import com.example.demo.src.match.model.GetUserFilterRes;
 import com.example.demo.src.match.model.GetUserLikerRes;
 import com.example.demo.src.match.model.GetUserLikingRes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,6 +198,20 @@ public class MatchDao {
         String createInterestsFilterQuery = "insert into UserFilter (userIdx, category, name) values (?, 4, ?)";
         Object[] createInterestsFilterParams = new Object[]{userIdx, name};
         this.jdbcTemplate.update(createInterestsFilterQuery, createInterestsFilterParams);
+    }
+
+    public List<GetUserFilterRes> getUserFilters(int userIdx){
+        String getUserFiltersQuery = "select userFilterIdx, category, name\n" +
+                "from UserFilter\n" +
+                "where userIdx = ? and status = 'active'\n" +
+                "order by category";
+        int getUserFiltersParams = userIdx;
+        return this.jdbcTemplate.query(getUserFiltersQuery,
+                (rs, rsNum) -> new GetUserFilterRes(
+                        rs.getInt("userFilterIdx"),
+                        rs.getInt("category"),
+                        rs.getString("name")),
+                getUserFiltersParams);
     }
 
 }
