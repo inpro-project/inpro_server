@@ -158,4 +158,34 @@ public class MatchService {
         }
     }
 
+    public void createProjectTypeFilter(int userIdx, List<String> type) throws BaseException {
+        try {
+            for(int i = 0; i < type.size(); i++){
+                matchDao.createProjectTypeFilter(userIdx, type.get(i));
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createProjectRegionFilter(int userIdx, List<String> region) throws BaseException {
+        try {
+            for(int i = 0; i < region.size(); i++){
+                matchDao.createProjectRegionFilter(userIdx, region.get(i));
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createProjectInterestsFilter(int userIdx, List<String> interests) throws BaseException {
+        try {
+            for(int i = 0; i < interests.size(); i++){
+                matchDao.createProjectInterestsFilter(userIdx, interests.get(i));
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

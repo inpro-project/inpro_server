@@ -71,7 +71,7 @@ public class ReportDao {
         String getBlockedUsersQuery = "select blockIdx, blockedUserIdx, nickName, userImgUrl, gender, ageRange\n" +
                 "from Block\n" +
                 "inner join User U on Block.blockedUserIdx = U.userIdx\n" +
-                "where blockUserIdx = ? and Block.status = 'active'";
+                "where blockUserIdx = ? and Block.status = 'active' order by Block.updatedAt desc";
         int getBlockedUsersParams = userIdx;
 
         return this.jdbcTemplate.query(getBlockedUsersQuery,

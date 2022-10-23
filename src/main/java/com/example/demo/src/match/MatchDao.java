@@ -214,4 +214,22 @@ public class MatchDao {
                 getUserFiltersParams);
     }
 
+    public void createProjectTypeFilter(int userIdx, String name){
+        String createProjectTypeFilterQuery = "insert into ProjectFilter (userIdx, category, name) values (?, 1, ?)";
+        Object[] createProjectTypeFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createProjectTypeFilterQuery, createProjectTypeFilterParams);
+    }
+
+    public void createProjectRegionFilter(int userIdx, String name){
+        String createProjectRegionFilterQuery = "insert into ProjectFilter (userIdx, category, name) values (?, 2, ?)";
+        Object[] createProjectRegionFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createProjectRegionFilterQuery, createProjectRegionFilterParams);
+    }
+
+    public void createProjectInterestsFilter(int userIdx, String name){
+        String createProjectInterestsFilterQuery = "insert into ProjectFilter (userIdx, category, name) values (?, 3, ?)";
+        Object[] createProjectInterestsFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createProjectInterestsFilterQuery, createProjectInterestsFilterParams);
+    }
+
 }

@@ -214,4 +214,35 @@ public class MatchController {
         }
     }
 
+    /**
+     * 팀 매칭 필터링 등록 API
+     * [POST] /app/project-filters
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "팀 매칭 필터링 등록 API", notes = "성공시 '팀 매칭 필터링이 등록되었습니다.' 출력")
+    @ResponseBody
+    @PostMapping("/project-filters")
+    public BaseResponse<String> createProjectFilter(@RequestBody PostProjectFilterReq postProjectFilterReq){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+           if(postProjectFilterReq.getType() != null){
+               matchService.createProjectTypeFilter(userIdx, postProjectFilterReq.getType());
+           }
+
+            if(postProjectFilterReq.getRegion() != null){
+                matchService.createProjectRegionFilter(userIdx, postProjectFilterReq.getRegion());
+            }
+
+            if(postProjectFilterReq.getInterests() != null){
+                matchService.createProjectInterestsFilter(userIdx, postProjectFilterReq.getInterests());
+            }
+
+            String result = "팀 매칭 필터링이 등록되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
