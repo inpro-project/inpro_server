@@ -1,10 +1,12 @@
 package com.example.demo.src.report;
 
+import com.example.demo.src.report.model.GetBlockedUserRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class ReportDao {
@@ -63,6 +65,24 @@ public class ReportDao {
         Object[] deleteBlockParams = new Object[]{userIdx, blockedUserIdx};
 
         return this.jdbcTemplate.update(deleteBlockQuery, deleteBlockParams);
+    }
+
+    public List<GetBlockedUserRes> getBlockedUsers(int userIdx){
+        String getBlockedUsersQuery = "select blockIdx, blockedUserIdx, nickName, userImgUrl, gender, ageRange\n" +
+                "from Block\n" +
+                "inner join User U on Block.blockedUserIdx = U.userIdx\n" +
+                "where blockUserIdx = ? and Block.status = 'active'";
+        int getBlockedUsersParams = userIdx;
+
+        return this.jdbcTemplate.query(getBlockedUsersQuery,
+                (rs, rsNum) -> new GetBlockedUserRes(
+                        rs.getInt("blockIdx"),
+                        rs.getInt("blockedUserIdx"),
+                        rs.getString("nickName"),
+                        rs.getString("userImgUrl"),
+                        rs.getString("gender"),
+                        rs.getString("ageRange")),
+                getBlockedUsersParams);
     }
 
 }

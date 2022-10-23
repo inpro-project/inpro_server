@@ -2,6 +2,7 @@ package com.example.demo.src.report;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.report.model.GetBlockedUserRes;
 import com.example.demo.src.report.model.PostBlockRes;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.ApiOperation;
@@ -10,6 +11,8 @@ import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @ApiResponses({
@@ -24,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
 public class ReportController {
 
     private final ReportService reportService;
+
+    private final ReportProvider reportProvider;
 
     private final JwtService jwtService;
 
@@ -70,6 +75,25 @@ public class ReportController {
             reportService.deleteBlock(userIdx, blockedUserIdx);
             String result = "유저 차단이 해제되었습니다.";
             return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 차단한 유저 조회 API
+     * [GET] /app/blocks
+     * @return BaseResponse<List<GetBlockedUserRes>>
+     */
+    @ApiOperation(value = "차단한 유저 조회 API")
+    @ResponseBody
+    @GetMapping("/blocks")
+    public BaseResponse<List<GetBlockedUserRes>> getBlockedUsers(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            List<GetBlockedUserRes> getBlockedUserResList = reportProvider.getBlockedUsers(userIdx);
+            return new BaseResponse<>(getBlockedUserResList);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
