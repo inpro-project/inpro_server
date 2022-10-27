@@ -1,6 +1,7 @@
 package com.example.demo.src.report;
 
 import com.example.demo.src.report.model.GetBlockedUserRes;
+import com.example.demo.src.report.model.PostReportReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -83,6 +84,29 @@ public class ReportDao {
                         rs.getString("gender"),
                         rs.getString("ageRange")),
                 getBlockedUsersParams);
+    }
+
+    public int createReport(int userIdx, int reportedUserIdx, PostReportReq postReportReq) {
+        String createReportQuery = "insert into Report (userIdx, reportedUserIdx, category, content) VALUES (?, ?, ?, ?)";
+        Object[] createReportParams = new Object[]{userIdx, reportedUserIdx, postReportReq.getCategory(), postReportReq.getContent()};
+        this.jdbcTemplate.update(createReportQuery, createReportParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public int createReportImgs(int reportIdx, String reportImgUrl) {
+        String createReportImgsQuery = "insert into ReportFile (reportIdx, type, reportUrl) VALUES (?, 'Y', ?)";
+        Object[] createReportImgsParams = new Object[]{reportIdx, reportImgUrl};
+
+        return this.jdbcTemplate.update(createReportImgsQuery, createReportImgsParams);
+    }
+
+    public int createReportFiles(int reportIdx, String reportFileUrl) {
+        String createReportFilesQuery = "insert into ReportFile (reportIdx, type, reportUrl) VALUES (?, 'N', ?)";
+        Object[] createReportFilesParams = new Object[]{reportIdx, reportFileUrl};
+
+        return this.jdbcTemplate.update(createReportFilesQuery, createReportFilesParams);
     }
 
 }

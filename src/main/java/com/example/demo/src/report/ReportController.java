@@ -2,8 +2,12 @@ package com.example.demo.src.report;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.report.model.GetBlockedUserRes;
 import com.example.demo.src.report.model.PostBlockRes;
+import com.example.demo.src.report.model.PostReportReq;
+import com.example.demo.src.report.model.PostReportRes;
+import com.example.demo.src.user.model.PatchUserReq;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -11,6 +15,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -94,6 +99,51 @@ public class ReportController {
 
             List<GetBlockedUserRes> getBlockedUserResList = reportProvider.getBlockedUsers(userIdx);
             return new BaseResponse<>(getBlockedUserResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 신고하기 API
+     * [POST] /app/reports/:reportedUserIdx
+     * @return BaseResponse<PostReportRes>
+     */
+    @ApiOperation(value = "신고하기 API")
+    @ApiResponses({
+            @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
+            @ApiResponse(code = 331, message = "신고 카테고리를 입력해주세요."),
+            @ApiResponse(code = 416, message = "신고 사진 첨부에 실패하였습니다."),
+            @ApiResponse(code = 417, message = "신고 파일 첨부에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PostMapping("/reports/{reportedUserIdx}")
+    public BaseResponse<PostReportRes> createReport(@PathVariable("reportedUserIdx") int reportedUserIdx
+            , @RequestPart(value = "reportImgs", required = false) List<MultipartFile> reportImgs
+            , @RequestPart(value = "reportFiles", required = false) List<MultipartFile> reportFiles
+            , @RequestPart(value = "postReportReq") PostReportReq postReportReq){
+        try {
+            // 신고 카테고리 유효성 검사
+            if(postReportReq.getCategory() == null){
+                return new BaseResponse<>(BaseResponseStatus.POST_REPORT_EMPTY_CATEGORY);
+            }
+
+            int userIdx = jwtService.getUserIdx();
+
+            // 신고 카테고리, 내용 추가
+            PostReportRes postReportRes = reportService.createReport(userIdx, reportedUserIdx, postReportReq);
+
+            // 사진 파일 추가
+            if(reportImgs != null){
+                reportService.createReportImgs(postReportRes.getReportIdx(), reportImgs);
+            }
+
+            // 일반 파일 추가
+            if(reportFiles != null){
+                reportService.createReportFiles(postReportRes.getReportIdx(), reportFiles);
+            }
+
+            return new BaseResponse<>(postReportRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

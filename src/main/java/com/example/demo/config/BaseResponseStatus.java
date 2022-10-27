@@ -76,6 +76,9 @@ public enum BaseResponseStatus {
     // [PATCH] /app/blocks/:blockedUserIdx
     UNBLOCK_INVALID_BLOCKEDUSERIDX(false, 330, "기존에 차단을 하지 않은 유저입니다."),
 
+    // [POST] /app/reports/:reportedUserIdx
+    POST_REPORT_EMPTY_CATEGORY(false, 331, "신고 카테고리를 입력해주세요."),
+
 
     /**
      * 400 : Response, Database, Server 오류
@@ -120,7 +123,11 @@ public enum BaseResponseStatus {
     FAIL_BLOCK(false, 414, "유저 차단에 실패하였습니다."),
 
     // [PATCH] /app/blocks/:blockedUserIdx
-    FAIL_UNBLOCK(false, 415, "유저 차단 해제에 실패하였습니다.");
+    FAIL_UNBLOCK(false, 415, "유저 차단 해제에 실패하였습니다."),
+
+    // [POST] /app/reports/:reportedUserIdx
+    FAIL_REPORTIMG(false, 416, "신고 사진 첨부에 실패하였습니다."),
+    FAIL_REPORTFILE(false, 417, "신고 파일 첨부에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;
