@@ -211,6 +211,35 @@ public class MatchDao {
                 getUserFiltersParams);
     }
 
+    public int checkUserFilterByName(int userIdx, String name){
+        String checkUserFilterByNameQuery = "select case when count(*) = 0 then 0 else userFilterIdx end as userFilterIdx\n" +
+                "    from UserFilter where userIdx = ? and name like concat('%', ?,'%')";
+        Object[] checkUserFilterByNameParams = new Object[]{userIdx, name};
+        return this.jdbcTemplate.queryForObject(checkUserFilterByNameQuery,
+                int.class,
+                checkUserFilterByNameParams);
+    }
+
+    public int checkUserFilterByIdx(int userIdx, int userFilterIdx){
+        String checkUserFilterByIdxQuery = "select exists(select userFilterIdx from UserFilter where userIdx = ? and userFilterIdx = ? and status = 'active')";
+        Object[] checkUserFilterByIdxParams = new Object[]{userIdx, userFilterIdx};
+        return this.jdbcTemplate.queryForObject(checkUserFilterByIdxQuery,
+                int.class,
+                checkUserFilterByIdxParams);
+    }
+
+    public void updateFilter(int userIdx, int userFilterIdx){
+        String updateAgeRangeFilterQuery = "update UserFilter set status = 'active' where userIdx = ? and userFilterIdx = ?";
+        Object[] updateAgeRangeFilterParams = new Object[]{userIdx, userFilterIdx};
+        this.jdbcTemplate.update(updateAgeRangeFilterQuery, updateAgeRangeFilterParams);
+    }
+
+    public void deleteFilter(int userIdx, Integer userFilterIdx){
+        String deleteFilterQuery = "update UserFilter set status = 'deleted' where userIdx = ? and userFilterIdx = ?";
+        Object[] deleteFilterParams = new Object[]{userIdx, userFilterIdx};
+        this.jdbcTemplate.update(deleteFilterQuery, deleteFilterParams);
+    }
+
     public void createProjectTypeFilter(int userIdx, String name){
         String createProjectTypeFilterQuery = "insert into ProjectFilter (userIdx, category, name) values (?, 1, ?)";
         Object[] createProjectTypeFilterParams = new Object[]{userIdx, name};

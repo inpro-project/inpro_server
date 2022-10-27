@@ -95,6 +95,22 @@ public class MatchProvider {
         }
     }
 
+    public int checkUserFilterByName(int userIdx, String name) throws BaseException {
+        try {
+            return matchDao.checkUserFilterByName(userIdx, name);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkUserFilterByIdx(int userIdx, int userFilterIdx) throws BaseException {
+        try {
+            return matchDao.checkUserFilterByIdx(userIdx, userFilterIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public List<GetProjectFilterRes> getProjectFilters(int userIdx) throws BaseException {
         try {
             List<GetProjectFilterRes> getProjectFilterResList = matchDao.getProjectFilters(userIdx);
