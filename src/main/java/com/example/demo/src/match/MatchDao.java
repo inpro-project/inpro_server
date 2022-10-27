@@ -1,9 +1,6 @@
 package com.example.demo.src.match;
 
-import com.example.demo.src.match.model.GetMatchedUserRes;
-import com.example.demo.src.match.model.GetUserFilterRes;
-import com.example.demo.src.match.model.GetUserLikerRes;
-import com.example.demo.src.match.model.GetUserLikingRes;
+import com.example.demo.src.match.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -212,6 +209,96 @@ public class MatchDao {
                         rs.getInt("category"),
                         rs.getString("name")),
                 getUserFiltersParams);
+    }
+
+    public int checkUserFilterByName(int userIdx, String name){
+        String checkUserFilterByNameQuery = "select case when count(*) = 0 then 0 else userFilterIdx end as userFilterIdx\n" +
+                "    from UserFilter where userIdx = ? and name like concat('%', ?,'%')";
+        Object[] checkUserFilterByNameParams = new Object[]{userIdx, name};
+        return this.jdbcTemplate.queryForObject(checkUserFilterByNameQuery,
+                int.class,
+                checkUserFilterByNameParams);
+    }
+
+    public int checkUserFilterByIdx(int userIdx, int userFilterIdx){
+        String checkUserFilterByIdxQuery = "select exists(select userFilterIdx from UserFilter where userIdx = ? and userFilterIdx = ? and status = 'active')";
+        Object[] checkUserFilterByIdxParams = new Object[]{userIdx, userFilterIdx};
+        return this.jdbcTemplate.queryForObject(checkUserFilterByIdxQuery,
+                int.class,
+                checkUserFilterByIdxParams);
+    }
+
+    public void updateUserFilter(int userIdx, int userFilterIdx){
+        String updateUserFilterQuery = "update UserFilter set status = 'active' where userIdx = ? and userFilterIdx = ?";
+        Object[] updateUserFilterParams = new Object[]{userIdx, userFilterIdx};
+        this.jdbcTemplate.update(updateUserFilterQuery, updateUserFilterParams);
+    }
+
+    public void deleteUserFilter(int userIdx, Integer userFilterIdx){
+        String deleteUserFilterQuery = "update UserFilter set status = 'deleted' where userIdx = ? and userFilterIdx = ?";
+        Object[] deleteUserFilterParams = new Object[]{userIdx, userFilterIdx};
+        this.jdbcTemplate.update(deleteUserFilterQuery, deleteUserFilterParams);
+    }
+
+    public void createProjectTypeFilter(int userIdx, String name){
+        String createProjectTypeFilterQuery = "insert into ProjectFilter (userIdx, category, name) values (?, 1, ?)";
+        Object[] createProjectTypeFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createProjectTypeFilterQuery, createProjectTypeFilterParams);
+    }
+
+    public void createProjectRegionFilter(int userIdx, String name){
+        String createProjectRegionFilterQuery = "insert into ProjectFilter (userIdx, category, name) values (?, 2, ?)";
+        Object[] createProjectRegionFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createProjectRegionFilterQuery, createProjectRegionFilterParams);
+    }
+
+    public void createProjectInterestsFilter(int userIdx, String name){
+        String createProjectInterestsFilterQuery = "insert into ProjectFilter (userIdx, category, name) values (?, 3, ?)";
+        Object[] createProjectInterestsFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createProjectInterestsFilterQuery, createProjectInterestsFilterParams);
+    }
+
+    public List<GetProjectFilterRes> getProjectFilters(int userIdx){
+        String getProjectFiltersQuery = "select projectFilterIdx, category, name\n" +
+                "from ProjectFilter\n" +
+                "where userIdx = ? and status = 'active'\n" +
+                "order by category";
+        int getProjectFiltersParams = userIdx;
+        return this.jdbcTemplate.query(getProjectFiltersQuery,
+                (rs, rsNum) -> new GetProjectFilterRes(
+                        rs.getInt("projectFilterIdx"),
+                        rs.getInt("category"),
+                        rs.getString("name")),
+                getProjectFiltersParams);
+    }
+
+    public int checkProjectFilterByName(int userIdx, String name){
+        String checkProjectFilterByNameQuery = "select case when count(*) = 0 then 0 else projectFilterIdx end as projectFilterIdx\n" +
+                "    from ProjectFilter where userIdx = ? and name like concat('%', ?,'%')";
+        Object[] checkProjectFilterByNameParams = new Object[]{userIdx, name};
+        return this.jdbcTemplate.queryForObject(checkProjectFilterByNameQuery,
+                int.class,
+                checkProjectFilterByNameParams);
+    }
+
+    public int checkProjectFilterByIdx(int userIdx, int projectFilterIdx){
+        String checkProjectFilterByIdxQuery = "select exists(select projectFilterIdx from ProjectFilter where userIdx = ? and projectFilterIdx = ? and status = 'active')";
+        Object[] checkProjectFilterByIdxParams = new Object[]{userIdx, projectFilterIdx};
+        return this.jdbcTemplate.queryForObject(checkProjectFilterByIdxQuery,
+                int.class,
+                checkProjectFilterByIdxParams);
+    }
+
+    public void updateProjectFilter(int userIdx, int projectFilterIdx){
+        String updateAgeRangeFilterQuery = "update ProjectFilter set status = 'active' where userIdx = ? and projectFilterIdx = ?";
+        Object[] updateAgeRangeFilterParams = new Object[]{userIdx, projectFilterIdx};
+        this.jdbcTemplate.update(updateAgeRangeFilterQuery, updateAgeRangeFilterParams);
+    }
+
+    public void deleteProjectFilter(int userIdx, Integer projectFilterIdx){
+        String deleteFilterQuery = "update ProjectFilter set status = 'deleted' where userIdx = ? and projectFilterIdx = ?";
+        Object[] deleteFilterParams = new Object[]{userIdx, projectFilterIdx};
+        this.jdbcTemplate.update(deleteFilterQuery, deleteFilterParams);
     }
 
 }

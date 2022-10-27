@@ -1,10 +1,7 @@
 package com.example.demo.src.match;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.match.model.GetMatchedUserRes;
-import com.example.demo.src.match.model.GetUserFilterRes;
-import com.example.demo.src.match.model.GetUserLikerRes;
-import com.example.demo.src.match.model.GetUserLikingRes;
+import com.example.demo.src.match.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -93,6 +90,47 @@ public class MatchProvider {
         try {
             List<GetUserFilterRes> getUserFilterResList = matchDao.getUserFilters(userIdx);
             return getUserFilterResList;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkUserFilterByName(int userIdx, String name) throws BaseException {
+        try {
+            return matchDao.checkUserFilterByName(userIdx, name);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkUserFilterByIdx(int userIdx, int userFilterIdx) throws BaseException {
+        try {
+            return matchDao.checkUserFilterByIdx(userIdx, userFilterIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetProjectFilterRes> getProjectFilters(int userIdx) throws BaseException {
+        try {
+            List<GetProjectFilterRes> getProjectFilterResList = matchDao.getProjectFilters(userIdx);
+            return getProjectFilterResList;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkProjectFilterByName(int userIdx, String name) throws BaseException {
+        try {
+            return matchDao.checkProjectFilterByName(userIdx, name);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkProjectFilterByIdx(int userIdx, int projectFilterIdx) throws BaseException {
+        try {
+            return matchDao.checkProjectFilterByIdx(userIdx, projectFilterIdx);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

@@ -4,7 +4,6 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.match.model.*;
 import com.example.demo.utils.JwtService;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -209,6 +208,154 @@ public class MatchController {
 
             List<GetUserFilterRes> getUserFilterResList = matchProvider.getUserFilters(userIdx);
             return new BaseResponse<>(getUserFilterResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 팀원 매칭 필터링 수정 API
+     * [PATCH] /app/user-filters
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "팀원 매칭 필터링 수정 API", notes = "성공시 '팀원 매칭 필터링이 수정되었습니다.' 출력")
+    @ResponseBody
+    @PatchMapping("/user-filters")
+    public BaseResponse<String> updateUserFilter(@RequestBody PatchUserFilterReq patchUserFilterReq){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            // 필터링 추가 (새로 추가 or status 업데이트)
+            if(patchUserFilterReq.getAgeRangeInsert() != null){
+                matchService.updateAgeRangeFilter(userIdx, patchUserFilterReq.getAgeRangeInsert());
+            }
+
+            if(patchUserFilterReq.getRegionInsert() != null){
+                matchService.updateRegionFilter(userIdx, patchUserFilterReq.getRegionInsert());
+            }
+
+            if(patchUserFilterReq.getOccupationInsert() != null){
+                matchService.updateOccupationFilter(userIdx, patchUserFilterReq.getOccupationInsert());
+            }
+
+            if(patchUserFilterReq.getInterestsInsert() != null){
+                matchService.updateInterestsFilter(userIdx, patchUserFilterReq.getInterestsInsert());
+            }
+
+            // 필터링 삭제
+            if(patchUserFilterReq.getAgeRangeDelete() != null){
+                matchService.deleteUserFilter(userIdx, patchUserFilterReq.getAgeRangeDelete());
+            }
+
+            if(patchUserFilterReq.getRegionDelete() != null){
+                matchService.deleteUserFilter(userIdx, patchUserFilterReq.getRegionDelete());
+            }
+
+            if(patchUserFilterReq.getOccupationDelete() != null){
+                matchService.deleteUserFilter(userIdx, patchUserFilterReq.getOccupationDelete());
+            }
+
+            if(patchUserFilterReq.getInterestsDelete() != null){
+                matchService.deleteUserFilter(userIdx, patchUserFilterReq.getInterestsDelete());
+            }
+
+            String result = "팀원 매칭 필터링이 수정되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 팀 매칭 필터링 등록 API
+     * [POST] /app/project-filters
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "팀 매칭 필터링 등록 API", notes = "성공시 '팀 매칭 필터링이 등록되었습니다.' 출력")
+    @ResponseBody
+    @PostMapping("/project-filters")
+    public BaseResponse<String> createProjectFilter(@RequestBody PostProjectFilterReq postProjectFilterReq){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+           if(postProjectFilterReq.getType() != null){
+               matchService.createProjectTypeFilter(userIdx, postProjectFilterReq.getType());
+           }
+
+            if(postProjectFilterReq.getRegion() != null){
+                matchService.createProjectRegionFilter(userIdx, postProjectFilterReq.getRegion());
+            }
+
+            if(postProjectFilterReq.getInterests() != null){
+                matchService.createProjectInterestsFilter(userIdx, postProjectFilterReq.getInterests());
+            }
+
+            String result = "팀 매칭 필터링이 등록되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 팀 매칭 필터링 조회 API
+     * [GET] /app/project-filters
+     * @return BaseResponse<List<GetProjectFilterRes>>
+     */
+    @ApiOperation(value = "팀 매칭 필터링 조회 API")
+    @ResponseBody
+    @GetMapping("/project-filters")
+    public BaseResponse<List<GetProjectFilterRes>> getProjectFilters(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            List<GetProjectFilterRes> getProjectFilterResList = matchProvider.getProjectFilters(userIdx);
+            return new BaseResponse<>(getProjectFilterResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 팀 매칭 필터링 수정 API
+     * [PATCH] /app/project-filters
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "팀 매칭 필터링 수정 API", notes = "성공시 '팀 매칭 필터링이 수정되었습니다.' 출력")
+    @ResponseBody
+    @PatchMapping("/project-filters")
+    public BaseResponse<String> updateProjectFilter(@RequestBody PatchProjectFilterReq patchProjectFilterReq){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            // 필터링 추가(새로 추가 or status 업데이트)
+            if(patchProjectFilterReq.getTypeInsert() != null){
+                matchService.updateProjectTypeFilter(userIdx, patchProjectFilterReq.getTypeInsert());
+            }
+
+            if(patchProjectFilterReq.getRegionInsert() != null){
+                matchService.updateProjectRegionFilter(userIdx, patchProjectFilterReq.getRegionInsert());
+            }
+
+            if(patchProjectFilterReq.getInterestsInsert() != null){
+                matchService.updateProjectInterestsFilter(userIdx, patchProjectFilterReq.getInterestsInsert());
+            }
+
+            // 필터링 삭제
+            if(patchProjectFilterReq.getTypeDelete() != null){
+                matchService.deleteProjectFilter(userIdx, patchProjectFilterReq.getTypeDelete());
+            }
+
+            if(patchProjectFilterReq.getRegionDelete() != null){
+                matchService.deleteProjectFilter(userIdx, patchProjectFilterReq.getRegionDelete());
+            }
+
+            if(patchProjectFilterReq.getInterestsDelete() != null){
+                matchService.deleteProjectFilter(userIdx, patchProjectFilterReq.getInterestsDelete());
+            }
+
+            String result = "팀 매칭 필터링이 수정되었습니다.";
+            return new BaseResponse<>(result);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

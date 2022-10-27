@@ -158,4 +158,177 @@ public class MatchService {
         }
     }
 
+    public void updateAgeRangeFilter(int userIdx, List<String> ageRange) throws BaseException {
+        try {
+            int userFilterIdx = 0;
+            for(int i = 0; i < ageRange.size(); i++){
+                // 기존 존재 여부 확인
+                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, ageRange.get(i));
+                // 존재하지 않으면 새로 추가
+                if(userFilterIdx == 0){
+                    matchDao.createAgeRangeFilter(userIdx, ageRange.get(i));
+                }
+                // 이전에 추가됐던 것이라면 status만 업데이트
+                else {
+                    matchDao.updateUserFilter(userIdx, userFilterIdx);
+                }
+
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateRegionFilter(int userIdx, List<String> region) throws BaseException {
+        try {
+            int userFilterIdx = 0;
+            for(int i = 0; i < region.size(); i++){
+                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, region.get(i));
+                if(userFilterIdx == 0){
+                    matchDao.createRegionFilter(userIdx, region.get(i));
+                }
+                matchDao.updateUserFilter(userIdx, userFilterIdx);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateOccupationFilter(int userIdx, List<String> occupation) throws BaseException {
+        try {
+            int userFilterIdx = 0;
+            for(int i = 0; i < occupation.size(); i++){
+                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, occupation.get(i));
+                if(userFilterIdx == 0) {
+                    matchDao.createOccupationFilter(userIdx, occupation.get(i));
+                }
+                matchDao.updateUserFilter(userIdx, userFilterIdx);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateInterestsFilter(int userIdx, List<String> interests) throws BaseException {
+        try {
+            int userFilterIdx = 0;
+            for(int i = 0; i < interests.size(); i++){
+                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, interests.get(i));
+                if(userFilterIdx == 0) {
+                    matchDao.createInterestsFilter(userIdx, interests.get(i));
+                }
+                matchDao.updateUserFilter(userIdx, userFilterIdx);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteUserFilter(int userIdx, List<Integer> userFilterIdxlist) throws BaseException {
+        try {
+            for(int i = 0; i < userFilterIdxlist.size(); i++){
+                // 존재하는 active userFilterIdx인 경우에만 삭제 가능
+                if(matchProvider.checkUserFilterByIdx(userIdx, userFilterIdxlist.get(i)) == 1){
+                    matchDao.deleteUserFilter(userIdx, userFilterIdxlist.get(i));
+                }
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createProjectTypeFilter(int userIdx, List<String> type) throws BaseException {
+        try {
+            for(int i = 0; i < type.size(); i++){
+                matchDao.createProjectTypeFilter(userIdx, type.get(i));
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createProjectRegionFilter(int userIdx, List<String> region) throws BaseException {
+        try {
+            for(int i = 0; i < region.size(); i++){
+                matchDao.createProjectRegionFilter(userIdx, region.get(i));
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createProjectInterestsFilter(int userIdx, List<String> interests) throws BaseException {
+        try {
+            for(int i = 0; i < interests.size(); i++){
+                matchDao.createProjectInterestsFilter(userIdx, interests.get(i));
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateProjectTypeFilter(int userIdx, List<String> type) throws BaseException {
+        try {
+            int projectFilterIdx = 0;
+            for(int i = 0; i < type.size(); i++){
+                // 기존 존재 여부 확인
+                projectFilterIdx = matchProvider.checkProjectFilterByName(userIdx, type.get(i));
+                // 존재하지 않으면 새로 추가
+                if(projectFilterIdx == 0){
+                    matchDao.createProjectTypeFilter(userIdx, type.get(i));
+                }
+                // 이전에 추가됐던 것이라면 status만 업데이트
+                else {
+                    matchDao.updateProjectFilter(userIdx, projectFilterIdx);
+                }
+
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateProjectRegionFilter(int userIdx, List<String> region) throws BaseException {
+        try {
+            int projectFilterIdx = 0;
+            for(int i = 0; i < region.size(); i++){
+                projectFilterIdx = matchProvider.checkProjectFilterByName(userIdx, region.get(i));
+                if(projectFilterIdx == 0){
+                    matchDao.createProjectRegionFilter(userIdx, region.get(i));
+                }
+                matchDao.updateProjectFilter(userIdx, projectFilterIdx);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateProjectInterestsFilter(int userIdx, List<String> interests) throws BaseException {
+        try {
+            int projectFilterIdx = 0;
+            for(int i = 0; i < interests.size(); i++){
+                projectFilterIdx = matchProvider.checkProjectFilterByName(userIdx, interests.get(i));
+                if(projectFilterIdx == 0) {
+                    matchDao.createProjectInterestsFilter(userIdx, interests.get(i));
+                }
+                matchDao.updateProjectFilter(userIdx, projectFilterIdx);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteProjectFilter(int userIdx, List<Integer> projectFilterIdxlist) throws BaseException {
+        try {
+            for(int i = 0; i < projectFilterIdxlist.size(); i++){
+                // 존재하는 active projectFilterIdx인 경우에만 삭제 가능
+                if(matchProvider.checkProjectFilterByIdx(userIdx, projectFilterIdxlist.get(i)) == 1){
+                    matchDao.deleteProjectFilter(userIdx, projectFilterIdxlist.get(i));
+                }
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }
