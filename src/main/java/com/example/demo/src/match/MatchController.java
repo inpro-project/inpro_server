@@ -244,19 +244,19 @@ public class MatchController {
 
             // 필터링 삭제
             if(patchUserFilterReq.getAgeRangeDelete() != null){
-                matchService.deleteFilter(userIdx, patchUserFilterReq.getAgeRangeDelete());
+                matchService.deleteUserFilter(userIdx, patchUserFilterReq.getAgeRangeDelete());
             }
 
             if(patchUserFilterReq.getRegionDelete() != null){
-                matchService.deleteFilter(userIdx, patchUserFilterReq.getRegionDelete());
+                matchService.deleteUserFilter(userIdx, patchUserFilterReq.getRegionDelete());
             }
 
             if(patchUserFilterReq.getOccupationDelete() != null){
-                matchService.deleteFilter(userIdx, patchUserFilterReq.getOccupationDelete());
+                matchService.deleteUserFilter(userIdx, patchUserFilterReq.getOccupationDelete());
             }
 
             if(patchUserFilterReq.getInterestsDelete() != null){
-                matchService.deleteFilter(userIdx, patchUserFilterReq.getInterestsDelete());
+                matchService.deleteUserFilter(userIdx, patchUserFilterReq.getInterestsDelete());
             }
 
             String result = "팀원 매칭 필터링이 수정되었습니다.";
@@ -311,6 +311,51 @@ public class MatchController {
 
             List<GetProjectFilterRes> getProjectFilterResList = matchProvider.getProjectFilters(userIdx);
             return new BaseResponse<>(getProjectFilterResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 팀 매칭 필터링 수정 API
+     * [PATCH] /app/project-filters
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "팀 매칭 필터링 수정 API", notes = "성공시 '팀 매칭 필터링이 수정되었습니다.' 출력")
+    @ResponseBody
+    @PatchMapping("/project-filters")
+    public BaseResponse<String> updateProjectFilter(@RequestBody PatchProjectFilterReq patchProjectFilterReq){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            // 필터링 추가(새로 추가 or status 업데이트)
+            if(patchProjectFilterReq.getTypeInsert() != null){
+                matchService.updateProjectTypeFilter(userIdx, patchProjectFilterReq.getTypeInsert());
+            }
+
+            if(patchProjectFilterReq.getRegionInsert() != null){
+                matchService.updateProjectRegionFilter(userIdx, patchProjectFilterReq.getRegionInsert());
+            }
+
+            if(patchProjectFilterReq.getInterestsInsert() != null){
+                matchService.updateProjectInterestsFilter(userIdx, patchProjectFilterReq.getInterestsInsert());
+            }
+
+            // 필터링 삭제
+            if(patchProjectFilterReq.getTypeDelete() != null){
+                matchService.deleteProjectFilter(userIdx, patchProjectFilterReq.getTypeDelete());
+            }
+
+            if(patchProjectFilterReq.getRegionDelete() != null){
+                matchService.deleteProjectFilter(userIdx, patchProjectFilterReq.getRegionDelete());
+            }
+
+            if(patchProjectFilterReq.getInterestsDelete() != null){
+                matchService.deleteProjectFilter(userIdx, patchProjectFilterReq.getInterestsDelete());
+            }
+
+            String result = "팀 매칭 필터링이 수정되었습니다.";
+            return new BaseResponse<>(result);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

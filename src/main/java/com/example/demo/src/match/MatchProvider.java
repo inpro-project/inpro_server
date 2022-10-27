@@ -120,4 +120,20 @@ public class MatchProvider {
         }
     }
 
+    public int checkProjectFilterByName(int userIdx, String name) throws BaseException {
+        try {
+            return matchDao.checkProjectFilterByName(userIdx, name);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkProjectFilterByIdx(int userIdx, int projectFilterIdx) throws BaseException {
+        try {
+            return matchDao.checkProjectFilterByIdx(userIdx, projectFilterIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }
