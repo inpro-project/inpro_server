@@ -2,8 +2,12 @@ package com.example.demo.src.report;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.report.model.GetBlockedUserRes;
 import com.example.demo.src.report.model.PostBlockRes;
+import com.example.demo.src.report.model.PostReportReq;
+import com.example.demo.src.report.model.PostReportRes;
+import com.example.demo.src.user.model.PatchUserReq;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -11,8 +15,12 @@ import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @Slf4j
 @ApiResponses({
@@ -94,6 +102,91 @@ public class ReportController {
 
             List<GetBlockedUserRes> getBlockedUserResList = reportProvider.getBlockedUsers(userIdx);
             return new BaseResponse<>(getBlockedUserResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 신고하기 API
+     * [POST] /app/reports/:reportedUserIdx
+     * @return BaseResponse<PostReportRes>
+     */
+    @ApiOperation(value = "신고하기 API")
+    @ApiResponses({
+            @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
+            @ApiResponse(code = 331, message = "신고 카테고리를 입력해주세요."),
+            @ApiResponse(code = 332, message = "일반 파일은 5개 이하 첨부 가능합니다."),
+            @ApiResponse(code = 333, message = "사진 파일은 5개 이하 첨부 가능합니다."),
+            @ApiResponse(code = 334, message = "doc(docx), hwp, pdf, xls(xlsx) 확장자의 일반 파일만 업로드 가능합니다."),
+            @ApiResponse(code = 335, message = "jpeg, jpg, png, gif, bmp 확장자의 사진 파일만 업로드 가능합니다."),
+            @ApiResponse(code = 416, message = "신고 사진 첨부에 실패하였습니다."),
+            @ApiResponse(code = 417, message = "신고 파일 첨부에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PostMapping("/reports/{reportedUserIdx}")
+    public BaseResponse<PostReportRes> createReport(@PathVariable("reportedUserIdx") int reportedUserIdx
+            , @RequestPart(value = "reportImgs", required = false) List<MultipartFile> reportImgs
+            , @RequestPart(value = "reportFiles", required = false) List<MultipartFile> reportFiles
+            , @RequestPart(value = "postReportReq") PostReportReq postReportReq) {
+        try {
+            // 신고 카테고리 유효성 검사
+            if(postReportReq.getCategory() == null){
+                return new BaseResponse<>(POST_REPORT_EMPTY_CATEGORY);
+            }
+
+            int userIdx = jwtService.getUserIdx();
+
+            if(reportImgs != null){
+                // 이미지 파일 개수 제한 유효성 검사
+                if(reportImgs.size() > 5){
+                    return new BaseResponse<>(POST_REPORTIMG_MAX);
+                }
+                else {
+                    // 이미지 파일 형식 유효성 검사 - 하나라도 올바르지 않으면 전체 업로드 불가능
+                    for(int i = 0; i < reportImgs.size(); i++){
+                        String originalFilename = reportImgs.get(i).getOriginalFilename();
+                        int index = originalFilename.lastIndexOf(".");
+                        String ext = originalFilename.substring(index + 1);
+                        if(ext == null || !(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif") || ext.equals("bmp"))){
+                            return new BaseResponse<>(POST_REPORTIMG_EXT);
+                        }
+                    }
+                }
+            }
+
+            if(reportFiles != null){
+                // 일반 파일 개수 제한 유효성 검사
+                if(reportFiles.size() > 5){
+                    return new BaseResponse<>(POST_REPORTFILE_MAX);
+                }
+                else {
+                    // 일반 파일 형식 유효성 검사 - 하나라도 올바르지 않으면 전체 업로드 불가능
+                    for(int i = 0; i < reportFiles.size(); i++){
+                        String originalFilename = reportFiles.get(i).getOriginalFilename();
+                        int index = originalFilename.lastIndexOf(".");
+                        String ext = originalFilename.substring(index + 1);
+                        if(ext == null || !(ext.equals("doc") || ext.equals("docx") || ext.equals("hwp") || ext.equals("pdf") || ext.equals("xls") || ext.equals("xlsx"))){
+                            return new BaseResponse<>(POST_REPORTFILE_EXT);
+                        }
+                    }
+                }
+            }
+
+            // 신고 카테고리, 내용 추가
+            PostReportRes postReportRes = reportService.createReport(userIdx, reportedUserIdx, postReportReq);
+
+            // 이미지 파일 추가
+            if(reportImgs != null){
+                reportService.createReportImgs(postReportRes.getReportIdx(), reportImgs);
+            }
+
+            // 일반 파일 추가
+            if(reportFiles != null){
+                reportService.createReportFiles(postReportRes.getReportIdx(), reportFiles);
+            }
+
+            return new BaseResponse<>(postReportRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
