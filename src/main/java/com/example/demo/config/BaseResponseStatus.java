@@ -78,6 +78,10 @@ public enum BaseResponseStatus {
 
     // [POST] /app/reports/:reportedUserIdx
     POST_REPORT_EMPTY_CATEGORY(false, 331, "신고 카테고리를 입력해주세요."),
+    POST_REPORTFILE_MAX(false, 332, "일반 파일은 5개 이하 첨부 가능합니다."),
+    POST_REPORTIMG_MAX(false, 333, "사진 파일은 5개 이하 첨부 가능합니다."),
+    POST_REPORTFILE_EXT(false, 334, "doc(docx), hwp, pdf, xls(xlsx) 확장자의 일반 파일만 업로드 가능합니다."),
+    POST_REPORTIMG_EXT(false, 335, "jpeg, jpg, png, gif, bmp 확장자의 사진 파일만 업로드 가능합니다."),
 
 
     /**

@@ -3,7 +3,6 @@ package com.example.demo.src.report;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.demo.config.BaseException;
-import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.report.model.PostBlockRes;
 import com.example.demo.src.report.model.PostReportReq;
 import com.example.demo.src.report.model.PostReportRes;
@@ -107,10 +106,10 @@ public class ReportService {
 
     public void createReportImgs(int reportIdx, List<MultipartFile> multipartFile) throws BaseException {
         try {
-            String reportImgUrl = null;
             for(int i = 0; i < multipartFile.size(); i++){
-                reportImgUrl = getReportImgUrl(multipartFile.get(i));
-                int result = reportDao.createReportImgs(reportIdx, reportImgUrl);
+                String originalFileName = multipartFile.get(i).getOriginalFilename();
+                String reportImgUrl = getReportImgUrl(multipartFile.get(i));
+                int result = reportDao.createReportImgs(reportIdx, originalFileName, reportImgUrl);
                 if(result == 0){
                     throw new BaseException(FAIL_REPORTIMG);
                 }
@@ -140,10 +139,10 @@ public class ReportService {
 
     public void createReportFiles(int reportIdx, List<MultipartFile> multipartFile) throws BaseException {
         try {
-            String reportFileUrl = null;
             for(int i = 0; i < multipartFile.size(); i++){
-                reportFileUrl = getReportFileUrl(multipartFile.get(i));
-                int result = reportDao.createReportFiles(reportIdx, reportFileUrl);
+                String originalFileName = multipartFile.get(i).getOriginalFilename();
+                String reportFileUrl = getReportFileUrl(multipartFile.get(i));
+                int result = reportDao.createReportFiles(reportIdx, originalFileName, reportFileUrl);
                 if(result == 0){
                     throw new BaseException(FAIL_REPORTFILE);
                 }
@@ -153,7 +152,7 @@ public class ReportService {
         }
     }
 
-    public String getReportFileUrl(MultipartFile multipartFile) throws IOException {
+    public String getReportFileUrl(MultipartFile multipartFile) throws IOException, BaseException {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
         objectMetadata.setContentLength(multipartFile.getSize());

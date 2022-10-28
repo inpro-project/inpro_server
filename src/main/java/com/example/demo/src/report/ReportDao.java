@@ -95,16 +95,16 @@ public class ReportDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
-    public int createReportImgs(int reportIdx, String reportImgUrl) {
-        String createReportImgsQuery = "insert into ReportFile (reportIdx, type, reportUrl) VALUES (?, 'Y', ?)";
-        Object[] createReportImgsParams = new Object[]{reportIdx, reportImgUrl};
+    public int createReportImgs(int reportIdx, String fileName, String reportImgUrl) {
+        String createReportImgsQuery = "insert into ReportFile (reportIdx, type, fileName, reportUrl) VALUES (?, 'Y', ?, ?)";
+        Object[] createReportImgsParams = new Object[]{reportIdx, fileName, reportImgUrl};
 
         return this.jdbcTemplate.update(createReportImgsQuery, createReportImgsParams);
     }
 
-    public int createReportFiles(int reportIdx, String reportFileUrl) {
-        String createReportFilesQuery = "insert into ReportFile (reportIdx, type, reportUrl) VALUES (?, 'N', ?)";
-        Object[] createReportFilesParams = new Object[]{reportIdx, reportFileUrl};
+    public int createReportFiles(int reportIdx, String fileName, String reportFileUrl) {
+        String createReportFilesQuery = "insert into ReportFile (reportIdx, type, fileName, reportUrl) VALUES (?, 'N', ?, ?)";
+        Object[] createReportFilesParams = new Object[]{reportIdx, fileName, reportFileUrl};
 
         return this.jdbcTemplate.update(createReportFilesQuery, createReportFilesParams);
     }
