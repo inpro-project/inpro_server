@@ -18,16 +18,16 @@ public class KakaoProvider {
     private final KakaoDao kakaoDao;
     private final JwtService jwtService;
 
-    public int checkEmail(String email) throws BaseException {
+    public int checkIdToken(long idToken) throws BaseException {
         try {
-            return kakaoDao.checkEmail(email);
+            return kakaoDao.checkIdToken(idToken);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public OAuthLoginRes logIn(String email) throws BaseException {
-        User user = kakaoDao.getUser(email);
+    public OAuthLoginRes logIn(long idToken) throws BaseException {
+        User user = kakaoDao.getUser(idToken);
 
         // 유저 상태 유효성 검사
         if(user.getStatus().equals("inactive")) {

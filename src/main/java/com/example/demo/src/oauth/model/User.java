@@ -8,6 +8,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class User {
     private int userIdx;
+    private long idToken;
     private String email;
     private String nickName;
     private String userImgUrl;

@@ -24,21 +24,22 @@ public class KakaoDao {
         this.jdbcTemplate.update(createUserQuery, createUserParams);
     }
 
-    public int checkEmail(String email){
-        String checkEmailQuery = "select exists(select email from User where email = ?)";
-        String checkEmailParams = email;
-        return this.jdbcTemplate.queryForObject(checkEmailQuery,
+    public int checkIdToken(long idToken){
+        String checkIdTokenQuery = "select exists(select idToken from User where idToken = ?)";
+        long checkIdTokenParams = idToken;
+        return this.jdbcTemplate.queryForObject(checkIdTokenQuery,
                 int.class,
-                checkEmailParams);
+                checkIdTokenParams);
     }
 
-    public User getUser(String email){
-        String getUserQuery = "select userIdx, email, nickname, userImgUrl, ageRange, gender, status from User where email = ?";
-        String getUserParams = email;
+    public User getUser(long idToken){
+        String getUserQuery = "select userIdx, idToken, email, nickname, userImgUrl, ageRange, gender, status from User where idToken = ?";
+        long getUserParams = idToken;
 
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs,rowNum)-> new User(
                         rs.getInt("userIdx"),
+                        rs.getLong("idToken"),
                         rs.getString("email"),
                         rs.getString("nickName"),
                         rs.getString("userImgUrl"),

@@ -30,7 +30,7 @@ public class OAuthController {
      * [GET] /oauth/kakao
      * @return BaseResponse<OAuthLoginRes>
      */
-    @ApiOperation(value = "kakao login API")
+    @ApiOperation(value = "kakao login API", notes = "header의 Authorization 값으로 accessToken을 전달해주면(Request) userIdx와 jwt가 발급됨(Response)")
     @ResponseBody
     @GetMapping("/kakao")
     public BaseResponse<OAuthLoginRes> kakaoLogin() throws JsonProcessingException {

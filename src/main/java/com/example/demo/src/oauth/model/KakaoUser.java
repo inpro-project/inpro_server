@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 public class KakaoUser {
+    private long idToken;
     private String email;
     private String nickName;
     private String userImgUrl;
