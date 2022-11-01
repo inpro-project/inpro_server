@@ -113,7 +113,7 @@ public class MatchController {
     @ApiOperation(value = "유저 넘기기 취소 API", notes = "성공 시 result로 '넘기기가 취소되었습니다.' 출력")
     @ApiResponses({
             @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
-            @ApiResponse(code = 328, message = "기존에 넘기기를 누르지 않은 유저입니다."),
+            @ApiResponse(code = 336, message = "기존에 넘기기를 누르지 않은 유저입니다."),
             @ApiResponse(code = 418, message = "유저 넘기기 취소에 실패하였습니다.")
     })
     @ResponseBody

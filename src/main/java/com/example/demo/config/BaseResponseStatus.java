@@ -78,13 +78,23 @@ public enum BaseResponseStatus {
 
     // [POST] /app/reports/:reportedUserIdx
     POST_REPORT_EMPTY_CATEGORY(false, 331, "신고 카테고리를 입력해주세요."),
-    POST_REPORTFILE_MAX(false, 332, "일반 파일은 5개 이하 첨부 가능합니다."),
-    POST_REPORTIMG_MAX(false, 333, "사진 파일은 5개 이하 첨부 가능합니다."),
-    POST_REPORTFILE_EXT(false, 334, "doc(docx), hwp, pdf, xls(xlsx) 확장자의 일반 파일만 업로드 가능합니다."),
-    POST_REPORTIMG_EXT(false, 335, "jpeg, jpg, png, gif, bmp 확장자의 사진 파일만 업로드 가능합니다."),
+
+    // [POST] /app/reports/:reportedUserIdx, [POST] /app/teams
+    POST_FILE_MAX(false, 332, "일반 파일은 5개 이하 첨부 가능합니다."),
+    POST_IMG_MAX(false, 333, "사진 파일은 5개 이하 첨부 가능합니다."),
+    POST_FILE_EXT(false, 334, "doc(docx), hwp, pdf, xls(xlsx) 확장자의 일반 파일만 업로드 가능합니다."),
+    POST_IMG_EXT(false, 335, "jpeg, jpg, png, gif, bmp 확장자의 사진 파일만 업로드 가능합니다."),
 
     // [PATCH] /app/user-passes/:passingIdx
-    UNUSERPASS_INVALID_PASSINGIDX(false, 328, "기존에 넘기기를 누르지 않은 유저입니다."),
+    UNUSERPASS_INVALID_PASSINGIDX(false, 336, "기존에 넘기기를 누르지 않은 유저입니다."),
+
+    // [POST] /app/teams
+    POST_TEAM_EMPTY_TITLE(false, 337, "제목을 입력해주세요."),
+    POST_TEAM_MAXSIZE_TITLE(false, 338, "제목은 20글자까지 입력이 가능합니다."),
+    POST_TEAM_EMPTY_CONTENT(false, 339, "내용을 입력해주세요."),
+    POST_TEAM_EMPTY_TYPE(false, 340, "팀 유형을 입력해주세요."),
+    POST_TEAM_EMPTY_REGION(false, 341, "지역을 입력해주세요"),
+    POST_TEAM_EMPTY_INTERESTS(false, 342, "분야를 입력해주세요."),
 
 
     /**
@@ -132,12 +142,15 @@ public enum BaseResponseStatus {
     // [PATCH] /app/blocks/:blockedUserIdx
     FAIL_UNBLOCK(false, 415, "유저 차단 해제에 실패하였습니다."),
 
-    // [POST] /app/reports/:reportedUserIdx
-    FAIL_REPORTIMG(false, 416, "신고 사진 첨부에 실패하였습니다."),
-    FAIL_REPORTFILE(false, 417, "신고 파일 첨부에 실패하였습니다."),
+    // [POST] /app/reports/:reportedUserIdx, [POST] /app/teams
+    FAIL_IMG(false, 416, "사진 파일 첨부에 실패하였습니다."),
+    FAIL_FILE(false, 417, "일반 파일 첨부에 실패하였습니다."),
 
     // [PATCH] /app/user-passes/:passingIdx
-    FAIL_UNUSERPASS(false, 418, "유저 넘기기 취소에 실패하였습니다.");
+    FAIL_UNUSERPASS(false, 418, "유저 넘기기 취소에 실패하였습니다."),
+
+    // [POST] /app/teams
+    FAIL_MEMBER(false, 419, "멤버 등록에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;
