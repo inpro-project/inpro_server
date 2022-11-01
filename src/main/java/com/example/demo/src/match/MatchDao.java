@@ -247,65 +247,65 @@ public class MatchDao {
         this.jdbcTemplate.update(deleteUserFilterQuery, deleteUserFilterParams);
     }
 
-    public void createProjectTypeFilter(int userIdx, String name){
-        String createProjectTypeFilterQuery = "insert into ProjectFilter (userIdx, category, name) values (?, 1, ?)";
-        Object[] createProjectTypeFilterParams = new Object[]{userIdx, name};
-        this.jdbcTemplate.update(createProjectTypeFilterQuery, createProjectTypeFilterParams);
+    public void createTeamTypeFilter(int userIdx, String name){
+        String createTeamTypeFilterQuery = "insert into TeamFilter (userIdx, category, name) values (?, 1, ?)";
+        Object[] createTeamTypeFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createTeamTypeFilterQuery, createTeamTypeFilterParams);
     }
 
-    public void createProjectRegionFilter(int userIdx, String name){
-        String createProjectRegionFilterQuery = "insert into ProjectFilter (userIdx, category, name) values (?, 2, ?)";
-        Object[] createProjectRegionFilterParams = new Object[]{userIdx, name};
-        this.jdbcTemplate.update(createProjectRegionFilterQuery, createProjectRegionFilterParams);
+    public void createTeamRegionFilter(int userIdx, String name){
+        String createTeamRegionFilterQuery = "insert into TeamFilter (userIdx, category, name) values (?, 2, ?)";
+        Object[] createTeamRegionFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createTeamRegionFilterQuery, createTeamRegionFilterParams);
     }
 
-    public void createProjectInterestsFilter(int userIdx, String name){
-        String createProjectInterestsFilterQuery = "insert into ProjectFilter (userIdx, category, name) values (?, 3, ?)";
-        Object[] createProjectInterestsFilterParams = new Object[]{userIdx, name};
-        this.jdbcTemplate.update(createProjectInterestsFilterQuery, createProjectInterestsFilterParams);
+    public void createTeamInterestsFilter(int userIdx, String name){
+        String createTeamInterestsFilterQuery = "insert into TeamFilter (userIdx, category, name) values (?, 3, ?)";
+        Object[] createTeamInterestsFilterParams = new Object[]{userIdx, name};
+        this.jdbcTemplate.update(createTeamInterestsFilterQuery, createTeamInterestsFilterParams);
     }
 
-    public List<GetProjectFilterRes> getProjectFilters(int userIdx){
-        String getProjectFiltersQuery = "select projectFilterIdx, category, name\n" +
-                "from ProjectFilter\n" +
+    public List<GetTeamFilterRes> getTeamFilters(int userIdx){
+        String getTeamFiltersQuery = "select teamFilterIdx, category, name\n" +
+                "from TeamFilter\n" +
                 "where userIdx = ? and status = 'active'\n" +
                 "order by category";
-        int getProjectFiltersParams = userIdx;
-        return this.jdbcTemplate.query(getProjectFiltersQuery,
-                (rs, rsNum) -> new GetProjectFilterRes(
-                        rs.getInt("projectFilterIdx"),
+        int getTeamFiltersParams = userIdx;
+        return this.jdbcTemplate.query(getTeamFiltersQuery,
+                (rs, rsNum) -> new GetTeamFilterRes(
+                        rs.getInt("teamFilterIdx"),
                         rs.getInt("category"),
                         rs.getString("name")),
-                getProjectFiltersParams);
+                getTeamFiltersParams);
     }
 
-    public int checkProjectFilterByName(int userIdx, String name){
-        String checkProjectFilterByNameQuery = "select case when count(*) = 0 then 0 else projectFilterIdx end as projectFilterIdx\n" +
-                "    from ProjectFilter where userIdx = ? and name like concat('%', ?,'%')";
-        Object[] checkProjectFilterByNameParams = new Object[]{userIdx, name};
-        return this.jdbcTemplate.queryForObject(checkProjectFilterByNameQuery,
+    public int checkTeamFilterByName(int userIdx, String name){
+        String checkTeamFilterByNameQuery = "select case when count(*) = 0 then 0 else teamFilterIdx end as teamFilterIdx\n" +
+                "    from TeamFilter where userIdx = ? and name like concat('%', ?,'%')";
+        Object[] checkTeamFilterByNameParams = new Object[]{userIdx, name};
+        return this.jdbcTemplate.queryForObject(checkTeamFilterByNameQuery,
                 int.class,
-                checkProjectFilterByNameParams);
+                checkTeamFilterByNameParams);
     }
 
-    public int checkProjectFilterByIdx(int userIdx, int projectFilterIdx){
-        String checkProjectFilterByIdxQuery = "select exists(select projectFilterIdx from ProjectFilter where userIdx = ? and projectFilterIdx = ? and status = 'active')";
-        Object[] checkProjectFilterByIdxParams = new Object[]{userIdx, projectFilterIdx};
-        return this.jdbcTemplate.queryForObject(checkProjectFilterByIdxQuery,
+    public int checkTeamFilterByIdx(int userIdx, int teamFilterIdx){
+        String checkTeamFilterByIdxQuery = "select exists(select teamFilterIdx from TeamFilter where userIdx = ? and teamFilterIdx = ? and status = 'active')";
+        Object[] checkTeamFilterByIdxParams = new Object[]{userIdx, teamFilterIdx};
+        return this.jdbcTemplate.queryForObject(checkTeamFilterByIdxQuery,
                 int.class,
-                checkProjectFilterByIdxParams);
+                checkTeamFilterByIdxParams);
     }
 
-    public void updateProjectFilter(int userIdx, int projectFilterIdx){
-        String updateAgeRangeFilterQuery = "update ProjectFilter set status = 'active' where userIdx = ? and projectFilterIdx = ?";
-        Object[] updateAgeRangeFilterParams = new Object[]{userIdx, projectFilterIdx};
-        this.jdbcTemplate.update(updateAgeRangeFilterQuery, updateAgeRangeFilterParams);
+    public void updateTeamFilter(int userIdx, int teamFilterIdx){
+        String updateTeamFilterQuery = "update TeamFilter set status = 'active' where userIdx = ? and teamFilterIdx = ?";
+        Object[] updateTeamFilterParams = new Object[]{userIdx, teamFilterIdx};
+        this.jdbcTemplate.update(updateTeamFilterQuery, updateTeamFilterParams);
     }
 
-    public void deleteProjectFilter(int userIdx, Integer projectFilterIdx){
-        String deleteFilterQuery = "update ProjectFilter set status = 'deleted' where userIdx = ? and projectFilterIdx = ?";
-        Object[] deleteFilterParams = new Object[]{userIdx, projectFilterIdx};
-        this.jdbcTemplate.update(deleteFilterQuery, deleteFilterParams);
+    public void deleteTeamFilter(int userIdx, Integer teamFilterIdx){
+        String deleteTeamFilterQuery = "update TeamFilter set status = 'deleted' where userIdx = ? and teamFilterIdx = ?";
+        Object[] deleteTeamFilterParams = new Object[]{userIdx, teamFilterIdx};
+        this.jdbcTemplate.update(deleteTeamFilterQuery, deleteTeamFilterParams);
     }
 
 }

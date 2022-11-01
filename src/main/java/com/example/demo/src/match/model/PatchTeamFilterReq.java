@@ -10,7 +10,7 @@ import java.util.List;
 @Getter @Setter
 @AllArgsConstructor
 @ApiModel(value = "팀 매칭 필터링 수정 API Request")
-public class PatchProjectFilterReq {
+public class PatchTeamFilterReq {
     private List<String> typeInsert;
     private List<Integer> typeDelete;
 

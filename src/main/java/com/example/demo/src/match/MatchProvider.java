@@ -111,26 +111,26 @@ public class MatchProvider {
         }
     }
 
-    public List<GetProjectFilterRes> getProjectFilters(int userIdx) throws BaseException {
+    public List<GetTeamFilterRes> getTeamFilters(int userIdx) throws BaseException {
         try {
-            List<GetProjectFilterRes> getProjectFilterResList = matchDao.getProjectFilters(userIdx);
-            return getProjectFilterResList;
+            List<GetTeamFilterRes> getTeamFilterResList = matchDao.getTeamFilters(userIdx);
+            return getTeamFilterResList;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public int checkProjectFilterByName(int userIdx, String name) throws BaseException {
+    public int checkTeamFilterByName(int userIdx, String name) throws BaseException {
         try {
-            return matchDao.checkProjectFilterByName(userIdx, name);
+            return matchDao.checkTeamFilterByName(userIdx, name);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public int checkProjectFilterByIdx(int userIdx, int projectFilterIdx) throws BaseException {
+    public int checkTeamFilterByIdx(int userIdx, int teamFilterIdx) throws BaseException {
         try {
-            return matchDao.checkProjectFilterByIdx(userIdx, projectFilterIdx);
+            return matchDao.checkTeamFilterByIdx(userIdx, teamFilterIdx);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

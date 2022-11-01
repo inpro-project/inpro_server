@@ -293,26 +293,26 @@ public class MatchController {
 
     /**
      * 팀 매칭 필터링 등록 API
-     * [POST] /app/project-filters
+     * [POST] /app/team-filters
      * @return BaseResponse<String>
      */
     @ApiOperation(value = "팀 매칭 필터링 등록 API", notes = "성공시 '팀 매칭 필터링이 등록되었습니다.' 출력")
     @ResponseBody
-    @PostMapping("/project-filters")
-    public BaseResponse<String> createProjectFilter(@RequestBody PostProjectFilterReq postProjectFilterReq){
+    @PostMapping("/team-filters")
+    public BaseResponse<String> createTeamFilter(@RequestBody PostTeamFilterReq postTeamFilterReq){
         try {
             int userIdx = jwtService.getUserIdx();
 
-           if(postProjectFilterReq.getType() != null){
-               matchService.createProjectTypeFilter(userIdx, postProjectFilterReq.getType());
+           if(postTeamFilterReq.getType() != null){
+               matchService.createTeamTypeFilter(userIdx, postTeamFilterReq.getType());
            }
 
-            if(postProjectFilterReq.getRegion() != null){
-                matchService.createProjectRegionFilter(userIdx, postProjectFilterReq.getRegion());
+            if(postTeamFilterReq.getRegion() != null){
+                matchService.createTeamRegionFilter(userIdx, postTeamFilterReq.getRegion());
             }
 
-            if(postProjectFilterReq.getInterests() != null){
-                matchService.createProjectInterestsFilter(userIdx, postProjectFilterReq.getInterests());
+            if(postTeamFilterReq.getInterests() != null){
+                matchService.createTeamInterestsFilter(userIdx, postTeamFilterReq.getInterests());
             }
 
             String result = "팀 매칭 필터링이 등록되었습니다.";
@@ -324,18 +324,18 @@ public class MatchController {
 
     /**
      * 팀 매칭 필터링 조회 API
-     * [GET] /app/project-filters
-     * @return BaseResponse<List<GetProjectFilterRes>>
+     * [GET] /app/team-filters
+     * @return BaseResponse<List<GetTeamFilterRes>>
      */
     @ApiOperation(value = "팀 매칭 필터링 조회 API")
     @ResponseBody
-    @GetMapping("/project-filters")
-    public BaseResponse<List<GetProjectFilterRes>> getProjectFilters(){
+    @GetMapping("/team-filters")
+    public BaseResponse<List<GetTeamFilterRes>> getTeamFilters(){
         try {
             int userIdx = jwtService.getUserIdx();
 
-            List<GetProjectFilterRes> getProjectFilterResList = matchProvider.getProjectFilters(userIdx);
-            return new BaseResponse<>(getProjectFilterResList);
+            List<GetTeamFilterRes> getTeamFilterResList = matchProvider.getTeamFilters(userIdx);
+            return new BaseResponse<>(getTeamFilterResList);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
@@ -343,40 +343,40 @@ public class MatchController {
 
     /**
      * 팀 매칭 필터링 수정 API
-     * [PATCH] /app/project-filters
+     * [PATCH] /app/team-filters
      * @return BaseResponse<String>
      */
     @ApiOperation(value = "팀 매칭 필터링 수정 API", notes = "성공시 '팀 매칭 필터링이 수정되었습니다.' 출력")
     @ResponseBody
-    @PatchMapping("/project-filters")
-    public BaseResponse<String> updateProjectFilter(@RequestBody PatchProjectFilterReq patchProjectFilterReq){
+    @PatchMapping("/team-filters")
+    public BaseResponse<String> updateTeamFilter(@RequestBody PatchTeamFilterReq patchTeamFilterReq){
         try {
             int userIdx = jwtService.getUserIdx();
 
             // 필터링 추가(새로 추가 or status 업데이트)
-            if(patchProjectFilterReq.getTypeInsert() != null){
-                matchService.updateProjectTypeFilter(userIdx, patchProjectFilterReq.getTypeInsert());
+            if(patchTeamFilterReq.getTypeInsert() != null){
+                matchService.updateTeamTypeFilter(userIdx, patchTeamFilterReq.getTypeInsert());
             }
 
-            if(patchProjectFilterReq.getRegionInsert() != null){
-                matchService.updateProjectRegionFilter(userIdx, patchProjectFilterReq.getRegionInsert());
+            if(patchTeamFilterReq.getRegionInsert() != null){
+                matchService.updateTeamRegionFilter(userIdx, patchTeamFilterReq.getRegionInsert());
             }
 
-            if(patchProjectFilterReq.getInterestsInsert() != null){
-                matchService.updateProjectInterestsFilter(userIdx, patchProjectFilterReq.getInterestsInsert());
+            if(patchTeamFilterReq.getInterestsInsert() != null){
+                matchService.updateTeamInterestsFilter(userIdx, patchTeamFilterReq.getInterestsInsert());
             }
 
             // 필터링 삭제
-            if(patchProjectFilterReq.getTypeDelete() != null){
-                matchService.deleteProjectFilter(userIdx, patchProjectFilterReq.getTypeDelete());
+            if(patchTeamFilterReq.getTypeDelete() != null){
+                matchService.deleteTeamFilter(userIdx, patchTeamFilterReq.getTypeDelete());
             }
 
-            if(patchProjectFilterReq.getRegionDelete() != null){
-                matchService.deleteProjectFilter(userIdx, patchProjectFilterReq.getRegionDelete());
+            if(patchTeamFilterReq.getRegionDelete() != null){
+                matchService.deleteTeamFilter(userIdx, patchTeamFilterReq.getRegionDelete());
             }
 
-            if(patchProjectFilterReq.getInterestsDelete() != null){
-                matchService.deleteProjectFilter(userIdx, patchProjectFilterReq.getInterestsDelete());
+            if(patchTeamFilterReq.getInterestsDelete() != null){
+                matchService.deleteTeamFilter(userIdx, patchTeamFilterReq.getInterestsDelete());
             }
 
             String result = "팀 매칭 필터링이 수정되었습니다.";

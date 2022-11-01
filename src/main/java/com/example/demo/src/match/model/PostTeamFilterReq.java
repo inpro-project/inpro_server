@@ -10,7 +10,7 @@ import java.util.List;
 @Getter @Setter
 @AllArgsConstructor
 @ApiModel(value = "팀 매칭 필터링 등록 API Request")
-public class PostProjectFilterReq {
+public class PostTeamFilterReq {
     private List<String> type;
     private List<String> region;
     private List<String> interests;
