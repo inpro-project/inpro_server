@@ -103,6 +103,13 @@ public class MatchDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
+    public int deleteUserPass(int passerIdx, int passingIdx){
+        String deleteUserPassQuery = "update UserPass set status = 'deleted' where passerIdx = ? and passingIdx = ?";
+        Object[] deleteUserPassParams = new Object[]{passerIdx, passingIdx};
+
+        return this.jdbcTemplate.update(deleteUserPassQuery, deleteUserPassParams);
+    }
+
     public List<GetUserLikingRes> getUserLikings(int userIdx){
         String getUserLikingsQuery = "select userIdx as likingIdx, nickName, userImgUrl\n" +
                 ", gender, ageRange, region, occupation, interests\n" +

@@ -83,6 +83,9 @@ public enum BaseResponseStatus {
     POST_REPORTFILE_EXT(false, 334, "doc(docx), hwp, pdf, xls(xlsx) 확장자의 일반 파일만 업로드 가능합니다."),
     POST_REPORTIMG_EXT(false, 335, "jpeg, jpg, png, gif, bmp 확장자의 사진 파일만 업로드 가능합니다."),
 
+    // [PATCH] /app/user-passes/:passingIdx
+    UNUSERPASS_INVALID_PASSINGIDX(false, 328, "기존에 넘기기를 누르지 않은 유저입니다."),
+
 
     /**
      * 400 : Response, Database, Server 오류
@@ -131,7 +134,10 @@ public enum BaseResponseStatus {
 
     // [POST] /app/reports/:reportedUserIdx
     FAIL_REPORTIMG(false, 416, "신고 사진 첨부에 실패하였습니다."),
-    FAIL_REPORTFILE(false, 417, "신고 파일 첨부에 실패하였습니다.");
+    FAIL_REPORTFILE(false, 417, "신고 파일 첨부에 실패하였습니다."),
+
+    // [PATCH] /app/user-passes/:passingIdx
+    FAIL_UNUSERPASS(false, 418, "유저 넘기기 취소에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;

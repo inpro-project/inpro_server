@@ -118,6 +118,28 @@ public class MatchService {
         }
     }
 
+    public void deleteUserPass(int passerIdx, int passingIdx) throws BaseException {
+        // passingIdx 유효성 검사
+        if(matchProvider.checkUserIdx(passingIdx) == 0){
+            throw new BaseException(INVALID_USERIDX);
+        }
+
+        // 넘기기를 누르지 않은 유저에 대해 넘기기 취소 요청을 할 경우
+        if(matchProvider.checkPreUserPass(passerIdx, passingIdx) == 0){
+            throw new BaseException(UNUSERPASS_INVALID_PASSINGIDX);
+        }
+
+        try {
+            int result = matchDao.deleteUserPass(passerIdx, passingIdx);
+            if(result == 0){
+                throw new BaseException(FAIL_UNUSERPASS);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
     public void createAgeRangeFilter(int userIdx, List<String> ageRange) throws BaseException {
         try {
             for(int i = 0; i < ageRange.size(); i++){
