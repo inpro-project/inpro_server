@@ -386,4 +386,28 @@ public class MatchController {
         }
     }
 
+    /**
+     * 팀 좋아요 API
+     * [POST] /app/team-likes/:likingIdx
+     * @return BaseResponse<PostTeamLikeRes>
+     */
+    @ApiOperation(value = "팀 좋아요 API")
+    @ApiResponses({
+            @ApiResponse(code = 343, message = "이미 좋아요를 누른 팀입니다."),
+            @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
+            @ApiResponse(code = 420, message = "팀 좋아요에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PostMapping("/team-likes/{likingIdx}")
+    public BaseResponse<PostTeamLikeRes> createTeamLike(@PathVariable("likingIdx") int likingIdx) {
+        try {
+            int likerIdx = jwtService.getUserIdx();
+
+            PostTeamLikeRes postTeamLikeRes = matchService.createTeamLike(likerIdx, likingIdx);
+            return new BaseResponse<>(postTeamLikeRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }

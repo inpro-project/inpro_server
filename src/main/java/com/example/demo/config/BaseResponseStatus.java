@@ -96,6 +96,9 @@ public enum BaseResponseStatus {
     POST_TEAM_EMPTY_REGION(false, 341, "지역을 입력해주세요"),
     POST_TEAM_EMPTY_INTERESTS(false, 342, "분야를 입력해주세요."),
 
+    // [POST] /app/team-likes/:likingIdx
+    TEAMLIKE_INVALID_LIKINGIDX(false, 343, "이미 좋아요를 누른 팀입니다."),
+
 
     /**
      * 400 : Response, Database, Server 오류
@@ -150,7 +153,10 @@ public enum BaseResponseStatus {
     FAIL_UNUSERPASS(false, 418, "유저 넘기기 취소에 실패하였습니다."),
 
     // [POST] /app/teams
-    FAIL_MEMBER(false, 419, "멤버 등록에 실패하였습니다.");
+    FAIL_MEMBER(false, 419, "멤버 등록에 실패하였습니다."),
+
+    // [POST] /app/team-likes/:likingIdx
+    FAIL_TEAMLIKE(false, 420, "팀 좋아요에 실패하였습니다.");
 
 
     private final boolean isSuccess;
