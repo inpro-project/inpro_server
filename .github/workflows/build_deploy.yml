@@ -22,13 +22,12 @@ jobs:
         distribution: 'temurin'
 
     - name: Make gradlew executable
-      run: chmod +x ./inpro_server/gradlew
+      run: chmod +x ./gradlew
 
     - name: Build with Gradle
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
       with:
-        arguments: build
-        build-root-directory: inpro_server
+        arguments: clean build
 
     - name: Login to DockerHub
       uses: docker/login-action@v1
