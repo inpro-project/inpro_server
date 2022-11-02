@@ -23,6 +23,17 @@ jobs:
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
+      
+    - name: Create secret java
+      run: |
+        mkdir ./src/main/java/com/example/demo/config/secret
+        echo '${{ secrets.SECRET_JAVA }}' > ./src/main/java/com/example/demo/config/secret/Secret.java
+        
+    - name: Create application yml and logback spring xml
+      run: |
+        mkdir ./src/main/resources/application.yml
+        echo '${{ secrets.APPLICATION_YML }}' > ./src/main/resources/application.yml
+        echo '${{ secrets.LOGBACK_SPRING_XML }}' > ./src/main/resources/logback-spring.xml
 
     - name: Build with Gradle
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
@@ -51,4 +62,4 @@ jobs:
 
       - name: deploy run
         run: |
-          sudo sh /home/ec2-user/run.sh
+          sudo sh /home/ubuntu/run.sh
