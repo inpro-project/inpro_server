@@ -120,8 +120,8 @@ public class ReportController {
             @ApiResponse(code = 333, message = "사진 파일은 5개 이하 첨부 가능합니다."),
             @ApiResponse(code = 334, message = "doc(docx), hwp, pdf, xls(xlsx) 확장자의 일반 파일만 업로드 가능합니다."),
             @ApiResponse(code = 335, message = "jpeg, jpg, png, gif, bmp 확장자의 사진 파일만 업로드 가능합니다."),
-            @ApiResponse(code = 416, message = "신고 사진 첨부에 실패하였습니다."),
-            @ApiResponse(code = 417, message = "신고 파일 첨부에 실패하였습니다.")
+            @ApiResponse(code = 416, message = "사진 파일 첨부에 실패하였습니다."),
+            @ApiResponse(code = 417, message = "일반 파일 첨부에 실패하였습니다.")
     })
     @ResponseBody
     @PostMapping("/reports/{reportedUserIdx}")
@@ -140,7 +140,7 @@ public class ReportController {
             if(reportImgs != null){
                 // 이미지 파일 개수 제한 유효성 검사
                 if(reportImgs.size() > 5){
-                    return new BaseResponse<>(POST_REPORTIMG_MAX);
+                    return new BaseResponse<>(POST_IMG_MAX);
                 }
                 else {
                     // 이미지 파일 형식 유효성 검사 - 하나라도 올바르지 않으면 전체 업로드 불가능
@@ -149,7 +149,7 @@ public class ReportController {
                         int index = originalFilename.lastIndexOf(".");
                         String ext = originalFilename.substring(index + 1);
                         if(ext == null || !(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif") || ext.equals("bmp"))){
-                            return new BaseResponse<>(POST_REPORTIMG_EXT);
+                            return new BaseResponse<>(POST_IMG_EXT);
                         }
                     }
                 }
@@ -158,7 +158,7 @@ public class ReportController {
             if(reportFiles != null){
                 // 일반 파일 개수 제한 유효성 검사
                 if(reportFiles.size() > 5){
-                    return new BaseResponse<>(POST_REPORTFILE_MAX);
+                    return new BaseResponse<>(POST_FILE_MAX);
                 }
                 else {
                     // 일반 파일 형식 유효성 검사 - 하나라도 올바르지 않으면 전체 업로드 불가능
@@ -167,7 +167,7 @@ public class ReportController {
                         int index = originalFilename.lastIndexOf(".");
                         String ext = originalFilename.substring(index + 1);
                         if(ext == null || !(ext.equals("doc") || ext.equals("docx") || ext.equals("hwp") || ext.equals("pdf") || ext.equals("xls") || ext.equals("xlsx"))){
-                            return new BaseResponse<>(POST_REPORTFILE_EXT);
+                            return new BaseResponse<>(POST_FILE_EXT);
                         }
                     }
                 }

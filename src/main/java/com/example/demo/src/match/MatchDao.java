@@ -308,4 +308,47 @@ public class MatchDao {
         this.jdbcTemplate.update(deleteTeamFilterQuery, deleteTeamFilterParams);
     }
 
+    public int checkTeamIdx(int teamIdx){
+        String checkTeamIdxQuery = "select exists(select teamIdx from Team where teamIdx = ? and status = 'active')";
+        int checkTeamIdxParams = teamIdx;
+        return this.jdbcTemplate.queryForObject(checkTeamIdxQuery,
+                int.class,
+                checkTeamIdxParams);
+    }
+
+    public int checkPreTeamLike(int likerIdx, int likingIdx){
+        String checkPreTeamLikeQuery = "select exists(select likerIdx from TeamLike where likerIdx = ? and likingIdx = ? and status = 'active')";
+        Object[] checkPreTeamLikeParams = new Object[]{likerIdx, likingIdx};
+        return this.jdbcTemplate.queryForObject(checkPreTeamLikeQuery,
+                int.class,
+                checkPreTeamLikeParams);
+    }
+
+    public int checkTeamLikeHist(int likerIdx, int likingIdx){
+        String checkTeamLikeHistQuery = "select case\n" +
+                "        when COUNT(*) = 0 then 0\n" +
+                "        else teamLikeIdx end as teamLikeIdx\n" +
+                "from TeamLike\n" +
+                "where likerIdx = ? and likingIdx = ? and status in ('inactive', 'deleted')";
+        Object[] checkTeamLikeHistParams = new Object[]{likerIdx, likingIdx};
+        return this.jdbcTemplate.queryForObject(checkTeamLikeHistQuery,
+                int.class,
+                checkTeamLikeHistParams);
+    }
+
+    public int updateTeamLike(int teamLikeIdx){
+        String updateTeamLikeQuery = "update TeamLike set status = 'active' where teamLikeIdx = ?";
+        int updateTeamLikeParams = teamLikeIdx;
+        return this.jdbcTemplate.update(updateTeamLikeQuery, updateTeamLikeParams);
+    }
+
+    public int createTeamLike(int likerIdx, int likingIdx) {
+        String createTeamLikeQuery = "insert into TeamLike (likerIdx, likingIdx) VALUES (?, ?)";
+        Object[] createTeamLikeParams = new Object[]{likerIdx, likingIdx};
+        this.jdbcTemplate.update(createTeamLikeQuery, createTeamLikeParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
 }
