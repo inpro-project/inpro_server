@@ -308,6 +308,14 @@ public class MatchDao {
         this.jdbcTemplate.update(deleteTeamFilterQuery, deleteTeamFilterParams);
     }
 
+    public int checkTeamIdx(int teamIdx){
+        String checkTeamIdxQuery = "select exists(select teamIdx from Team where teamIdx = ? and status = 'active')";
+        int checkTeamIdxParams = teamIdx;
+        return this.jdbcTemplate.queryForObject(checkTeamIdxQuery,
+                int.class,
+                checkTeamIdxParams);
+    }
+
     public int checkPreTeamLike(int likerIdx, int likingIdx){
         String checkPreTeamLikeQuery = "select exists(select likerIdx from TeamLike where likerIdx = ? and likingIdx = ? and status = 'active')";
         Object[] checkPreTeamLikeParams = new Object[]{likerIdx, likingIdx};

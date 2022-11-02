@@ -394,7 +394,7 @@ public class MatchController {
     @ApiOperation(value = "팀 좋아요 API")
     @ApiResponses({
             @ApiResponse(code = 343, message = "이미 좋아요를 누른 팀입니다."),
-            @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
+            @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
             @ApiResponse(code = 420, message = "팀 좋아요에 실패하였습니다.")
     })
     @ResponseBody

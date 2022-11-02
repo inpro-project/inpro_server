@@ -136,6 +136,14 @@ public class MatchProvider {
         }
     }
 
+    public int checkTeamIdx(int teamIdx) throws BaseException {
+        try {
+            return matchDao.checkTeamIdx(teamIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public int checkPreTeamLike(int likerIdx, int likingIdx) throws BaseException {
         try {
             return matchDao.checkPreTeamLike(likerIdx, likingIdx);

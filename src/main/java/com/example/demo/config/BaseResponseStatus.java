@@ -99,6 +99,8 @@ public enum BaseResponseStatus {
     // [POST] /app/team-likes/:likingIdx
     TEAMLIKE_INVALID_LIKINGIDX(false, 343, "이미 좋아요를 누른 팀입니다."),
 
+    INVALID_TEAMIDX(false, 344, "유효하지 않은 팀 인덱스입니다."),
+
 
     /**
      * 400 : Response, Database, Server 오류

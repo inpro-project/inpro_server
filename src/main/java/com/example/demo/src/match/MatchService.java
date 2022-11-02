@@ -367,8 +367,8 @@ public class MatchService {
 
     public PostTeamLikeRes createTeamLike(int likerIdx, int likingIdx) throws BaseException {
         // likingIdx 유효성 검사
-        if(matchProvider.checkUserIdx(likingIdx) == 0){
-            throw new BaseException(INVALID_USERIDX);
+        if(matchProvider.checkTeamIdx(likingIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
         }
 
         // 중복 좋아요 유효성 검사
