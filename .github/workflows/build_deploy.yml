@@ -31,7 +31,7 @@ jobs:
         
     - name: Create application yml and logback spring xml
       run: |
-        mkdir ./src/main/resources/application.yml
+        mkdir ./src/main/resources
         echo '${{ secrets.APPLICATION_YML }}' > ./src/main/resources/application.yml
         echo '${{ secrets.LOGBACK_SPRING_XML }}' > ./src/main/resources/logback-spring.xml
 
