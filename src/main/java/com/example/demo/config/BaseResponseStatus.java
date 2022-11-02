@@ -152,6 +152,7 @@ public enum BaseResponseStatus {
     // [POST] /app/teams
     FAIL_MEMBER(false, 419, "멤버 등록에 실패하였습니다.");
 
+
     private final boolean isSuccess;
     private final int code;
     private final String message;
