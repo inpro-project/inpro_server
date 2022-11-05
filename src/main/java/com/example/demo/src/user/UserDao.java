@@ -89,7 +89,7 @@ public class UserDao {
         String getNumOfUserTagQuery = "select COUNT(*) from UserTag where userIdx = ? and status = 'active'";
         int getNumOfUserTagParams = userIdx;
 
-        return this.jdbcTemplate.queryForObject(getNumOfUserTagQuery, int.class, userIdx);
+        return this.jdbcTemplate.queryForObject(getNumOfUserTagQuery, int.class, getNumOfUserTagParams);
     }
 
     public int checkUserTagIdx(int userIdx, int userTagIdx){
@@ -210,6 +210,13 @@ public class UserDao {
         Object[] checkPortfolioParams = new Object[] {userIdx, portfolioCategoryIdx};
 
         return this.jdbcTemplate.queryForObject(checkPortfolioQuery, int.class, checkPortfolioParams);
+    }
+
+    public int checkUser(int userIdx){
+        String checkUserQuery = "select exists (select userIdx from User where userIdx = ? and status = 'active')";
+        int checkUserParams = userIdx;
+
+        return this.jdbcTemplate.queryForObject(checkUserQuery, int.class, checkUserParams);
     }
 
 }
