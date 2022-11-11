@@ -410,4 +410,22 @@ public class MatchController {
         }
     }
 
+    /**
+     * 1:1 매칭 유저 프로필 조회 API
+     * [GET] /app/user-matches
+     * @return BaseResponse<GetUserMatchRes>
+     */
+    @ApiOperation(value = "1:1 매칭 유저 프로필 조회 API")
+    @ResponseBody
+    @GetMapping("/user-matches")
+    public BaseResponse<List<GetUserMatchRes>> getUserMatches(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+            List<GetUserMatchRes> getUserMatchRes = matchProvider.getUserMatches(userIdx);
+            return new BaseResponse<>(getUserMatchRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }

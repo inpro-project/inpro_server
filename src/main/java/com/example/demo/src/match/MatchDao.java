@@ -351,4 +351,46 @@ public class MatchDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
+    public List<String> getUserFilter(int userIdx, int category) {
+        String getUserFilterQuery = "select name from UserFilter where userIdx = ? and category = ? and status = 'active'";
+        Object[] getUserFilterParams = new Object[]{userIdx, category};
+
+        return this.jdbcTemplate.query(getUserFilterQuery,
+                (rs, rsNum) -> (rs.getString("name")),
+                getUserFilterParams);
+    }
+
+    public List<GetUserMatchRes> getUserMatches(int userIdx, List<String> ageRange, List<String> region, List<String> occupation, List<String> interests) {
+        String getUserMatchesQuery = "select userIdx, nickName, userImgUrl, gender, ageRange, comment, region, occupation, interests\n" +
+                "from User\n" +
+                "where userIdx not in(?) and status = 'active'\n" +
+                "and ageRange in (?, ?, ?, ?, ?, ?)\n" +
+                "  and ageRange not in (' ')\n" +
+                "and region in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n" +
+                "  and region not in (' ')\n" +
+                "and occupation in (?, ?, ?, ?, ?)\n" +
+                "  and occupation not in (' ')\n" +
+                "and interests in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n" +
+                "  and interests not in (' ');";
+        Object[] getUserMatchesParams = new Object[]{userIdx
+                , ageRange.get(0), ageRange.get(1), ageRange.get(2), ageRange.get(3), ageRange.get(4), ageRange.get(5)
+                , region.get(0), region.get(1), region.get(2), region.get(3), region.get(4), region.get(5), region.get(6), region.get(7)
+                , region.get(8), region.get(9), region.get(10), region.get(11), region.get(12), region.get(13), region.get(14), region.get(15), region.get(16)
+                , occupation.get(0), occupation.get(1), occupation.get(2), occupation.get(3), occupation.get(4)
+                , interests.get(0), interests.get(1), interests.get(2), interests.get(3), interests.get(4), interests.get(5)
+                , interests.get(6), interests.get(7), interests.get(8), interests.get(9), interests.get(10), interests.get(11), interests.get(12), interests.get(13)};
+        return this.jdbcTemplate.query(getUserMatchesQuery,
+                (rs, rsNum) -> new GetUserMatchRes(
+                        rs.getInt("userIdx"),
+                        rs.getString("nickname"),
+                        rs.getString("userImgUrl"),
+                        rs.getString("gender"),
+                        rs.getString("ageRange"),
+                        rs.getString("comment"),
+                        rs.getString("region"),
+                        rs.getString("occupation"),
+                        rs.getString("interests")),
+                getUserMatchesParams);
+    }
+
 }
