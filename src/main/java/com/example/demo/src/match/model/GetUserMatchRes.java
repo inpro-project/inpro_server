@@ -42,6 +42,15 @@ public class GetUserMatchRes {
     @ApiModelProperty(value = "관심 분야", example = "IT")
     private String interests;
 
+    @ApiModelProperty(value = "disc x좌표", example = "-6.6921304299025")
+    private double x;
+
+    @ApiModelProperty(value = "disc y좌표", example = "-2.828427124746188")
+    private double y;
+
+    @ApiModelProperty(value = "disc 일치 퍼센트", example = "58")
+    private int percent;
+
 //    @ApiModelProperty(value = "유저 대표 업무 성향")
 //    private List<GetUserDiscRes> userDisc;
 //

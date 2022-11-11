@@ -360,10 +360,30 @@ public class MatchDao {
                 getUserFilterParams);
     }
 
-    public List<GetUserMatchRes> getUserMatches(int userIdx, List<String> ageRange, List<String> region, List<String> occupation, List<String> interests) {
-        String getUserMatchesQuery = "select userIdx, nickName, userImgUrl, gender, ageRange, comment, region, occupation, interests\n" +
+    public DiscXy getUserDiscXy(int userIdx){
+        String getUserDiscXyQuery = "select x, y from UserDisc where userIdx = ? and isRepDisc = 'Y' and status = 'active'";
+        int getUserDiscXyParams = userIdx;
+
+        return this.jdbcTemplate.queryForObject(getUserDiscXyQuery,
+                (rs, rsNum) -> new DiscXy(
+                        rs.getDouble("x"),
+                        rs.getDouble("y")),
+                getUserDiscXyParams);
+    }
+
+    public List<GetUserMatchRes> getUserMatches(int userIdx, DiscXy discXy, List<String> ageRange, List<String> region, List<String> occupation, List<String> interests) {
+        String getUserMatchesQuery = "select User.userIdx, nickName, userImgUrl\n" +
+                "     , gender, ageRange, comment, region, occupation, interests\n" +
+                "     , case when x is not null then x else 0 end as x\n" +
+                "     , case when y is not null then y else 0 end as y\n" +
+                "     , case when x is not null and ? is not null\n" +
+                "         then ROUND(100 - SQRT(POWER(x - (?), 2) + POWER(y - (?), 2)) / 33.07752975109958 * 100)\n" +
+                "        else 0 end as percent\n" +
                 "from User\n" +
-                "where userIdx not in(?) and status = 'active'\n" +
+                "left join UserDisc UD on User.userIdx = UD.userIdx and UD.status = 'active' and isRepDisc = 'Y'\n" +
+                "where User.userIdx not in(?)\n" +
+                "  and User.userIdx not in (select passingIdx from UserPass where passerIdx = ?)\n" +
+                "and User.status = 'active'\n" +
                 "and ageRange in (?, ?, ?, ?, ?, ?)\n" +
                 "  and ageRange not in (' ')\n" +
                 "and region in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n" +
@@ -371,14 +391,16 @@ public class MatchDao {
                 "and occupation in (?, ?, ?, ?, ?)\n" +
                 "  and occupation not in (' ')\n" +
                 "and interests in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n" +
-                "  and interests not in (' ');";
-        Object[] getUserMatchesParams = new Object[]{userIdx
+                "  and interests not in (' ')\n" +
+                "order by percent DESC, userIdx DESC";
+        Object[] getUserMatchesParams = new Object[]{discXy.getX(), discXy.getX(), discXy.getY(), userIdx, userIdx
                 , ageRange.get(0), ageRange.get(1), ageRange.get(2), ageRange.get(3), ageRange.get(4), ageRange.get(5)
                 , region.get(0), region.get(1), region.get(2), region.get(3), region.get(4), region.get(5), region.get(6), region.get(7)
                 , region.get(8), region.get(9), region.get(10), region.get(11), region.get(12), region.get(13), region.get(14), region.get(15), region.get(16)
                 , occupation.get(0), occupation.get(1), occupation.get(2), occupation.get(3), occupation.get(4)
                 , interests.get(0), interests.get(1), interests.get(2), interests.get(3), interests.get(4), interests.get(5)
                 , interests.get(6), interests.get(7), interests.get(8), interests.get(9), interests.get(10), interests.get(11), interests.get(12), interests.get(13)};
+
         return this.jdbcTemplate.query(getUserMatchesQuery,
                 (rs, rsNum) -> new GetUserMatchRes(
                         rs.getInt("userIdx"),
@@ -389,7 +411,10 @@ public class MatchDao {
                         rs.getString("comment"),
                         rs.getString("region"),
                         rs.getString("occupation"),
-                        rs.getString("interests")),
+                        rs.getString("interests"),
+                        rs.getDouble("x"),
+                        rs.getDouble("y"),
+                        rs.getInt("percent")),
                 getUserMatchesParams);
     }
 
