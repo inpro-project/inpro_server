@@ -177,4 +177,25 @@ public class LikeService {
         }
     }
 
+    public void deleteTeamLike(int likerIdx, int likingIdx) throws BaseException {
+        // likingIdx 유효성 검사
+        if(likeProvider.checkTeamIdx(likingIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        // 좋아요 누르지 않은 팀에 대해 좋아요 취소 요청을 할 경우
+        if(likeProvider.checkPreTeamLike(likerIdx, likingIdx) == 0){
+            throw new BaseException(UNTEAMLIKE_INVALID_LIKINGIDX);
+        }
+
+        try {
+            int result = likeDao.deleteTeamLike(likerIdx, likingIdx);
+            if(result == 0){
+                throw new BaseException(FAIL_UNTEAMLIKE);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

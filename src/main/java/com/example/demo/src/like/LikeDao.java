@@ -198,4 +198,10 @@ public class LikeDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
+    public int deleteTeamLike(int likerIdx, int likingIdx){
+        String deleteTeamLikeQuery = "update TeamLike set status = 'deleted' where likerIdx = ? and likingIdx = ?";
+        Object[] deleteTeamLikeParams = new Object[]{likerIdx, likingIdx};
+        return this.jdbcTemplate.update(deleteTeamLikeQuery, deleteTeamLikeParams);
+    }
+
 }

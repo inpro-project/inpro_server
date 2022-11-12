@@ -187,4 +187,29 @@ public class LikeController {
         }
     }
 
+    /**
+     * 팀 좋아요 취소 API
+     * [PATCH] /app/team-likes/:likingIdx
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "팀 좋아요 취소 API", notes = "성공 시 result로 '좋아요가 취소되었습니다.' 출력")
+    @ApiResponses({
+            @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
+            @ApiResponse(code = 345, message = "기존에 좋아요를 누르지 않은 팀입니다."),
+            @ApiResponse(code = 421, message = "팀 좋아요 취소에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PatchMapping("/team-likes/{likingIdx}")
+    public BaseResponse<String> deleteTeamLike(@PathVariable("likingIdx") int likingIdx) {
+        try {
+            int likerIdx = jwtService.getUserIdx();
+
+            likeService.deleteTeamLike(likerIdx, likingIdx);
+            String result = "좋아요가 취소되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }

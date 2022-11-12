@@ -101,6 +101,9 @@ public enum BaseResponseStatus {
 
     INVALID_TEAMIDX(false, 344, "유효하지 않은 팀 인덱스입니다."),
 
+    // [PATCH] /app/team-likes/:likingIdx
+    UNTEAMLIKE_INVALID_LIKINGIDX(false, 345, "기존에 좋아요를 누르지 않은 팀입니다."),
+
 
     /**
      * 400 : Response, Database, Server 오류
@@ -158,8 +161,10 @@ public enum BaseResponseStatus {
     FAIL_MEMBER(false, 419, "멤버 등록에 실패하였습니다."),
 
     // [POST] /app/team-likes/:likingIdx
-    FAIL_TEAMLIKE(false, 420, "팀 좋아요에 실패하였습니다.");
+    FAIL_TEAMLIKE(false, 420, "팀 좋아요에 실패하였습니다."),
 
+    // [PATCH] /app/team-likes/:likingIdx
+    FAIL_UNTEAMLIKE(false, 421, "팀 좋아요 취소에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final int code;
