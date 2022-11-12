@@ -1,4 +1,4 @@
-package com.example.demo.src.match.model;
+package com.example.demo.src.like.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

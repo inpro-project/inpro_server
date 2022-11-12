@@ -20,64 +20,6 @@ public class MatchProvider {
 
     private final MatchDao matchDao;
 
-    public int checkUserIdx(int userIdx) throws BaseException {
-        try {
-            return matchDao.checkUserIdx(userIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public int checkPreUserLike(int likerIdx, int likingIdx) throws BaseException {
-        try {
-            return matchDao.checkPreUserLike(likerIdx, likingIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public int checkUserLikeHist(int likerIdx, int likingIdx) throws BaseException {
-        try {
-            return matchDao.checkUserLikeHist(likerIdx, likingIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public int checkPreUserPass(int passerIdx, int passingIdx) throws BaseException {
-        try {
-            return matchDao.checkPreUserPass(passerIdx, passingIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public int checkUserPassHist(int passerIdx, int passingIdx) throws BaseException {
-        try {
-            return matchDao.checkUserPassHist(passerIdx, passingIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public List<GetUserLikingRes> getUserLikings(int userIdx) throws BaseException {
-        try {
-            List<GetUserLikingRes> getUserLikingResList = matchDao.getUserLikings(userIdx);
-            return getUserLikingResList;
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public List<GetUserLikerRes> getUserLikers(int userIdx) throws BaseException {
-        try {
-            List<GetUserLikerRes> getUserLikerResList = matchDao.getUserLikers(userIdx);
-            return getUserLikerResList;
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
     public List<GetMatchedUserRes> getMatchedUsers(int userIdx) throws BaseException{
         try {
             List<GetMatchedUserRes> getMatchedUserResList = matchDao.getMatchedUsers(userIdx);
@@ -132,30 +74,6 @@ public class MatchProvider {
     public int checkTeamFilterByIdx(int userIdx, int teamFilterIdx) throws BaseException {
         try {
             return matchDao.checkTeamFilterByIdx(userIdx, teamFilterIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public int checkTeamIdx(int teamIdx) throws BaseException {
-        try {
-            return matchDao.checkTeamIdx(teamIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public int checkPreTeamLike(int likerIdx, int likingIdx) throws BaseException {
-        try {
-            return matchDao.checkPreTeamLike(likerIdx, likingIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public int checkTeamLikeHist(int likerIdx, int likingIdx) throws BaseException {
-        try {
-            return matchDao.checkTeamLikeHist(likerIdx, likingIdx);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
