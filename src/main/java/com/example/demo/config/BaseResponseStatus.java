@@ -110,6 +110,9 @@ public enum BaseResponseStatus {
     // [PATCH] /app/team-passes/:passingIdx
     UNTEAMPASS_INVALID_PASSINGIDX(false, 347, "기존에 넘기기를 누르지 않은 팀입니다."),
 
+    // [POST] /app/members
+    MEMBER_INVALID_USERIDX(false, 348, "이미 멤버로 추가된 유저입니다."),
+
 
     /**
      * 400 : Response, Database, Server 오류

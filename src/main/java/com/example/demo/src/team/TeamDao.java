@@ -1,6 +1,6 @@
 package com.example.demo.src.team;
 
-import com.example.demo.src.report.model.PostReportReq;
+import com.example.demo.src.team.model.PostMemberReq;
 import com.example.demo.src.team.model.PostTeamReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,10 +27,10 @@ public class TeamDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
-    public int createMember(int teamIdx, int userIdx, String role) {
-        String createMemberQuery = "insert into TeamMember (teamIdx, userIdx, role) VALUES (?, ?, ?)";
-        Object[] createMemberParams = new Object[]{teamIdx, userIdx, role};
-        this.jdbcTemplate.update(createMemberQuery, createMemberParams);
+    public int createTeamLeader(int teamIdx, int userIdx) {
+        String createTeamLeaderQuery = "insert into TeamMember (teamIdx, userIdx, role) VALUES (?, ?, '리더')";
+        Object[] createTeamLeaderParams = new Object[]{teamIdx, userIdx};
+        this.jdbcTemplate.update(createTeamLeaderQuery, createTeamLeaderParams);
 
         String lastInsertIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
@@ -48,6 +48,33 @@ public class TeamDao {
         Object[] createTeamFileParams = new Object[]{teamIdx, fileName, teamFileUrl};
 
         return this.jdbcTemplate.update(createTeamFileQuery, createTeamFileParams);
+    }
+
+    public int checkUserIdx(int userIdx){
+        String checkUserIdxQuery = "select exists(select * from User where userIdx = ?)";
+        int checkUserIdxParams = userIdx;
+        return this.jdbcTemplate.queryForObject(checkUserIdxQuery, int.class, checkUserIdxParams);
+    }
+
+    public int checkTeamIdx(int teamIdx, int leaderIdx){
+        String checkTeamIdxQuery = "select exists(select * from TeamMember where teamIdx = ? and userIdx = ? and role = '리더')";
+        Object[] checkTeamIdxParams = new Object[]{teamIdx, leaderIdx};
+        return this.jdbcTemplate.queryForObject(checkTeamIdxQuery, int.class, checkTeamIdxParams);
+    }
+
+    public int checkPreTeamMember(int teamIdx, int userIdx){
+        String checkPreTeamMemberQuery = "select exists(select * from TeamMember where teamIdx = ? and userIdx = ?)";
+        Object[] checkPreTeamMemberParams = new Object[]{teamIdx, userIdx};
+        return this.jdbcTemplate.queryForObject(checkPreTeamMemberQuery, int.class, checkPreTeamMemberParams);
+    }
+
+    public int createMember(PostMemberReq postMemberReq) {
+        String createMemberQuery = "insert into TeamMember (teamIdx, userIdx, role) VALUES (?, ?, ?)";
+        Object[] createMemberParams = new Object[]{postMemberReq.getTeamIdx(), postMemberReq.getUserIdx(), postMemberReq.getRole()};
+        this.jdbcTemplate.update(createMemberQuery, createMemberParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
 }

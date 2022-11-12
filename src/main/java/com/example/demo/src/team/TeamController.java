@@ -2,6 +2,8 @@ package com.example.demo.src.team;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.team.model.PostMemberReq;
+import com.example.demo.src.team.model.PostMemberRes;
 import com.example.demo.src.team.model.PostTeamReq;
 import com.example.demo.src.team.model.PostTeamRes;
 import com.example.demo.utils.JwtService;
@@ -29,6 +31,7 @@ import static com.example.demo.config.BaseResponseStatus.*;
 @RequestMapping("/app")
 public class TeamController {
 
+    private final TeamProvider teamProvider;
     private final TeamService teamService;
     private final JwtService jwtService;
 
@@ -139,7 +142,7 @@ public class TeamController {
             PostTeamRes postTeamRes = teamService.createTeam(userIdx, postTeamReq);
 
             // 현재 유저를 멤버의 리더로 등록
-            teamService.createMember(postTeamRes.getTeamIdx(), userIdx);
+            teamService.createTeamLeader(postTeamRes.getTeamIdx(), userIdx);
 
             // 대표 이미지 파일 추가
             if(repImg != null){
@@ -157,6 +160,35 @@ public class TeamController {
             }
 
             return new BaseResponse<>(postTeamRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 팀원 수락 API
+     * [POST] /app/members
+     * @return BaseResponse<PostMemberRes>
+     */
+    @ApiOperation(value = "팀원 수락 API")
+    @ApiResponses({
+            @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
+            @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
+            @ApiResponse(code = 348, message = "이미 멤버로 추가된 유저입니다.")
+    })
+    @ResponseBody
+    @PostMapping("/members")
+    public BaseResponse<PostMemberRes> createMember(@RequestBody PostMemberReq postMemberReq){
+        try {
+            int leaderIdx = jwtService.getUserIdx();
+
+            // 팀원 역할이 따로 주어지지 않으면 팀원으로 저장
+            if(postMemberReq.getRole() == null){
+                postMemberReq.setRole("팀원");
+            }
+
+            PostMemberRes postMemberRes = teamService.createMember(leaderIdx, postMemberReq);
+            return new BaseResponse<>(postMemberRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

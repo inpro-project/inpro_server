@@ -120,12 +120,12 @@ public class LikeProvider {
     }
 
     public List<GetTeamLikingRes> getTeamLikings(int userIdx) throws BaseException {
-//        try {
+        try {
             List<GetTeamLikingRes> getTeamLikingResList = likeDao.getTeamLikings(userIdx);
             return getTeamLikingResList;
-//        } catch (Exception exception){
-//            throw new BaseException(DATABASE_ERROR);
-//        }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 
 }
