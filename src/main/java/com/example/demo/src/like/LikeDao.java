@@ -1,7 +1,9 @@
 package com.example.demo.src.like;
 
+import com.example.demo.src.like.model.GetTeamLikingRes;
 import com.example.demo.src.like.model.GetUserLikerRes;
 import com.example.demo.src.like.model.GetUserLikingRes;
+import com.example.demo.src.like.model.TeamRepImg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -202,6 +204,81 @@ public class LikeDao {
         String deleteTeamLikeQuery = "update TeamLike set status = 'deleted' where likerIdx = ? and likingIdx = ?";
         Object[] deleteTeamLikeParams = new Object[]{likerIdx, likingIdx};
         return this.jdbcTemplate.update(deleteTeamLikeQuery, deleteTeamLikeParams);
+    }
+
+    public int checkPreTeamPass(int passerIdx, int passingIdx){
+        String checkPreTeamPassQuery = "select exists(select teamPassIdx from TeamPass where passerIdx = ? and passingIdx = ? and status = 'active')";
+        Object[] checkPreTeamPassParams = new Object[]{passerIdx, passingIdx};
+        return this.jdbcTemplate.queryForObject(checkPreTeamPassQuery,
+                int.class,
+                checkPreTeamPassParams);
+    }
+
+    public int checkTeamPassHist(int passerIdx, int passingIdx){
+        String checkTeamPassHistQuery = "select case\n" +
+                "        when COUNT(*) = 0 then 0\n" +
+                "        else teamPassIdx end as teamPassIdx\n" +
+                "from TeamPass\n" +
+                "where passerIdx = ? and passingIdx = ? and status in ('inactive', 'deleted')";
+        Object[] checkTeamPassHistParams = new Object[]{passerIdx, passingIdx};
+        return this.jdbcTemplate.queryForObject(checkTeamPassHistQuery,
+                int.class,
+                checkTeamPassHistParams);
+    }
+
+    public int updateTeamPass(int teamPassIdx){
+        String updateTeamPassQuery = "update TeamPass set status = 'active' where teamPassIdx = ?";
+        int updateTeamPassParams = teamPassIdx;
+        return this.jdbcTemplate.update(updateTeamPassQuery, updateTeamPassParams);
+    }
+
+    public int createTeamPass(int passerIdx, int passingIdx) {
+        String createTeamPassQuery = "insert into TeamPass (passerIdx, passingIdx) VALUES (?, ?)";
+        Object[] createTeamPassParams = new Object[]{passerIdx, passingIdx};
+        this.jdbcTemplate.update(createTeamPassQuery, createTeamPassParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public int deleteTeamPass(int passerIdx, int passingIdx){
+        String deleteTeamPassQuery = "update TeamPass set status = 'deleted' where passerIdx = ? and passingIdx = ?";
+        Object[] deleteTeamPassParams = new Object[]{passerIdx, passingIdx};
+
+        return this.jdbcTemplate.update(deleteTeamPassQuery, deleteTeamPassParams);
+    }
+
+    public TeamRepImg getTeamRepImg(int teamIdx){
+        String getTeamRepImgQuery = "select case when count(*) = 0 then 0 else fileName end as fileName\n" +
+                "     , case when count(*) = 0 then 0 else teamFileUrl end as teamFileUrl\n" +
+                "from TeamFile\n" +
+                "where teamIdx = ? and status = 'active' and type = 'Y' and isRepImg = 'Y'";
+        int getTeamRepImgParams = teamIdx;
+        return this.jdbcTemplate.queryForObject(getTeamRepImgQuery,
+                (rs, rsNum) -> new TeamRepImg(
+                        rs.getString("fileName"),
+                        rs.getString("teamFileUrl")),
+                getTeamRepImgParams);
+    }
+
+    public List<GetTeamLikingRes> getTeamLikings(int userIdx){
+        String getTeamLikingsQuery = "select teamIdx, userIdx, title, type, region, interests\n" +
+                "from Team\n" +
+                "inner join TeamLike TL on Team.teamIdx = TL.likingIdx\n" +
+                "where likerIdx = ? and TL.status = 'active'\n" +
+                "order by TL.updatedAt DESC";
+        int getTeamLikingsParams = userIdx;
+
+        return this.jdbcTemplate.query(getTeamLikingsQuery,
+                (rs, rsNum) -> new GetTeamLikingRes(
+                        rs.getInt("teamIdx"),
+                        rs.getInt("userIdx"),
+                        getTeamRepImg(rs.getInt("teamIdx")),
+                        rs.getString("title"),
+                        rs.getString("type"),
+                        rs.getString("region"),
+                        rs.getString("interests")),
+                getTeamLikingsParams);
     }
 
 }

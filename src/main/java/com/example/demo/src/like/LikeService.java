@@ -2,6 +2,7 @@ package com.example.demo.src.like;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.like.model.PostTeamLikeRes;
+import com.example.demo.src.like.model.PostTeamPassRes;
 import com.example.demo.src.like.model.PostUserLikeRes;
 import com.example.demo.src.like.model.PostUserPassRes;
 import lombok.RequiredArgsConstructor;
@@ -192,6 +193,65 @@ public class LikeService {
             int result = likeDao.deleteTeamLike(likerIdx, likingIdx);
             if(result == 0){
                 throw new BaseException(FAIL_UNTEAMLIKE);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateTeamPass(int teamPassIdx) throws BaseException {
+        try {
+            int result = likeDao.updateTeamPass(teamPassIdx);
+            if(result == 0){
+                throw new BaseException(FAIL_TEAMPASS);
+            }
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostTeamPassRes createTeamPass(int passerIdx, int passingIdx) throws BaseException {
+        // passingIdx 유효성 검사
+        if(likeProvider.checkTeamIdx(passingIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        // 중복 넘기기 유효성 검사
+        if(likeProvider.checkPreTeamPass(passerIdx, passingIdx) == 1){
+            throw new BaseException(TEAMPASS_INVALID_PASSINGIDX);
+        }
+
+        try {
+            // 이전에 비활성화나 넘기기 취소를 했던 유저의 경우
+            int preTeamPassIdx = likeProvider.checkTeamPassHist(passerIdx, passingIdx);
+            if(preTeamPassIdx != 0){
+                // active 업데이트
+                updateTeamPass(preTeamPassIdx);
+                return new PostTeamPassRes(preTeamPassIdx);
+            }
+
+            int teamPassIdx = likeDao.createTeamPass(passerIdx, passingIdx);
+            return new PostTeamPassRes(teamPassIdx);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteTeamPass(int passerIdx, int passingIdx) throws BaseException {
+        // passingIdx 유효성 검사
+        if(likeProvider.checkTeamIdx(passingIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        // 넘기기를 누르지 않은 팀에 대해 넘기기 취소 요청을 할 경우
+        if(likeProvider.checkPreTeamPass(passerIdx, passingIdx) == 0){
+            throw new BaseException(UNTEAMPASS_INVALID_PASSINGIDX);
+        }
+
+        try {
+            int result = likeDao.deleteTeamPass(passerIdx, passingIdx);
+            if(result == 0){
+                throw new BaseException(FAIL_UNTEAMPASS);
             }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);

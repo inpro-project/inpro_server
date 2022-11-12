@@ -1,6 +1,7 @@
 package com.example.demo.src.like;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.like.model.GetTeamLikingRes;
 import com.example.demo.src.like.model.GetUserLikerRes;
 import com.example.demo.src.like.model.GetUserLikingRes;
 import lombok.RequiredArgsConstructor;
@@ -100,6 +101,31 @@ public class LikeProvider {
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    public int checkPreTeamPass(int passerIdx, int passingIdx) throws BaseException {
+        try {
+            return likeDao.checkPreTeamPass(passerIdx, passingIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkTeamPassHist(int passerIdx, int passingIdx) throws BaseException {
+        try {
+            return likeDao.checkTeamPassHist(passerIdx, passingIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetTeamLikingRes> getTeamLikings(int userIdx) throws BaseException {
+//        try {
+            List<GetTeamLikingRes> getTeamLikingResList = likeDao.getTeamLikings(userIdx);
+            return getTeamLikingResList;
+//        } catch (Exception exception){
+//            throw new BaseException(DATABASE_ERROR);
+//        }
     }
 
 }

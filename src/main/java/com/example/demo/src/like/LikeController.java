@@ -212,4 +212,71 @@ public class LikeController {
         }
     }
 
+    /**
+     * 팀 넘기기 API
+     * [POST] /app/team-passes/:passingIdx
+     * @return BaseResponse<PostTeamPassRes>
+     */
+    @ApiOperation(value = "팀 넘기기 API")
+    @ApiResponses({
+            @ApiResponse(code = 346, message = "이미 넘기기를 누른 팀입니다."),
+            @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
+            @ApiResponse(code = 422, message = "팀 넘기기에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PostMapping("/team-passes/{passingIdx}")
+    public BaseResponse<PostTeamPassRes> createTeamPass(@PathVariable("passingIdx") int passingIdx) {
+        try {
+            int passerIdx = jwtService.getUserIdx();
+
+            PostTeamPassRes postTeamPassRes = likeService.createTeamPass(passerIdx, passingIdx);
+            return new BaseResponse<>(postTeamPassRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 팀 넘기기 취소 API
+     * [PATCH] /app/team-passes/:passingIdx
+     * @return BaseResponse<PostTeamPassRes>
+     */
+    @ApiOperation(value = "팀 넘기기 취소 API", notes = "성공 시 result로 '넘기기가 취소되었습니다.' 출력")
+    @ApiResponses({
+            @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
+            @ApiResponse(code = 347, message = "기존에 넘기기를 누르지 않은 팀입니다."),
+            @ApiResponse(code = 423, message = "팀 넘기기 취소에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PatchMapping("/team-passes/{passingIdx}")
+    public BaseResponse<String> deleteTeamPass(@PathVariable("passingIdx") int passingIdx) {
+        try {
+            int passerIdx = jwtService.getUserIdx();
+
+            likeService.deleteTeamPass(passerIdx, passingIdx);
+            String result = "넘기기가 취소되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 내가 보낸 TeamLike 조회 API
+     * [GET] /app/team-likings
+     * @return BaseResponse<List<GetTeamLikingRes>>
+     */
+    @ApiOperation(value = "내가 보낸 TeamLike 조회 API")
+    @ResponseBody
+    @GetMapping("/team-likings")
+    public BaseResponse<List<GetTeamLikingRes>> getTeamLikings(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+            List<GetTeamLikingRes> getTeamLikingResList = likeProvider.getTeamLikings(userIdx);
+            return new BaseResponse<>(getTeamLikingResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
