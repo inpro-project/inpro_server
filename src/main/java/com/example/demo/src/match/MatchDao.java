@@ -383,6 +383,8 @@ public class MatchDao {
                 "left join UserDisc UD on User.userIdx = UD.userIdx and UD.status = 'active' and isRepDisc = 'Y'\n" +
                 "where User.userIdx not in(?)\n" +
                 "  and User.userIdx not in (select passingIdx from UserPass where passerIdx = ?)\n" +
+                "  and User.userIdx not in (select blockedUserIdx from Block where blockUserIdx = ?)\n" +
+                "  and User.userIdx not in (select reportedUserIdx from Report where Report.userIdx = ?)\n" +
                 "and User.status = 'active'\n" +
                 "and ageRange in (?, ?, ?, ?, ?, ?)\n" +
                 "  and ageRange not in (' ')\n" +
@@ -393,7 +395,7 @@ public class MatchDao {
                 "and interests in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n" +
                 "  and interests not in (' ')\n" +
                 "order by percent DESC, userIdx DESC";
-        Object[] getUserMatchesParams = new Object[]{discXy.getX(), discXy.getX(), discXy.getY(), userIdx, userIdx
+        Object[] getUserMatchesParams = new Object[]{discXy.getX(), discXy.getX(), discXy.getY(), userIdx, userIdx, userIdx, userIdx
                 , ageRange.get(0), ageRange.get(1), ageRange.get(2), ageRange.get(3), ageRange.get(4), ageRange.get(5)
                 , region.get(0), region.get(1), region.get(2), region.get(3), region.get(4), region.get(5), region.get(6), region.get(7)
                 , region.get(8), region.get(9), region.get(10), region.get(11), region.get(12), region.get(13), region.get(14), region.get(15), region.get(16)
