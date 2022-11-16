@@ -111,7 +111,7 @@ public class ReportService {
                 String reportImgUrl = getReportImgUrl(multipartFile.get(i));
                 int result = reportDao.createReportImgs(reportIdx, originalFileName, reportImgUrl);
                 if(result == 0){
-                    throw new BaseException(FAIL_REPORTIMG);
+                    throw new BaseException(FAIL_IMG);
                 }
             }
         } catch (Exception exception) {
@@ -144,7 +144,7 @@ public class ReportService {
                 String reportFileUrl = getReportFileUrl(multipartFile.get(i));
                 int result = reportDao.createReportFiles(reportIdx, originalFileName, reportFileUrl);
                 if(result == 0){
-                    throw new BaseException(FAIL_REPORTFILE);
+                    throw new BaseException(FAIL_FILE);
                 }
             }
         } catch (Exception exception) {
@@ -165,9 +165,9 @@ public class ReportService {
         String key = "reportFile/" + storeFileName;
 
         amazonS3.putObject(bucket, key, multipartFile.getInputStream(), objectMetadata);
-        String reportImgUrl = amazonS3.getUrl(bucket, key).toString();
+        String reportFileUrl = amazonS3.getUrl(bucket, key).toString();
 
-        return reportImgUrl;
+        return reportFileUrl;
     }
 
 }

@@ -113,7 +113,7 @@ public class MatchController {
     @ApiOperation(value = "유저 넘기기 취소 API", notes = "성공 시 result로 '넘기기가 취소되었습니다.' 출력")
     @ApiResponses({
             @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
-            @ApiResponse(code = 328, message = "기존에 넘기기를 누르지 않은 유저입니다."),
+            @ApiResponse(code = 336, message = "기존에 넘기기를 누르지 않은 유저입니다."),
             @ApiResponse(code = 418, message = "유저 넘기기 취소에 실패하였습니다.")
     })
     @ResponseBody
@@ -381,6 +381,30 @@ public class MatchController {
 
             String result = "팀 매칭 필터링이 수정되었습니다.";
             return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 팀 좋아요 API
+     * [POST] /app/team-likes/:likingIdx
+     * @return BaseResponse<PostTeamLikeRes>
+     */
+    @ApiOperation(value = "팀 좋아요 API")
+    @ApiResponses({
+            @ApiResponse(code = 343, message = "이미 좋아요를 누른 팀입니다."),
+            @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
+            @ApiResponse(code = 420, message = "팀 좋아요에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PostMapping("/team-likes/{likingIdx}")
+    public BaseResponse<PostTeamLikeRes> createTeamLike(@PathVariable("likingIdx") int likingIdx) {
+        try {
+            int likerIdx = jwtService.getUserIdx();
+
+            PostTeamLikeRes postTeamLikeRes = matchService.createTeamLike(likerIdx, likingIdx);
+            return new BaseResponse<>(postTeamLikeRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

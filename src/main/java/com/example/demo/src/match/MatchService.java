@@ -1,6 +1,7 @@
 package com.example.demo.src.match;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.match.model.PostTeamLikeRes;
 import com.example.demo.src.match.model.PostUserLikeRes;
 import com.example.demo.src.match.model.PostUserPassRes;
 import lombok.RequiredArgsConstructor;
@@ -349,6 +350,44 @@ public class MatchService {
                 }
             }
         } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateTeamLike(int teamLikeIdx) throws BaseException {
+        try {
+            int result = matchDao.updateTeamLike(teamLikeIdx);
+            if(result == 0){
+                throw new BaseException(FAIL_TEAMLIKE);
+            }
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostTeamLikeRes createTeamLike(int likerIdx, int likingIdx) throws BaseException {
+        // likingIdx 유효성 검사
+        if(matchProvider.checkTeamIdx(likingIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        // 중복 좋아요 유효성 검사
+        if(matchProvider.checkPreTeamLike(likerIdx, likingIdx) == 1){
+            throw new BaseException(TEAMLIKE_INVALID_LIKINGIDX);
+        }
+
+        try {
+            // 이전에 비활성화나 좋아요 취소를 했던 팀의 경우
+            int preTeamLikeIdx = matchProvider.checkTeamLikeHist(likerIdx, likingIdx);
+            if(preTeamLikeIdx != 0){
+                // active 업데이트
+                updateTeamLike(preTeamLikeIdx);
+                return new PostTeamLikeRes(preTeamLikeIdx);
+            }
+
+            int teamLikeIdx = matchDao.createTeamLike(likerIdx, likingIdx);
+            return new PostTeamLikeRes(teamLikeIdx);
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
