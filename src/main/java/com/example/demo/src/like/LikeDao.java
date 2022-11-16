@@ -1,9 +1,6 @@
 package com.example.demo.src.like;
 
-import com.example.demo.src.like.model.GetTeamLikingRes;
-import com.example.demo.src.like.model.GetUserLikerRes;
-import com.example.demo.src.like.model.GetUserLikingRes;
-import com.example.demo.src.like.model.TeamRepImg;
+import com.example.demo.src.like.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -279,6 +276,39 @@ public class LikeDao {
                         rs.getString("region"),
                         rs.getString("interests")),
                 getTeamLikingsParams);
+    }
+
+    public List<UserInfo> getUserInfo(int teamIdx){
+        String getUserInfoQuery = "select userIdx, nickName, userImgUrl, gender, ageRange, region, occupation, interests\n" +
+                "from TeamLike\n" +
+                "inner join User U on TeamLike.likerIdx = U.userIdx\n" +
+                "where likingIdx = ?";
+        int getUsrInfoParams = teamIdx;
+
+        return this.jdbcTemplate.query(getUserInfoQuery,
+                (rs, rsNum) -> new UserInfo(
+                        rs.getInt("userIdx"),
+                        rs.getString("nickname"),
+                        rs.getString("userImgUrl"),
+                        rs.getString("gender"),
+                        rs.getString("ageRange"),
+                        rs.getString("region"),
+                        rs.getString("occupation"),
+                        rs.getString("interests")),
+                getUsrInfoParams);
+    }
+
+    public List<GetTeamLikerRes> getTeamLikers(int userIdx){
+        String getTeamLikersQuery = "select teamIdx, title, type from Team where userIdx = ?";
+        int getTeamLikersParams = userIdx;
+
+        return this.jdbcTemplate.query(getTeamLikersQuery,
+                (rs, rsNum) -> new GetTeamLikerRes(
+                        rs.getInt("teamIdx"),
+                        rs.getString("title"),
+                        rs.getString("type"),
+                        getUserInfo(rs.getInt("teamIdx"))),
+                getTeamLikersParams);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.demo.src.like;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.like.model.GetTeamLikerRes;
 import com.example.demo.src.like.model.GetTeamLikingRes;
 import com.example.demo.src.like.model.GetUserLikerRes;
 import com.example.demo.src.like.model.GetUserLikingRes;
@@ -123,6 +124,15 @@ public class LikeProvider {
         try {
             List<GetTeamLikingRes> getTeamLikingResList = likeDao.getTeamLikings(userIdx);
             return getTeamLikingResList;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetTeamLikerRes> getTeamLikers(int userIdx) throws BaseException {
+        try {
+            List<GetTeamLikerRes> getTeamLikerResList = likeDao.getTeamLikers(userIdx);
+            return getTeamLikerResList;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

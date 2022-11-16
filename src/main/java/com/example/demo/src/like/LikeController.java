@@ -279,4 +279,21 @@ public class LikeController {
         }
     }
 
+    /**
+     * 나에게 보낸 TeamLike 조회 API
+     * [GET] /app/team-likers
+     * @return BaseResponse<List<GetTeamLikerRes>>
+     */
+    @ApiOperation(value = "나에게 보낸 TeamLike 조회 API")
+    @ResponseBody
+    @GetMapping("/team-likers")
+    public BaseResponse<List<GetTeamLikerRes>> getTeamLikers(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+            List<GetTeamLikerRes> getTeamLikerResList = likeProvider.getTeamLikers(userIdx);
+            return new BaseResponse<>(getTeamLikerResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }
