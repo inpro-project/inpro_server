@@ -1,5 +1,7 @@
 package com.example.demo.src.match;
 
+import com.example.demo.src.like.model.GetTeamLikingRes;
+import com.example.demo.src.like.model.TeamRepImg;
 import com.example.demo.src.match.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -239,6 +241,29 @@ public class MatchDao {
                         rs.getDouble("y"),
                         rs.getInt("percent")),
                 getUserMatchesParams);
+    }
+
+    public List<GetMatchedTeamRes> getMatchedTeams(int userIdx){
+        String getTeamMatchesQuery = "select T.teamIdx as matchedTeamIdx\n" +
+                "     , (select case when count(*) = 0 then 0 else teamFileUrl end as teamFileUrl\n" +
+                "        from TeamFile\n" +
+                "        where TeamFile.teamIdx = T.teamIdx and T.status = 'active' and isRepImg = 'Y') as teamRepUrl\n" +
+                "     , title, type, region, interests\n" +
+                "from TeamMember\n" +
+                "inner join Team T on TeamMember.teamIdx = T.teamIdx\n" +
+                "where TeamMember.userIdx = ? and role != '리더' and T.status = 'active'\n" +
+                "order by TeamMember.updatedAt DESC";
+        int getTeamMatchesParams = userIdx;
+
+        return jdbcTemplate.query(getTeamMatchesQuery,
+                (rs, rsNum) -> new GetMatchedTeamRes(
+                        rs.getInt("matchedTeamIdx"),
+                        rs.getString("teamRepUrl"),
+                        rs.getString("title"),
+                        rs.getString("type"),
+                        rs.getString("region"),
+                        rs.getString("interests")),
+                getTeamMatchesParams);
     }
 
 }

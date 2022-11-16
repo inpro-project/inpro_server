@@ -270,4 +270,22 @@ public class MatchController {
         }
     }
 
+    /**
+     * 나와 매칭된 팀 조회 API
+     * [GET] /app/matched-teams
+     * @return BaseResponse<List<GetMatchedTeamRes>>
+     */
+    @ApiOperation(value = "나와 매칭된 팀 조회 API")
+    @ResponseBody
+    @GetMapping("/matched-teams")
+    public BaseResponse<List<GetMatchedTeamRes>> getMatchedTeams(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+            List<GetMatchedTeamRes> getMatchedTeamResList = matchProvider.getMatchedTeams(userIdx);
+            return new BaseResponse<>(getMatchedTeamResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }

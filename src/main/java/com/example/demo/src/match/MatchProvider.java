@@ -146,5 +146,14 @@ public class MatchProvider {
         }
     }
 
+    public List<GetMatchedTeamRes> getMatchedTeams(int userIdx) throws BaseException {
+        try {
+            List<GetMatchedTeamRes> getMatchedTeamResList = matchDao.getMatchedTeams(userIdx);
+            return getMatchedTeamResList;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 
 }
