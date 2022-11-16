@@ -3,7 +3,10 @@ package com.example.demo.src.team;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.demo.config.BaseException;
+import com.example.demo.config.BaseResponse;
 import com.example.demo.src.report.model.PostReportRes;
+import com.example.demo.src.team.model.PostMemberReq;
+import com.example.demo.src.team.model.PostMemberRes;
 import com.example.demo.src.team.model.PostTeamReq;
 import com.example.demo.src.team.model.PostTeamRes;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
 @Transactional
 public class TeamService {
 
+    private final TeamProvider teamProvider;
     private final TeamDao teamDao;
     private final AmazonS3 amazonS3;
 
@@ -41,9 +45,9 @@ public class TeamService {
         }
     }
 
-    public void createMember(int teamIdx, int userIdx) throws BaseException {
+    public void createTeamLeader(int teamIdx, int userIdx) throws BaseException {
         try {
-            int result = teamDao.createMember(teamIdx, userIdx, "리더");
+            int result = teamDao.createTeamLeader(teamIdx, userIdx);
             if(result == 0){
                 throw new BaseException(FAIL_MEMBER);
             }
@@ -129,6 +133,30 @@ public class TeamService {
         String teamFileUrl = amazonS3.getUrl(bucket, key).toString();
 
         return teamFileUrl;
+    }
+
+    public PostMemberRes createMember(int leaderIdx, PostMemberReq postMemberReq) throws BaseException {
+        try {
+            // 팀원으로 추가할 유저 유효성 검사
+            if(teamProvider.checkUserIdx(postMemberReq.getUserIdx()) == 0){
+                throw new BaseException(INVALID_USERIDX);
+            }
+
+            // 현재 유저가 팀을 만든 유저가 맞는지 확인, 유효한 팀 인덱스인지 확인
+            if(teamProvider.checkTeamIdx(postMemberReq.getTeamIdx(), leaderIdx) == 0){
+                throw new BaseException(INVALID_TEAMIDX);
+            }
+
+            // 팀에 이미 포함된 멤버인지 확인
+            if(teamProvider.checkPreTeamMember(postMemberReq.getTeamIdx(), postMemberReq.getUserIdx()) == 1){
+                throw new BaseException(MEMBER_INVALID_USERIDX);
+            }
+
+            int teamMemberIdx = teamDao.createMember(postMemberReq);
+            return new PostMemberRes(teamMemberIdx);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 
 }
