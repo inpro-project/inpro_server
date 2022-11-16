@@ -19,8 +19,8 @@ public class KakaoDao {
     }
 
     public void createUser(KakaoUser kakaoUser){
-        String createUserQuery = "insert into User (email, nickname, userImgUrl, ageRange, gender) VALUES (?,?,?,?,?)";
-        Object[] createUserParams = new Object[]{kakaoUser.getEmail(), kakaoUser.getNickName(), kakaoUser.getUserImgUrl(), kakaoUser.getAgeRange(), kakaoUser.getGender()};
+        String createUserQuery = "insert into User (idToken, email, nickname, userImgUrl, ageRange, gender) VALUES (?,?,?,?,?,?)";
+        Object[] createUserParams = new Object[]{kakaoUser.getIdToken(), kakaoUser.getEmail(), kakaoUser.getNickName(), kakaoUser.getUserImgUrl(), kakaoUser.getAgeRange(), kakaoUser.getGender()};
         this.jdbcTemplate.update(createUserQuery, createUserParams);
     }
 
