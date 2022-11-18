@@ -3,8 +3,6 @@ package com.example.demo.src.team;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.demo.config.BaseException;
-import com.example.demo.config.BaseResponse;
-import com.example.demo.src.report.model.PostReportRes;
 import com.example.demo.src.team.model.PostMemberReq;
 import com.example.demo.src.team.model.PostMemberRes;
 import com.example.demo.src.team.model.PostTeamReq;

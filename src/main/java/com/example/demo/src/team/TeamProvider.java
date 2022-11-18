@@ -1,9 +1,7 @@
 package com.example.demo.src.team;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.team.model.GetTeamProfileRes;
 import com.example.demo.src.team.model.GetTeamsRes;
-import com.example.demo.src.user.model.GetUserProfileRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
