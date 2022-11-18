@@ -1,6 +1,5 @@
 package com.example.demo.src.match.model;
 
-import com.example.demo.src.like.model.TeamRepImg;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

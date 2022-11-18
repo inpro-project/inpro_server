@@ -17,9 +17,6 @@ public class GetTeamLikingRes {
     @ApiModelProperty(value = "팀을 만든 유저 인덱스", example = "1")
     private int userIdx;
 
-    @ApiModelProperty(value = "팀 대표 이미지 이름 및 주소")
-    private TeamRepImg teamRepImgList;
-
     @ApiModelProperty(value = "팀 제목", example = "인플 프로젝트")
     private String title;
 
@@ -31,4 +28,7 @@ public class GetTeamLikingRes {
 
     @ApiModelProperty(value = "관심 분야", example = "IT")
     private String interests;
+
+    @ApiModelProperty(value = "팀 대표 이미지 주소")
+    private String teamRepUrl;
 }
