@@ -11,7 +11,7 @@ import java.util.List;
 @Getter @Setter
 @AllArgsConstructor
 @ApiModel(value = "유저 프로필 상세 조회 API")
-public class GetProfileRes {
+public class GetUserProfileRes {
 
     @ApiModelProperty(value = "닉네임", example = "신예빈")
     private String nickName;

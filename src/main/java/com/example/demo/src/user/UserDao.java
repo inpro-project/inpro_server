@@ -180,15 +180,15 @@ public class UserDao {
                 getRepPortfoliosParams);
     }
 
-    public GetProfileRes getProfile(int userIdx){
-        String getProfileQuery = "select nickName, userImgUrl\n" +
+    public GetUserProfileRes getUserProfile(int userIdx){
+        String getUserProfileQuery = "select nickName, userImgUrl\n" +
                 ", gender, ageRange, comment, region, occupation, interests\n" +
                 "from User\n" +
                 "where userIdx = ?";
-        int getProfileParams = userIdx;
+        int getUserProfileParams = userIdx;
 
-        return this.jdbcTemplate.queryForObject(getProfileQuery,
-                (rs, rsNum) -> new GetProfileRes(
+        return this.jdbcTemplate.queryForObject(getUserProfileQuery,
+                (rs, rsNum) -> new GetUserProfileRes(
                         rs.getString("nickName"),
                         rs.getString("userImgUrl"),
                         rs.getString("gender"),
@@ -202,7 +202,7 @@ public class UserDao {
                         getDiscFeatures(userIdx),
                         getUserTags(userIdx),
                         getRepPortfolios(userIdx)),
-                getProfileParams);
+                getUserProfileParams);
     }
 
     public int checkPortfolio(int userIdx, int portfolioCategoryIdx){

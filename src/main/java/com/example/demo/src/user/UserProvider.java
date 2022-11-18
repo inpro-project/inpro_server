@@ -2,7 +2,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.user.model.GetPortfolioRes;
-import com.example.demo.src.user.model.GetProfileRes;
+import com.example.demo.src.user.model.GetUserProfileRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,10 +64,10 @@ public class UserProvider {
         }
     }
 
-    public GetProfileRes getProfile(int userIdx) throws BaseException {
+    public GetUserProfileRes getUserProfile(int userIdx) throws BaseException {
         try{
-            GetProfileRes getProfileRes = userDao.getProfile(userIdx);
-            return getProfileRes;
+            GetUserProfileRes getUserProfileRes = userDao.getUserProfile(userIdx);
+            return getUserProfileRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
