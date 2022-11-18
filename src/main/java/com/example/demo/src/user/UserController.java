@@ -303,6 +303,7 @@ public class UserController {
      * @return BaseResponse<GetUserProfileRes>
      */
     @ApiOperation(value = "특정 유저 프로필 상세 조회 API")
+    @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다.")
     @ResponseBody
     @GetMapping("/user-profiles/{userIdx}")
     public BaseResponse<GetUserProfileRes> getUserProfile(@PathVariable("userIdx") int userIdx){

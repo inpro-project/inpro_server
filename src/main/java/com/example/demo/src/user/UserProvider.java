@@ -9,8 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.example.demo.config.BaseResponseStatus.INACTIVE_USER;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -65,6 +64,9 @@ public class UserProvider {
     }
 
     public GetUserProfileRes getUserProfile(int userIdx) throws BaseException {
+        if(checkUserIdx(userIdx) == 0){
+            throw new BaseException(INVALID_USERIDX);
+        }
         try{
             GetUserProfileRes getUserProfileRes = userDao.getUserProfile(userIdx);
             return getUserProfileRes;
