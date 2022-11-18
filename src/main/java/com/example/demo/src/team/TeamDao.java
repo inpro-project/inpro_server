@@ -1,5 +1,6 @@
 package com.example.demo.src.team;
 
+import com.example.demo.src.team.model.GetTeamsRes;
 import com.example.demo.src.team.model.PostMemberReq;
 import com.example.demo.src.team.model.PostTeamReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class TeamDao {
@@ -75,6 +77,19 @@ public class TeamDao {
 
         String lastInsertIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public List<GetTeamsRes> getTeams(int userIdx){
+        String getTeamsQuery = "select teamIdx, title, type, region, interests from Team where userIdx = ? and status = 'active'";
+        int getTeamsParams = userIdx;
+        return this.jdbcTemplate.query(getTeamsQuery,
+                (rs, rsNum) -> new GetTeamsRes(
+                        rs.getInt("teamIdx"),
+                        rs.getString("title"),
+                        rs.getString("type"),
+                        rs.getString("region"),
+                        rs.getString("interests")),
+                getTeamsParams);
     }
 
 }

@@ -3,8 +3,6 @@ package com.example.demo.src.team;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.demo.config.BaseException;
-import com.example.demo.config.BaseResponse;
-import com.example.demo.src.report.model.PostReportRes;
 import com.example.demo.src.team.model.PostMemberReq;
 import com.example.demo.src.team.model.PostMemberRes;
 import com.example.demo.src.team.model.PostTeamReq;
@@ -136,22 +134,21 @@ public class TeamService {
     }
 
     public PostMemberRes createMember(int leaderIdx, PostMemberReq postMemberReq) throws BaseException {
+        // 팀원으로 추가할 유저 유효성 검사
+        if(teamProvider.checkUserIdx(postMemberReq.getUserIdx()) == 0){
+            throw new BaseException(INVALID_USERIDX);
+        }
+
+        // 현재 유저가 팀을 만든 유저가 맞는지 확인, 유효한 팀 인덱스인지 확인
+        if(teamProvider.checkTeamIdx(postMemberReq.getTeamIdx(), leaderIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        // 팀에 이미 포함된 멤버인지 확인
+        if(teamProvider.checkPreTeamMember(postMemberReq.getTeamIdx(), postMemberReq.getUserIdx()) == 1){
+            throw new BaseException(MEMBER_INVALID_USERIDX);
+        }
         try {
-            // 팀원으로 추가할 유저 유효성 검사
-            if(teamProvider.checkUserIdx(postMemberReq.getUserIdx()) == 0){
-                throw new BaseException(INVALID_USERIDX);
-            }
-
-            // 현재 유저가 팀을 만든 유저가 맞는지 확인, 유효한 팀 인덱스인지 확인
-            if(teamProvider.checkTeamIdx(postMemberReq.getTeamIdx(), leaderIdx) == 0){
-                throw new BaseException(INVALID_TEAMIDX);
-            }
-
-            // 팀에 이미 포함된 멤버인지 확인
-            if(teamProvider.checkPreTeamMember(postMemberReq.getTeamIdx(), postMemberReq.getUserIdx()) == 1){
-                throw new BaseException(MEMBER_INVALID_USERIDX);
-            }
-
             int teamMemberIdx = teamDao.createMember(postMemberReq);
             return new PostMemberRes(teamMemberIdx);
         } catch (Exception exception) {

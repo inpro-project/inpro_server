@@ -2,7 +2,6 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.disc.model.PostSearchDiscRes;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.*;
@@ -281,18 +280,36 @@ public class UserController {
     }
 
     /**
-     * 유저 프로필 조회 API
+     * 나의 프로필 조회 API
      * [GET] /app/profiles
      * @return BaseResponse<GetProfileRes>
      */
-    @ApiOperation(value = "유저 프로필 조회 API")
+    @ApiOperation(value = "나의 프로필 조회 API")
     @ResponseBody
     @GetMapping("/profiles")
-    public BaseResponse<GetProfileRes> getProfile(){
+    public BaseResponse<GetUserProfileRes> getProfile(){
         try {
             int userIdx = jwtService.getUserIdx();
-            GetProfileRes getProfileRes = userProvider.getProfile(userIdx);
-            return new BaseResponse<>(getProfileRes);
+            GetUserProfileRes getUserProfileRes = userProvider.getUserProfile(userIdx);
+            return new BaseResponse<>(getUserProfileRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 특정 유저 프로필 상세 조회 API
+     * [GET] /app/user-profiles/:userIdx
+     * @return BaseResponse<GetUserProfileRes>
+     */
+    @ApiOperation(value = "특정 유저 프로필 상세 조회 API")
+    @ResponseBody
+    @GetMapping("/user-profiles/{userIdx}")
+    public BaseResponse<GetUserProfileRes> getUserProfile(@PathVariable("userIdx") int userIdx){
+        try {
+            jwtService.getUserIdx();
+            GetUserProfileRes getUserProfileRes = userProvider.getUserProfile(userIdx);
+            return new BaseResponse<>(getUserProfileRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

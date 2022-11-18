@@ -111,13 +111,14 @@ public class LikeDao {
     }
 
     public List<GetUserLikingRes> getUserLikings(int userIdx){
-        String getUserLikingsQuery = "select userIdx as likingIdx, nickName, userImgUrl\n" +
-                ", gender, ageRange, region, occupation, interests\n" +
+        String getUserLikingsQuery = "select userIdx as likingIdx, nickName, userImgUrl, gender, ageRange, region, occupation, interests\n" +
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likingIdx\n" +
-                "where likerIdx = ? and UL.status = 'active'\n" +
+                "where likerIdx = ? and UL.status = 'active' and User.status = 'active'\n" +
+                "and (select EXISTS(select * from UserLike\n" +
+                "where likerIdx = UL.likingIdx and likingIdx = ? and UserLike.status = 'active')) = 0\n" +
                 "order by UL.updatedAt DESC";
-        int getUserLikingsParams = userIdx;
+        Object[] getUserLikingsParams = new Object[]{userIdx, userIdx};
 
         return this.jdbcTemplate.query(getUserLikingsQuery,
                 (rs, rsNum) -> new GetUserLikingRes(
@@ -133,13 +134,14 @@ public class LikeDao {
     }
 
     public List<GetUserLikerRes> getUserLikers(int userIdx){
-        String getUserLikersQuery = "select userIdx as likerIdx, nickName, userImgUrl\n" +
-                ", gender, ageRange, region, occupation, interests\n" +
+        String getUserLikersQuery = "select userIdx as likerIdx, nickName, userImgUrl, gender, ageRange, region, occupation, interests\n" +
                 "from User\n" +
                 "inner join UserLike UL on User.userIdx = UL.likerIdx\n" +
-                "where likingIdx = ? and UL.status = 'active'\n" +
+                "where likingIdx = ? and UL.status = 'active' and User.status = 'active'\n" +
+                "and (select EXISTS(select * from UserLike\n" +
+                "where likerIdx = ? and likingIdx = UL.likerIdx and UserLike.status = 'active')) = 0\n" +
                 "order by UL.updatedAt DESC";
-        int getUserLikersParams = userIdx;
+        Object[] getUserLikersParams = new Object[]{userIdx, userIdx};
 
         return this.jdbcTemplate.query(getUserLikersQuery,
                 (rs, rsNum) -> new GetUserLikerRes(
@@ -245,45 +247,42 @@ public class LikeDao {
         return this.jdbcTemplate.update(deleteTeamPassQuery, deleteTeamPassParams);
     }
 
-    public TeamRepImg getTeamRepImg(int teamIdx){
-        String getTeamRepImgQuery = "select case when count(*) = 0 then 0 else fileName end as fileName\n" +
-                "     , case when count(*) = 0 then 0 else teamFileUrl end as teamFileUrl\n" +
-                "from TeamFile\n" +
-                "where teamIdx = ? and status = 'active' and type = 'Y' and isRepImg = 'Y'";
-        int getTeamRepImgParams = teamIdx;
-        return this.jdbcTemplate.queryForObject(getTeamRepImgQuery,
-                (rs, rsNum) -> new TeamRepImg(
-                        rs.getString("fileName"),
-                        rs.getString("teamFileUrl")),
-                getTeamRepImgParams);
-    }
-
     public List<GetTeamLikingRes> getTeamLikings(int userIdx){
         String getTeamLikingsQuery = "select teamIdx, userIdx, title, type, region, interests\n" +
+                "       , (select case when count(*) = 0 then 0 else teamFileUrl end as teamFileUrl\n" +
+                "        from TeamFile\n" +
+                "        where TeamFile.teamIdx = Team.teamIdx and TeamFile.status = 'active' and isRepImg = 'Y') as teamRepUrl\n" +
                 "from Team\n" +
                 "inner join TeamLike TL on Team.teamIdx = TL.likingIdx\n" +
-                "where likerIdx = ? and TL.status = 'active'\n" +
+                "where likerIdx = ? and TL.status = 'active' and Team.status = 'active'\n" +
+                "and (select exists(select *\n" +
+                "from TeamMember\n" +
+                "where userIdx = ? and teamIdx = likingIdx and TeamMember.status = 'active')) = 0\n" +
                 "order by TL.updatedAt DESC";
-        int getTeamLikingsParams = userIdx;
+        Object[] getTeamLikingsParams = new Object[]{userIdx, userIdx};
 
         return this.jdbcTemplate.query(getTeamLikingsQuery,
                 (rs, rsNum) -> new GetTeamLikingRes(
                         rs.getInt("teamIdx"),
                         rs.getInt("userIdx"),
-                        getTeamRepImg(rs.getInt("teamIdx")),
                         rs.getString("title"),
                         rs.getString("type"),
                         rs.getString("region"),
-                        rs.getString("interests")),
+                        rs.getString("interests"),
+                        rs.getString("teamRepUrl")),
                 getTeamLikingsParams);
     }
 
     public List<UserInfo> getUserInfo(int teamIdx){
         String getUserInfoQuery = "select userIdx, nickName, userImgUrl, gender, ageRange, region, occupation, interests\n" +
                 "from TeamLike\n" +
-                "inner join User U on TeamLike.likerIdx = U.userIdx\n" +
-                "where likingIdx = ?";
-        int getUsrInfoParams = teamIdx;
+                "inner join User U on TeamLike.likerIdx = U.userIdx and U.status = 'active'\n" +
+                "and (select exists(select *\n" +
+                "from TeamMember\n" +
+                "where TeamMember.userIdx = TeamLike.likerIdx and teamIdx = ? and TeamMember.status = 'active')) = 0\n" +
+                "where likingIdx = ? and TeamLike.status = 'active'\n" +
+                "order by TeamLike.updatedAt DESC";
+        Object[] getUsrInfoParams = new Object[]{teamIdx, teamIdx};
 
         return this.jdbcTemplate.query(getUserInfoQuery,
                 (rs, rsNum) -> new UserInfo(
@@ -299,7 +298,7 @@ public class LikeDao {
     }
 
     public List<GetTeamLikerRes> getTeamLikers(int userIdx){
-        String getTeamLikersQuery = "select teamIdx, title, type from Team where userIdx = ?";
+        String getTeamLikersQuery = "select teamIdx, title, type from Team where userIdx = ? and status = 'active'";
         int getTeamLikersParams = userIdx;
 
         return this.jdbcTemplate.query(getTeamLikersQuery,

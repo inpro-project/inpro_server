@@ -2,10 +2,7 @@ package com.example.demo.src.team;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.team.model.PostMemberReq;
-import com.example.demo.src.team.model.PostMemberRes;
-import com.example.demo.src.team.model.PostTeamReq;
-import com.example.demo.src.team.model.PostTeamRes;
+import com.example.demo.src.team.model.*;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -193,5 +190,24 @@ public class TeamController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    /**
+     * 유저가 등록한 팀 전체 조회 API
+     * [GET] /app/teams
+     * @return BaseResponse<GetTeamProfileRes>
+     */
+    @ApiOperation(value = "유저가 등록한 팀 전체 조회 API")
+    @ResponseBody
+    @GetMapping("/teams")
+    public BaseResponse<List<GetTeamsRes>> getTeams(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+            List<GetTeamsRes> getTeamsResList = teamProvider.getTeams(userIdx);
+            return new BaseResponse<>(getTeamsResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 }

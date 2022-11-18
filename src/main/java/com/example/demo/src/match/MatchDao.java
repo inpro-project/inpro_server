@@ -1,7 +1,5 @@
 package com.example.demo.src.match;
 
-import com.example.demo.src.like.model.GetTeamLikingRes;
-import com.example.demo.src.like.model.TeamRepImg;
 import com.example.demo.src.match.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
