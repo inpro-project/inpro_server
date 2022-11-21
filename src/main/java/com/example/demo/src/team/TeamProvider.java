@@ -1,6 +1,7 @@
 package com.example.demo.src.team;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.team.model.GetTeamRes;
 import com.example.demo.src.team.model.GetTeamsRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.example.demo.config.BaseResponseStatus.INVALID_TEAMIDX;
 
 @Slf4j
 @Service
@@ -27,9 +29,9 @@ public class TeamProvider {
         }
     }
 
-    public int checkTeamIdx(int teamIdx, int leaderIdx) throws BaseException {
+    public int checkTeamIdxByLeader(int teamIdx, int leaderIdx) throws BaseException {
         try {
-            return teamDao.checkTeamIdx(teamIdx, leaderIdx);
+            return teamDao.checkTeamIdxByLeader(teamIdx, leaderIdx);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
@@ -47,6 +49,28 @@ public class TeamProvider {
         try {
             List<GetTeamsRes> getTeamsResList = teamDao.getTeams(userIdx);
             return getTeamsResList;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkTeamIdx(int teamIdx) throws BaseException {
+        try {
+            return teamDao.checkTeamIdx(teamIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetTeamRes> getTeam(int teamIdx) throws BaseException {
+        // 유효한 팀 인덱스인지, 삭제된 팀이 아닌지 확인
+        if(checkTeamIdx(teamIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        try {
+            List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx);
+            return getTeamRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

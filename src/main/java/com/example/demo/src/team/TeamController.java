@@ -209,5 +209,24 @@ public class TeamController {
         }
     }
 
+    /**
+     * 특정 팀 상세 조회 API
+     * [GET] /app/teams/:teamIdx
+     * @return BaseResponse<List<GetTeamRes>>
+     */
+    @ApiOperation(value = "특정 팀 상세 조회 API")
+    @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다.")
+    @ResponseBody
+    @GetMapping("/teams/{teamIdx}")
+    public BaseResponse<List<GetTeamRes>> getTeam(@PathVariable("teamIdx") int teamIdx){
+        try {
+            jwtService.getUserIdx();
+            List<GetTeamRes> getTeamRes = teamProvider.getTeam(teamIdx);
+            return new BaseResponse<>(getTeamRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 }
