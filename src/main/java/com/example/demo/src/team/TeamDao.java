@@ -80,7 +80,8 @@ public class TeamDao {
     }
 
     public List<GetTeamsRes> getTeams(int userIdx){
-        String getTeamsQuery = "select teamIdx, title, type, region, interests from Team where userIdx = ? and status = 'active'";
+        String getTeamsQuery = "select teamIdx, title, type, region, interests, status from Team " +
+                "where userIdx = ? and status in('active', 'inactive') order by createdAt DESC";
         int getTeamsParams = userIdx;
         return this.jdbcTemplate.query(getTeamsQuery,
                 (rs, rsNum) -> new GetTeamsRes(
@@ -88,7 +89,8 @@ public class TeamDao {
                         rs.getString("title"),
                         rs.getString("type"),
                         rs.getString("region"),
-                        rs.getString("interests")),
+                        rs.getString("interests"),
+                        rs.getString("status")),
                 getTeamsParams);
     }
 
