@@ -140,7 +140,7 @@ public class TeamService {
         }
 
         // 현재 유저가 팀을 만든 유저가 맞는지 확인, 유효한 팀 인덱스인지 확인
-        if(teamProvider.checkTeamIdx(postMemberReq.getTeamIdx(), leaderIdx) == 0){
+        if(teamProvider.checkTeamIdxByLeader(postMemberReq.getTeamIdx(), leaderIdx) == 0){
             throw new BaseException(INVALID_TEAMIDX);
         }
 

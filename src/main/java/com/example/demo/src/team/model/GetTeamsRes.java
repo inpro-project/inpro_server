@@ -24,4 +24,7 @@ public class GetTeamsRes {
 
     @ApiModelProperty(value = "분야", example = "IT/인터넷")
     private String interests;
+
+    @ApiModelProperty(value = "모집 여부", example = "active", notes = "active : 모집 중, inactive : 모집 완료")
+    private String status;
 }
