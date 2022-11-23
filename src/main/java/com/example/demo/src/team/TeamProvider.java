@@ -1,6 +1,7 @@
 package com.example.demo.src.team;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.team.model.GetCommentsRes;
 import com.example.demo.src.team.model.GetTeamRes;
 import com.example.demo.src.team.model.GetTeamsRes;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +72,20 @@ public class TeamProvider {
         try {
             List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx);
             return getTeamRes;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetCommentsRes> getComments(int teamIdx) throws BaseException {
+        // 유효한 팀 인덱스인지 확인
+        if(checkTeamIdx(teamIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        try {
+            List<GetCommentsRes> getCommentsResList = teamDao.getComments(teamIdx);
+            return getCommentsResList;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

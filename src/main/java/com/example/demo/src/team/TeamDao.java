@@ -156,4 +156,53 @@ public class TeamDao {
                 getTeamParams);
     }
 
+    public List<Reply> getReplys(int parentIdx){
+        String getReplysQuery = "select commentIdx, U.userIdx\n" +
+                "     , case when U.status in ('inactive', 'deleted') then '(탈퇴한 회원)' else nickName end as nickName\n" +
+                "     , case when U.status in ('inactive', 'deleted') then 0 else userImgUrl end as userImgUrl\n" +
+                "     , case when C.status in ('inactive', 'deleted') then '삭제된 댓글입니다.' else content end as content\n" +
+                "     , REPLACE(REPLACE(DATE_FORMAT(C.createdAt, '%y.%m.%d %p %h:%i'), 'AM', '오전'), 'PM', '오후') as createdAt\n" +
+                "from Comment as C\n" +
+                "inner join User U on C.userIdx = U.userIdx\n" +
+                "where parentIdx = ?\n" +
+                "order by seq";
+        int getReplysParams = parentIdx;
+
+        return this.jdbcTemplate.query(getReplysQuery,
+                (rs, rsNum) -> new Reply(
+                        rs.getInt("commentIdx"),
+                        rs.getInt("userIdx"),
+                        rs.getString("nickName"),
+                        rs.getString("userImgUrl"),
+                        rs.getString("content"),
+                        rs.getString("createdAt")),
+                getReplysParams);
+    }
+
+    public List<GetCommentsRes> getComments(int teamIdx){
+        String getCommentsQuery = "select commentIdx, U.userIdx\n" +
+                "     , case when U.status in ('inactive', 'deleted') then '(탈퇴한 회원)' else nickName end as nickName\n" +
+                "     , case when U.status in ('inactive', 'deleted') then 0 else userImgUrl end as userImgUrl\n" +
+                "     , case when C.status in ('inactive', 'deleted') then '삭제된 댓글입니다.' else content end as content\n" +
+                "     , REPLACE(REPLACE(DATE_FORMAT(C.createdAt, '%y.%m.%d %p %h:%i'), 'AM', '오전'), 'PM', '오후') as createdAt\n" +
+                "from Comment as C\n" +
+                "inner join User U on C.userIdx = U.userIdx\n" +
+                "where teamIdx = ? and parentIdx = 0\n" +
+                "order by createdAt";
+        int getCommentsParams = teamIdx;
+
+        return this.jdbcTemplate.query(getCommentsQuery,
+                (rs, rsNum) -> new GetCommentsRes(
+                        rs.getInt("commentIdx"),
+                        rs.getInt("userIdx"),
+                        rs.getString("nickName"),
+                        rs.getString("userImgUrl"),
+                        rs.getString("content"),
+                        rs.getString("createdAt"),
+                        getReplys(rs.getInt("commentIdx"))),
+                getCommentsParams);
+    }
+
+
+
 }

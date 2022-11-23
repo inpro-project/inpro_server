@@ -228,5 +228,24 @@ public class TeamController {
         }
     }
 
+    /**
+     * 팀 댓글 전체 조회 API
+     * [GET] /app/comments/:teamIdx
+     * @return BaseResponse<List<GetCommentsRes>>
+     */
+    @ApiOperation(value = "팀 댓글 전체 조회 API")
+    @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다.")
+    @ResponseBody
+    @GetMapping("/comments/{teamIdx}")
+    public BaseResponse<List<GetCommentsRes>> getComments(@PathVariable("teamIdx") int teamIdx){
+        try {
+            jwtService.getUserIdx();
+            List<GetCommentsRes> getCommentsResList = teamProvider.getComments(teamIdx);
+            return new BaseResponse<>(getCommentsResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 }
