@@ -283,5 +283,29 @@ public class TeamController {
         }
     }
 
+    /**
+     * 댓글 삭제 API
+     * [DELETE] /app/comments/:commentIdx
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "댓글 삭제 API", notes = "성공시 '댓글이 삭제되었습니다.' 출력")
+    @ApiResponses({
+            @ApiResponse(code = 352, message = "올바르지 않은 댓글 인덱스입니다."),
+            @ApiResponse(code = 424, message = "댓글 삭제에 실패하였습니다.")
+    })
+    @ResponseBody
+    @DeleteMapping("/comments/{commentIdx}")
+    public BaseResponse<String> deleteComment(@PathVariable("commentIdx") int commentIdx){
+        try {
+            int userIdx = jwtService.getUserIdx();
+            teamService.deleteComment(commentIdx, userIdx);
+
+            String result = "댓글이 삭제되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 }

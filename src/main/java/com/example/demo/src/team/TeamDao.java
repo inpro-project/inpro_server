@@ -218,5 +218,18 @@ public class TeamDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
+    public int checkCommentByUserIdx(int commentIdx, int userIdx){
+        String checkCommentByUserIdxQuery = "select exists(select * from Comment where commentIdx = ? and userIdx = ?)";
+        Object[] checkCommentByUserIdxParams = new Object[]{commentIdx, userIdx};
+        return this.jdbcTemplate.queryForObject(checkCommentByUserIdxQuery, int.class, checkCommentByUserIdxParams);
+    }
+
+    public int deleteComment(int commentIdx){
+        String deleteCommentQuery = "update Comment set status = 'deleted' where commentIdx = ?";
+        int deleteCommentParams = commentIdx;
+        return this.jdbcTemplate.update(deleteCommentQuery, deleteCommentParams);
+    }
+
+
 
 }
