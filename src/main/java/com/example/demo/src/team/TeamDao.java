@@ -165,7 +165,7 @@ public class TeamDao {
                 "from Comment as C\n" +
                 "inner join User U on C.userIdx = U.userIdx\n" +
                 "where parentIdx = ?\n" +
-                "order by seq";
+                "order by createdAt";
         int getReplysParams = parentIdx;
 
         return this.jdbcTemplate.query(getReplysQuery,
@@ -203,6 +203,20 @@ public class TeamDao {
                 getCommentsParams);
     }
 
+    public int checkCommentIdx(int commentIdx){
+        String checkCommentIdxQuery = "select exists(select * from Comment where commentIdx = ? and parentIdx = 0)";
+        int checkCommentIdxParams = commentIdx;
+        return this.jdbcTemplate.queryForObject(checkCommentIdxQuery, int.class, checkCommentIdxParams);
+    }
+
+    public int createComment(int userIdx, PostCommentReq postCommmentReq){
+        String createCommentQuery = "insert into Comment (userIdx, teamIdx, parentIdx, content) VALUES (?, ?, ?, ?)";
+        Object[] createCommentParams = new Object[]{userIdx, postCommmentReq.getTeamIdx(), postCommmentReq.getParentIdx(), postCommmentReq.getContent()};
+        this.jdbcTemplate.update(createCommentQuery, createCommentParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
 
 
 }

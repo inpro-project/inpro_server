@@ -3,10 +3,7 @@ package com.example.demo.src.team;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.demo.config.BaseException;
-import com.example.demo.src.team.model.PostMemberReq;
-import com.example.demo.src.team.model.PostMemberRes;
-import com.example.demo.src.team.model.PostTeamReq;
-import com.example.demo.src.team.model.PostTeamRes;
+import com.example.demo.src.team.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -151,6 +148,27 @@ public class TeamService {
         try {
             int teamMemberIdx = teamDao.createMember(postMemberReq);
             return new PostMemberRes(teamMemberIdx);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostCommentRes createComment(int userIdx, PostCommentReq postCommentReq) throws BaseException {
+        // 유효한 팀 인덱스인지 확인
+        if(teamProvider.checkTeamIdx(postCommentReq.getTeamIdx()) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        // 유효한 댓글 인덱스인지 확인
+        if(postCommentReq.getParentIdx() != 0){ // 대댓글인 경우에만 확인
+            if(teamProvider.checkCommentIdx(postCommentReq.getParentIdx()) == 0){
+                throw new BaseException(INVALID_COMMENTIDX);
+            }
+        }
+
+        try {
+            int commentIdx = teamDao.createComment(userIdx, postCommentReq);
+            return new PostCommentRes(commentIdx);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

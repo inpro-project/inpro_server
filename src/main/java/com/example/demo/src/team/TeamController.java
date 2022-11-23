@@ -247,5 +247,41 @@ public class TeamController {
         }
     }
 
+    /**
+     * 댓글 생성 API
+     * [POST] /app/comments
+     * @return BaseResponse<PostCommentRes>
+     */
+    @ApiOperation(value = "댓글 생성 API", notes = "parentIdx = 상위 댓글이 없는 경우(그냥 댓글인 경우)에는 0, 그 외(대댓글인 경우)는 상위 댓글의 댓글 식별자(commentIdx)")
+    @ApiResponses({
+        @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
+        @ApiResponse(code = 349, message = "댓글 내용을 입력해주세요."),
+        @ApiResponse(code = 350, message = "팀 인덱스를 입력해주세요."),
+        @ApiResponse(code = 351, message = "유효하지 않은 댓글 인덱스(parentIdx)입니다.")
+
+    })
+    @ResponseBody
+    @PostMapping("/comments")
+    public BaseResponse<PostCommentRes> createComment(@RequestBody PostCommentReq postCommentReq){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            // 댓글 내용 유효성 검사
+            if(postCommentReq.getContent() == null){
+                return new BaseResponse<>(POST_COMMENT_EMPTY_CONTENT);
+            }
+
+            // 팀 인덱스 유효성 검사
+            if(Integer.toString(postCommentReq.getTeamIdx()) == null){
+                return new BaseResponse<>(POST_COMMENT_EMPTY_TEAMIDX);
+            }
+
+            PostCommentRes postCommentRes = teamService.createComment(userIdx, postCommentReq);
+            return new BaseResponse<>(postCommentRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 }

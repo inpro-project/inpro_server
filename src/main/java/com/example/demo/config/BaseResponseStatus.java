@@ -113,6 +113,10 @@ public enum BaseResponseStatus {
     // [POST] /app/members
     MEMBER_INVALID_USERIDX(false, 348, "이미 멤버로 추가된 유저입니다."),
 
+    // [POST] /app/comments
+    POST_COMMENT_EMPTY_CONTENT(false, 349, "댓글 내용을 입력해주세요."),
+    POST_COMMENT_EMPTY_TEAMIDX(false, 350, "팀 인덱스를 입력해주세요."),
+    INVALID_COMMENTIDX(false, 351, "유효하지 않은 댓글 인덱스입니다."),
 
     /**
      * 400 : Response, Database, Server 오류

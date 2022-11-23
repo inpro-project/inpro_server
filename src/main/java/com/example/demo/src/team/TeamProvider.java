@@ -91,4 +91,12 @@ public class TeamProvider {
         }
     }
 
+    public int checkCommentIdx(int commentIdx) throws BaseException {
+        try {
+            return teamDao.checkCommentIdx(commentIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }
