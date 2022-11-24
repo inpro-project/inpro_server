@@ -156,4 +156,85 @@ public class TeamDao {
                 getTeamParams);
     }
 
+    public List<Reply> getReplys(int parentIdx){
+        String getReplysQuery = "select commentIdx, U.userIdx\n" +
+                "     , case when U.status in ('inactive', 'deleted') then '(탈퇴한 회원)' else nickName end as nickName\n" +
+                "     , case when U.status in ('inactive', 'deleted') then 0 else userImgUrl end as userImgUrl\n" +
+                "     , case when C.status in ('inactive', 'deleted') then '삭제된 댓글입니다.' else content end as content\n" +
+                "     , REPLACE(REPLACE(DATE_FORMAT(C.createdAt, '%y.%m.%d %p %h:%i'), 'AM', '오전'), 'PM', '오후') as createdAt\n" +
+                "from Comment as C\n" +
+                "inner join User U on C.userIdx = U.userIdx\n" +
+                "where parentIdx = ?\n" +
+                "order by createdAt";
+        int getReplysParams = parentIdx;
+
+        return this.jdbcTemplate.query(getReplysQuery,
+                (rs, rsNum) -> new Reply(
+                        rs.getInt("commentIdx"),
+                        rs.getInt("userIdx"),
+                        rs.getString("nickName"),
+                        rs.getString("userImgUrl"),
+                        rs.getString("content"),
+                        rs.getString("createdAt")),
+                getReplysParams);
+    }
+
+    public List<GetCommentsRes> getComments(int teamIdx){
+        String getCommentsQuery = "select commentIdx, U.userIdx\n" +
+                "     , case when U.status in ('inactive', 'deleted') then '(탈퇴한 회원)' else nickName end as nickName\n" +
+                "     , case when U.status in ('inactive', 'deleted') then 0 else userImgUrl end as userImgUrl\n" +
+                "     , case when C.status in ('inactive', 'deleted') then '삭제된 댓글입니다.' else content end as content\n" +
+                "     , REPLACE(REPLACE(DATE_FORMAT(C.createdAt, '%y.%m.%d %p %h:%i'), 'AM', '오전'), 'PM', '오후') as createdAt\n" +
+                "from Comment as C\n" +
+                "inner join User U on C.userIdx = U.userIdx\n" +
+                "where teamIdx = ? and parentIdx = 0\n" +
+                "order by createdAt";
+        int getCommentsParams = teamIdx;
+
+        return this.jdbcTemplate.query(getCommentsQuery,
+                (rs, rsNum) -> new GetCommentsRes(
+                        rs.getInt("commentIdx"),
+                        rs.getInt("userIdx"),
+                        rs.getString("nickName"),
+                        rs.getString("userImgUrl"),
+                        rs.getString("content"),
+                        rs.getString("createdAt"),
+                        getReplys(rs.getInt("commentIdx"))),
+                getCommentsParams);
+    }
+
+    public int checkCommentIdx(int commentIdx){
+        String checkCommentIdxQuery = "select exists(select * from Comment where commentIdx = ? and parentIdx = 0)";
+        int checkCommentIdxParams = commentIdx;
+        return this.jdbcTemplate.queryForObject(checkCommentIdxQuery, int.class, checkCommentIdxParams);
+    }
+
+    public int createComment(int userIdx, PostCommentReq postCommmentReq){
+        String createCommentQuery = "insert into Comment (userIdx, teamIdx, parentIdx, content) VALUES (?, ?, ?, ?)";
+        Object[] createCommentParams = new Object[]{userIdx, postCommmentReq.getTeamIdx(), postCommmentReq.getParentIdx(), postCommmentReq.getContent()};
+        this.jdbcTemplate.update(createCommentQuery, createCommentParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public int checkCommentByUserIdx(int commentIdx, int userIdx){
+        String checkCommentByUserIdxQuery = "select exists(select * from Comment where commentIdx = ? and userIdx = ?)";
+        Object[] checkCommentByUserIdxParams = new Object[]{commentIdx, userIdx};
+        return this.jdbcTemplate.queryForObject(checkCommentByUserIdxQuery, int.class, checkCommentByUserIdxParams);
+    }
+
+    public int deleteComment(int commentIdx){
+        String deleteCommentQuery = "update Comment set status = 'deleted' where commentIdx = ?";
+        int deleteCommentParams = commentIdx;
+        return this.jdbcTemplate.update(deleteCommentQuery, deleteCommentParams);
+    }
+
+    public int updateComment(int commentIdx, PatchCommentReq patchCommentReq){
+        String updateCommentQuery = "update Comment set content = ? where commentIdx = ?";
+        Object[] updateCommentParams = new Object[]{patchCommentReq.getContent(), commentIdx};
+        return this.jdbcTemplate.update(updateCommentQuery, updateCommentParams);
+    }
+
+
 }
