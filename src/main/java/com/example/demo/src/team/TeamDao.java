@@ -230,6 +230,11 @@ public class TeamDao {
         return this.jdbcTemplate.update(deleteCommentQuery, deleteCommentParams);
     }
 
+    public int updateComment(int commentIdx, PatchCommentReq patchCommentReq){
+        String updateCommentQuery = "update Comment set content = ? where commentIdx = ?";
+        Object[] updateCommentParams = new Object[]{patchCommentReq.getContent(), commentIdx};
+        return this.jdbcTemplate.update(updateCommentQuery, updateCommentParams);
+    }
 
 
 }

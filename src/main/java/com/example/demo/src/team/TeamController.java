@@ -268,7 +268,7 @@ public class TeamController {
 
             // 댓글 내용 유효성 검사
             if(postCommentReq.getContent() == null){
-                return new BaseResponse<>(POST_COMMENT_EMPTY_CONTENT);
+                return new BaseResponse<>(COMMENT_EMPTY_CONTENT);
             }
 
             // 팀 인덱스 유효성 검사
@@ -301,6 +301,37 @@ public class TeamController {
             teamService.deleteComment(commentIdx, userIdx);
 
             String result = "댓글이 삭제되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 댓글 수정 API
+     * [PATCH] /app/comments/:commentIdx
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "댓글 수정 API", notes = "성공시 '댓글이 수정되었습니다.' 출력")
+    @ApiResponses({
+            @ApiResponse(code = 349, message = "댓글 내용을 입력해주세요."),
+            @ApiResponse(code = 352, message = "올바르지 않은 댓글 인덱스입니다."),
+            @ApiResponse(code = 425, message = "댓글 수정에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PatchMapping("/comments/{commentIdx}")
+    public BaseResponse<String> updateComment(@PathVariable("commentIdx") int commentIdx, @RequestBody PatchCommentReq patchCommentReq){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            // 댓글 내용 유효성 검사
+            if(patchCommentReq.getContent() == null){
+                return new BaseResponse<>(COMMENT_EMPTY_CONTENT);
+            }
+
+            teamService.updateComment(commentIdx, userIdx, patchCommentReq);
+
+            String result = "댓글이 수정되었습니다.";
             return new BaseResponse<>(result);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());

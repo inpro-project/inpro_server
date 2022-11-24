@@ -177,13 +177,29 @@ public class TeamService {
     public void deleteComment(int commentIdx, int userIdx) throws BaseException {
         // 댓글 인덱스 유효성 검사(현재 로그인한 사용자의 댓글이 맞는지도 확인)
         if(teamProvider.checkCommentByUserIdx(commentIdx, userIdx) == 0){
-            throw new BaseException(DELETE_COMMENT_INVALID_COMMENTIDX);
+            throw new BaseException(COMMENT_INVALID_COMMENTIDX);
         }
 
         try {
             int result = teamDao.deleteComment(commentIdx);
             if(result == 0){
                 throw new BaseException(DELETE_FAIL_COMMENT);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateComment(int commentIdx, int userIdx, PatchCommentReq patchCommentReq) throws BaseException {
+        // 댓글 인덱스 유효성 검사(현재 로그인한 사용자의 댓글이 맞는지도 확인)
+        if(teamProvider.checkCommentByUserIdx(commentIdx, userIdx) == 0){
+            throw new BaseException(COMMENT_INVALID_COMMENTIDX);
+        }
+
+        try {
+            int result = teamDao.updateComment(commentIdx, patchCommentReq);
+            if(result == 0){
+                throw new BaseException(MODIFY_FAIL_COMMENT);
             }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
