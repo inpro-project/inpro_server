@@ -204,7 +204,7 @@ public class TeamDao {
     }
 
     public int checkCommentIdx(int commentIdx){
-        String checkCommentIdxQuery = "select exists(select * from Comment where commentIdx = ? and parentIdx = 0)";
+        String checkCommentIdxQuery = "select exists(select * from Comment where commentIdx = ? and parentIdx = 0 and status = 'active')";
         int checkCommentIdxParams = commentIdx;
         return this.jdbcTemplate.queryForObject(checkCommentIdxQuery, int.class, checkCommentIdxParams);
     }
@@ -219,7 +219,7 @@ public class TeamDao {
     }
 
     public int checkCommentByUserIdx(int commentIdx, int userIdx){
-        String checkCommentByUserIdxQuery = "select exists(select * from Comment where commentIdx = ? and userIdx = ?)";
+        String checkCommentByUserIdxQuery = "select exists(select * from Comment where commentIdx = ? and userIdx = ? and status = 'active')";
         Object[] checkCommentByUserIdxParams = new Object[]{commentIdx, userIdx};
         return this.jdbcTemplate.queryForObject(checkCommentByUserIdxQuery, int.class, checkCommentByUserIdxParams);
     }
