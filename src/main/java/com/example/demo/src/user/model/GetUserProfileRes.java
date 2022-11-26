@@ -40,9 +40,6 @@ public class GetUserProfileRes {
     @ApiModelProperty(value = "유저 대표 업무 성향")
     private List<GetUserDiscRes> userDisc;
 
-    @ApiModelProperty(value = "유저가 찾는 대표 업무 성향")
-    private List<GetSearchDiscRes> searchDisc;
-
     @ApiModelProperty(value = "업무 성향 특징 태그 리스트")
     private List<GetDiscFeatureRes> discFeatures;
 

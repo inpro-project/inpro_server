@@ -119,20 +119,6 @@ public class UserDao {
                 getUserDiscParams);
     }
 
-    public List<GetSearchDiscRes> getSearchDisc(int userIdx){
-        String getSearchDiscQuery = "select searchDiscIdx, x, y\n" +
-                "from SearchDisc\n" +
-                "where userIdx = ? and status = 'active' and isRepDisc = 'Y'";
-        int getSearchDiscParams = userIdx;
-
-        return this.jdbcTemplate.query(getSearchDiscQuery,
-                (rs, rsNum) -> new GetSearchDiscRes(
-                        rs.getInt("searchDiscIdx"),
-                        rs.getDouble("x"),
-                        rs.getDouble("y")),
-                getSearchDiscParams);
-    }
-
     public List<GetDiscFeatureRes> getDiscFeatures(int userIdx){
         String getDiscFeaturesQuery = "select discFeatureIdx, feature\n" +
                 "from UserDisc\n" +
@@ -198,7 +184,6 @@ public class UserDao {
                         rs.getString("occupation"),
                         rs.getString("interests"),
                         getUserDisc(userIdx),
-                        getSearchDisc(userIdx),
                         getDiscFeatures(userIdx),
                         getUserTags(userIdx),
                         getRepPortfolios(userIdx)),
