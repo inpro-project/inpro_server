@@ -338,5 +338,30 @@ public class TeamController {
         }
     }
 
+    /**
+     * 팀원 모집 완료 API
+     * [PATCH] /app/team-deadlines/:teamIdx
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "팀원 모집 완료 API", notes = "성공시 '팀원 모집이 완료되었습니다.' 출력")
+    @ApiResponses({
+            @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
+            @ApiResponse(code = 426, message = "팀 모집 완료에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PatchMapping("/team-deadlines/{teamIdx}")
+    public BaseResponse<String> teamDeadline(@PathVariable("teamIdx") int teamIdx){
+        try {
+            int leaderIdx = jwtService.getUserIdx();
+
+            teamService.teamDeadline(teamIdx, leaderIdx);
+
+            String result = "팀원 모집이 완료되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 }
