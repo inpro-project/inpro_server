@@ -2,7 +2,6 @@ package com.example.demo.src.disc;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.disc.model.PostDiscReq;
-import com.example.demo.src.disc.model.PostSearchDiscRes;
 import com.example.demo.src.disc.model.PostUserDiscRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -255,47 +254,6 @@ public class DiscService {
         }
     }
 
-    // Search disc 결과 저장 - x, y 좌표
-    public PostSearchDiscRes createSearchDisc(int userIdx, String isRepDisc, PostDiscReq postDiscReq) throws BaseException {
-        try {
-            // x, y 좌표 계산
-            double[] xy = calGoodList(postDiscReq);
-            double[] xy2 = calBadList(xy, postDiscReq);
-
-            // disc 유형별 비중 계산
-            double[] discPercent = calDiscPercent(postDiscReq);
-
-            int searchDiscIdx = discDao.createSearchDisc(userIdx, xy2, isRepDisc, discPercent);
-            createSearchDiscTestAsGood(searchDiscIdx, postDiscReq);
-            createSearchDiscTestAsBad(searchDiscIdx, postDiscReq);
-            return new PostSearchDiscRes(searchDiscIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    // Search disc 결과 중 적합에 대한 정보 저장
-    public void createSearchDiscTestAsGood(int searchDiscIdx, PostDiscReq postDiscReq) throws BaseException {
-        try {
-            for(int i = 0; i < postDiscReq.getGoodList().size(); i++){
-                discDao.createSearchDiscTestAsGood(searchDiscIdx, postDiscReq.getGoodList().get(i).getDiscFeatureIdx());
-            }
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    // Search disc 결과 중 부적합에 대한 정보 저장
-    public void createSearchDiscTestAsBad(int searchDiscIdx, PostDiscReq postDiscReq) throws BaseException {
-        try {
-            for(int i = 0; i < postDiscReq.getBadList().size(); i++){
-                discDao.createSearchDiscTestAsBad(searchDiscIdx, postDiscReq.getBadList().get(i).getDiscFeatureIdx());
-            }
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
     public void updateUserDiscName(int userIdx, int userDiscIdx, String name) throws BaseException {
         // userDiscIdx 유효성 검사
         if(discProvider.checkUserDiscIdx(userIdx, userDiscIdx) == 0){
@@ -311,27 +269,6 @@ public class DiscService {
             int result = discDao.updateUserDiscName(userDiscIdx, name);
             if(result == 0){
                 throw new BaseException(FAIL_USERDISCNAME);
-            }
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public void updateSearchDiscName(int userIdx, int searchDiscIdx, String name) throws BaseException {
-        // searchDiscIdx 유효성 검사
-        if(discProvider.checkSearchDiscIdx(userIdx, searchDiscIdx) == 0){
-            throw new BaseException(SEARCHDISC_INVALID_SEARCHDISCIDX);
-        }
-        try {
-            // Query string으로 전달된 이름이 null이면 임의로 순차적인 이름으로 설정
-            if(name == null){
-                int count = discProvider.getSearchDiscCount(userIdx);
-                name = "search disc(" + count + ")";
-            }
-
-            int result = discDao.updateSearchDiscName(searchDiscIdx, name);
-            if(result == 0){
-                throw new BaseException(FAIL_SEARCHDISCNAME);
             }
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
