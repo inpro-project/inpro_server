@@ -37,18 +37,18 @@ public class UserController {
      * [PATCH] /app/profiles
      * @return BaseResponse<String>
      */
-    @ApiOperation(value = "유저 프로필 수정 API", notes = "profileImg와 별개로 patchUserReq는 Content-type을 application/json으로 설정해야 하기 때문에\n 테스트는 Postman에서만 가능합니다. (자세한 사항은 노션 참조)")
+    @ApiOperation(value = "유저 프로필 수정 API", notes = "성공시 '프로필 이미지가 수정되었습니다.' 출력")
     @ApiResponses({
             @ApiResponse(code = 308, message = "닉네임은 최소 2자, 최대 10자까지 입력 가능합니다."),
             @ApiResponse(code = 309, message = "닉네임은 띄어쓰기 없이 한글, 영문, 숫자만 가능합니다."),
             @ApiResponse(code = 310, message = "거주 지역을 입력해주세요."),
             @ApiResponse(code = 311, message = "직업군을 입력해주세요."),
             @ApiResponse(code = 313, message = "관심 분야를 입력해주세요."),
-            @ApiResponse(code = 314, message = "프로필 사진을 입력해주세요.")
+            @ApiResponse(code = 405, message = "프로필 수정에 실패하였습니다.")
     })
     @ResponseBody
     @PatchMapping("/profiles")
-    public BaseResponse<String> modifyUser(@RequestPart(value = "profileImg") MultipartFile multipartFile, @RequestPart(value = "patchUserReq") PatchUserReq patchUserReq) throws IOException {
+    public BaseResponse<String> modifyUser(@RequestBody PatchUserReq patchUserReq) throws IOException {
         try {
             int userIdx = jwtService.getUserIdx();
 
@@ -78,13 +78,37 @@ public class UserController {
                 return new BaseResponse<>(PATCH_USER_EMPTY_INTERESTS);
             }
 
+            userService.modifyUser(userIdx, patchUserReq);
+            String result = "프로필이 수정되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 유저 프로필 이미지 수정 API
+     * [PATCH] /app/profile-imgs
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "유저 프로필 이미지 수정 API", notes = "성공시 '프로필 이미지가 수정되었습니다.' 출력")
+    @ApiResponses({
+            @ApiResponse(code = 314, message = "프로필 사진을 입력해주세요."),
+            @ApiResponse(code = 428, message = "프로필 이미지 수정에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PatchMapping("/profile-imgs")
+    public BaseResponse<String> modifyUserProfileImg(@RequestPart(value = "profileImg") MultipartFile multipartFile) throws IOException {
+        try {
+            int userIdx = jwtService.getUserIdx();
+
             // 프로필 사진 유효성 검사
-            if(multipartFile == null){
+            if(multipartFile.isEmpty()){
                 return new BaseResponse<>(PATCH_USER_EMPTY_IMG);
             }
 
-            userService.modifyUser(userIdx, multipartFile, patchUserReq);
-            String result = "프로필이 수정되었습니다.";
+            userService.modifyUserProfileImg(userIdx, multipartFile);
+            String result = "프로필 이미지가 수정되었습니다.";
             return new BaseResponse<>(result);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());

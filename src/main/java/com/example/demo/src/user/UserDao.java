@@ -18,11 +18,17 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public int modifyUser(int userIdx, String storeFileUrl, PatchUserReq patchUserReq){
-        String modifyUserQuery = "update User set nickName = ?, userImgUrl = ?, comment = ?, region = ?, occupation = ?, interests = ? where userIdx = ?";
-        Object[] modifyUserParams = new Object[]{patchUserReq.getNickName(), storeFileUrl, patchUserReq.getComment(), patchUserReq.getRegion(),
+    public int modifyUser(int userIdx, PatchUserReq patchUserReq){
+        String modifyUserQuery = "update User set nickName = ?, comment = ?, region = ?, occupation = ?, interests = ? where userIdx = ?";
+        Object[] modifyUserParams = new Object[]{patchUserReq.getNickName(), patchUserReq.getComment(), patchUserReq.getRegion(),
                 patchUserReq.getOccupation(), patchUserReq.getInterests(), userIdx};
         return this.jdbcTemplate.update(modifyUserQuery, modifyUserParams);
+    }
+
+    public int modifyUserProfileImg(int userIdx, String storeFileUrl){
+        String modifyUserProfileImgQuery = "update User set userImgUrl = ? where userIdx = ?";
+        Object[] modifyUserProfileImgParams = new Object[]{storeFileUrl, userIdx};
+        return this.jdbcTemplate.update(modifyUserProfileImgQuery, modifyUserProfileImgParams);
     }
 
     public int createPortfolio(int userIdx, int portfolioCategoryIdx, PostPortfolioReq postPortfolioReq, String isRepPortfolio){
