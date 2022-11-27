@@ -2,6 +2,7 @@ package com.example.demo.src.chat;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.chat.model.ChatMessage;
+import com.example.demo.src.chat.model.GetChatMessageRes;
 import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -19,14 +20,15 @@ public class MessageController {
   @MessageMapping("/chat/message")
   public void enter(ChatMessage message) {
     try {
-      int userIdx = jwtService.getUserIdx();
+      int userIdx = Integer.parseInt(message.getSender());
       int chatRoomIdx = Integer.parseInt(message.getRoomId());
       String chatMessage = message.getMessage();
 
       if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
         message.setMessage(message.getSender()+"님이 입장하였습니다.");
       }
-      chatService.createChatMessage(chatRoomIdx, userIdx, chatMessage);
+      GetChatMessageRes getChatMessageRes = chatService.createChatMessage(chatRoomIdx, userIdx, chatMessage);
+      message.setCreatedAt(getChatMessageRes.getCreatedAt());
     }
     catch (BaseException exception) {
       return;
