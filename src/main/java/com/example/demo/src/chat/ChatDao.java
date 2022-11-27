@@ -20,7 +20,7 @@ public class ChatDao {
   }
 
   public List<GetChatRoomRes> getChatRoomOne(int chatRoomIdx) {
-    String getChatRoomOneQuery = "select ChatRoom.chatRoomIdx, ChatRoom.name, ChatRoom.content\n" +
+    String getChatRoomOneQuery = "select ChatRoom.chatRoomIdx, ChatRoom.name, ChatRoom.content, ChatRoom.createdAt\n" +
         "from ChatRoom\n" +
         "where ChatRoom.chatRoomIdx = ? and CM.status = 'active'";
 
@@ -30,12 +30,13 @@ public class ChatDao {
         (rs, reNum) -> new GetChatRoomRes(
             rs.getInt("chatRoomIdx"),
             rs.getString("name"),
-            rs.getString("content")),
+            rs.getString("content"),
+            rs.getString("createdAt")),
         getChatRoomOneParams);
   }
 
   public List<GetChatRoomRes> getChatRoom(int userIdx){
-    String getChatRoomQuery = "select ChatRoom.chatRoomIdx, ChatRoom.name, ChatRoom.content\n" +
+    String getChatRoomQuery = "select ChatRoom.chatRoomIdx, ChatRoom.name, ChatRoom.content, ChatRoom.createdAt\n" +
         "from ChatRoom\n" +
         "inner join ChatMember CM on ChatRoom.chatRoomIdx = CM.chatRoomIdx\n" +
         "where CM.userIdx = ? and CM.status = 'active'\n" +
@@ -47,27 +48,9 @@ public class ChatDao {
         (rs, reNum) -> new GetChatRoomRes(
             rs.getInt("chatRoomIdx"),
             rs.getString("name"),
-            rs.getString("content")),
+            rs.getString("content"),
+            rs.getString("createdAt")),
         getChatRoomParams);
-  }
-
-  public List<GetChatMessageRes> getChatRoomInfo(int chatRoomIdx) {
-    String getChatMessageQuery = "select chatMessageIdx, userIdx, U.nickName, U.userImgUrl, chatMessage\n" +
-        "from ChatMessage\n" +
-        "inner join User U on ChatMessage.userIdx = U.userIdx\n" +
-        "where ChatMessage.chatRoomIdx = ?\n" +
-        "order by ChatMessage.createdAt";
-
-    int getChatMessageParams = chatRoomIdx;
-
-    return this.jdbcTemplate.query(getChatMessageQuery,
-        (rs, reNum) -> new GetChatMessageRes(
-            rs.getInt("chatMessageIdx"),
-            rs.getInt("userIdx"),
-            rs.getString("nickName"),
-            rs.getString("userImgUrl"),
-            rs.getString("chatMessage")),
-        getChatMessageParams);
   }
 
   public int createChatRoom(int userIdx, String chatRoomName, String chatRoomContent) {
@@ -95,7 +78,7 @@ public class ChatDao {
   }
 
   public List<GetChatMemberRes> getChatMember(int chatRoomIdx){
-    String getChatMemberQuery = "select chatMemberIdx, userIdx, U.nickName, U.userImgUrl\n" +
+    String getChatMemberQuery = "select chatMemberIdx, U.userIdx, U.nickName, U.userImgUrl\n" +
         "from ChatMember\n" +
         "inner join User U on ChatMember.userIdx = U.userIdx\n" +
         "where ChatMember.chatRoomIdx = ? and ChatMember.status = 'active'\n" +
@@ -113,26 +96,26 @@ public class ChatDao {
   }
 
   public List<GetChatMessageCountRes> getChatMessageCount(int chatRoomIdx) {
-    String getChatMessageQuery = "select ChatMessage.chatMessageIdx, ChatMessage.chatMessage\n" +
+    String getChatMessageQuery = "select ChatMessage.chatMessageIdx, ChatMessage.chatMessage, ChatMessage.createdAt\n" +
         "from ChatMessage\n" +
         "where ChatMessage.chatRoomIdx = ?\n" +
-        "order by ChatMessage.createdAt";
+        "order by ChatMessage.createdAt DESC";
 
     int getChatMessageParams = chatRoomIdx;
 
     return this.jdbcTemplate.query(getChatMessageQuery,
         (rs, reNum) -> new GetChatMessageCountRes(
             rs.getInt("chatMessageIdx"),
-            rs.getString("chatMessage")),
+            rs.getString("chatMessage"),
+            rs.getString("createdAt")),
         getChatMessageParams);
   }
 
   public List<GetChatMessageRes> getChatMessageByIdx(int chatRoomIdx, int chatMessageIdx) {
-    String getChatMessageQuery = "select ChatMessage.chatMessageIdx, ChatMessage.userIdx, U.nickName, U.userImgUrl, ChatMessage.chatMessage\n" +
+    String getChatMessageQuery = "select ChatMessage.chatMessageIdx, ChatMessage.userIdx, ChatMessage.chatMessage, ChatMessage.createdAt\n" +
         "from ChatMessage\n" +
-        "inner join User U on ChatMessage.userIdx = U.userIdx\n" +
         "where ChatMessage.chatRoomIdx = ? and ChatMessage.chatMessageIdx < ?\n" +
-        "order by ChatMessage.createdAt\n" +
+        "order by ChatMessage.createdAt DESC\n" +
         "limit 20";
 
     Object[] getChatMessageParams = new Object[]{chatRoomIdx, chatMessageIdx};
@@ -141,9 +124,41 @@ public class ChatDao {
         (rs, reNum) -> new GetChatMessageRes(
             rs.getInt("chatMessageIdx"),
             rs.getInt("userIdx"),
-            rs.getString("nickName"),
-            rs.getString("userImgUrl"),
-            rs.getString("chatMessage")),
+            rs.getString("chatMessage"),
+            rs.getString("createdAt")),
+        getChatMessageParams);
+  }
+
+  public List<GetChatMessageRes> getChatMessages(int chatRoomIdx) {
+    String getChatMessageQuery = "select ChatMessage.chatMessageIdx, ChatMessage.userIdx, ChatMessage.chatMessage, ChatMessage.createdAt\n" +
+        "from ChatMessage\n" +
+        "where ChatMessage.chatRoomIdx = ?\n" +
+        "order by ChatMessage.createdAt DESC\n" +
+        "limit 20";
+
+    Object[] getChatMessageParams = new Object[]{chatRoomIdx};
+
+    return this.jdbcTemplate.query(getChatMessageQuery,
+        (rs, reNum) -> new GetChatMessageRes(
+            rs.getInt("chatMessageIdx"),
+            rs.getInt("userIdx"),
+            rs.getString("chatMessage"),
+            rs.getString("createdAt")),
+        getChatMessageParams);
+  }
+
+  public GetChatMessageRes getChatMessage(int chatMessageIdx){
+    String getChatMessageQuery = "select chatMessageIdx, userIdx, chatMessage, createdAt\n" +
+        "from ChatMessage\n" +
+        "where chatMessageIdx = ?";
+    int getChatMessageParams = chatMessageIdx;
+
+    return this.jdbcTemplate.queryForObject(getChatMessageQuery,
+        (rs, rsNum) -> new GetChatMessageRes(
+            rs.getInt("chatMessageIdx"),
+            rs.getInt("userIdx"),
+            rs.getString("chatMessage"),
+            rs.getString("createdAt")),
         getChatMessageParams);
   }
 
@@ -163,7 +178,7 @@ public class ChatDao {
   }
 
   public int checkChatMember(int chatRoomIdx, int userIdx){
-    String checkChatMemberQuery = "select exists (select chatRoomIdx from chatMember where chatRoomIdx = ? and userIdx = ? and status = 'active')";
+    String checkChatMemberQuery = "select exists (select chatRoomIdx from ChatMember where chatRoomIdx = ? and userIdx = ? and status = 'active')";
     Object[] checkChatMemberParams = new Object[] {chatRoomIdx, userIdx};
 
     return this.jdbcTemplate.queryForObject(checkChatMemberQuery, int.class, checkChatMemberParams);

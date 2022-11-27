@@ -12,6 +12,9 @@ public class ChatMessage {
   public void setMessage(String message) {
     this.message = message;
   }
+  public void setCreatedAt(String createdAt) {
+    this.createdAt = createdAt;
+  }
 
   public enum MessageType {
     ENTER, TALK
@@ -24,4 +27,6 @@ public class ChatMessage {
   private String sender;
   //내용
   private String message;
+  //시간
+  private String createdAt;
 }
