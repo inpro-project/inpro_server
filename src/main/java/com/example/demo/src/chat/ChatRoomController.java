@@ -2,7 +2,7 @@ package com.example.demo.src.chat;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.chat.model.ChatRoom;
+import com.example.demo.src.chat.model.GetChatMemberRes;
 import com.example.demo.src.chat.model.GetChatMessageRes;
 import com.example.demo.src.chat.model.GetChatRoomAllRes;
 import com.example.demo.src.chat.model.GetChatRoomRes;
@@ -62,6 +62,20 @@ public class ChatRoomController {
     }
   }
 
+  @PostMapping("/room/join")
+  @ResponseBody
+  public BaseResponse<PostChatRoomRes> joinRoom(@RequestParam int chatRoomIdx) {
+    try{
+      int userIdx = jwtService.getUserIdx();
+      int chatMemberIdx = chatService.joinRoom(chatRoomIdx, userIdx);
+      PostChatRoomRes postChatRoomRes = new PostChatRoomRes(chatRoomIdx, chatMemberIdx);
+      return new BaseResponse<>(postChatRoomRes);
+    }
+    catch (BaseException exception) {
+      return new BaseResponse<>(exception.getStatus());
+    }
+  }
+
   @GetMapping("/room/enter/{chatRoomId}/{chatMessageIdx}")
   @ResponseBody
   public BaseResponse<List<GetChatMessageRes>> getChatRoom(@PathVariable int chatRoomId, @PathVariable int chatMessageIdx) {
@@ -97,6 +111,19 @@ public class ChatRoomController {
       int userIdx = jwtService.getUserIdx();
       GetChatRoomRes getChatRoomRes = chatService.getRoomById(roomId, userIdx);
       return new BaseResponse<>(getChatRoomRes);
+    }
+    catch (BaseException exception) {
+      return new BaseResponse<>(exception.getStatus());
+    }
+  }
+
+  @GetMapping("/room/{roomId}/member")
+  @ResponseBody
+  public BaseResponse<List<GetChatMemberRes>> getChatMembers(@PathVariable int roomId) {
+    try {
+      int userIdx = jwtService.getUserIdx();
+      List<GetChatMemberRes> getChatMemberResList = chatService.getChatMembers(roomId, userIdx);
+      return new BaseResponse<>(getChatMemberResList);
     }
     catch (BaseException exception) {
       return new BaseResponse<>(exception.getStatus());
