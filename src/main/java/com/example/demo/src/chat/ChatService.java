@@ -5,19 +5,15 @@ import static com.example.demo.config.BaseResponseStatus.INVALID_USERIDX;
 import static com.example.demo.config.BaseResponseStatus.INVALID_USER_JWT;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.chat.model.ChatRoom;
+import com.example.demo.src.chat.model.GetChatMemberRes;
 import com.example.demo.src.chat.model.GetChatMessageCountRes;
 import com.example.demo.src.chat.model.GetChatMessageRes;
 import com.example.demo.src.chat.model.GetChatRoomAllRes;
 import com.example.demo.src.chat.model.GetChatRoomRes;
 import com.example.demo.src.user.UserDao;
-import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -45,13 +41,20 @@ public class ChatService {
         List<GetChatMessageCountRes> getChatMessageCountResList = chatDao.getChatMessageCount(chatRoomIdx);
         int messageCount = getChatMessageCountResList.size();
         String message = "";
-        if (!getChatMessageCountResList.isEmpty()) {
-          message = getChatMessageCountResList.get(0).getChatMessage();
+        if (getChatMessageCountResList.isEmpty()) {
+          GetChatRoomAllRes getChatRoomAllRes = new GetChatRoomAllRes(
+              getChatRoomRes.getChatRoomIdx(), messageCount, getChatRoomRes.getName(), getChatRoomRes.getContent(), message, getChatRoomRes.getCreatedAt());
+          getChatRoomAllResList.add(getChatRoomAllRes);
         }
-        GetChatRoomAllRes getChatRoomAllRes = new GetChatRoomAllRes(
-            getChatRoomRes.getChatRoomIdx(), messageCount, getChatRoomRes.getName(), getChatRoomRes.getContent(), message);
-        getChatRoomAllResList.add(getChatRoomAllRes);
+        else {
+          message = getChatMessageCountResList.get(0).getChatMessage();
+          GetChatRoomAllRes getChatRoomAllRes = new GetChatRoomAllRes(
+              getChatRoomRes.getChatRoomIdx(), messageCount, getChatRoomRes.getName(),
+              getChatRoomRes.getContent(), message, getChatMessageCountResList.get(0).getCreatedAt());
+          getChatRoomAllResList.add(getChatRoomAllRes);
+        }
       }
+      Collections.sort(getChatRoomAllResList);
       return getChatRoomAllResList;
     }
     catch (Exception exception) {
@@ -111,14 +114,18 @@ public class ChatService {
       throw new BaseException(INVALID_USER_JWT);
     }
     try {
-      return chatDao.getChatMessageByIdx(chatRoomIdx, 0);
+      List<GetChatMessageRes> getChatMessageResList = chatDao.getChatMessages(chatRoomIdx);
+      if (!getChatMessageResList.isEmpty()) {
+        Collections.reverse(getChatMessageResList);
+      }
+      return getChatMessageResList;
     }
     catch (Exception exception) {
       throw new BaseException(DATABASE_ERROR);
     }
   }
 
-  public int createChatMessage(int chatRoomIdx, int userIdx, String chatMessage) throws BaseException {
+  public GetChatMessageRes createChatMessage(int chatRoomIdx, int userIdx, String chatMessage) throws BaseException {
     if (userDao.checkUser(userIdx) != 1) {
       throw new BaseException(INVALID_USERIDX);
     }
@@ -126,7 +133,8 @@ public class ChatService {
       throw new BaseException(INVALID_USER_JWT);
     }
     try {
-      return chatDao.createChatMessage(chatRoomIdx, userIdx, chatMessage);
+      int chatMessageIdx = chatDao.createChatMessage(chatRoomIdx, userIdx, chatMessage);
+      return chatDao.getChatMessage(chatMessageIdx);
     }
     catch (Exception exception) {
       throw new BaseException(DATABASE_ERROR);
@@ -141,7 +149,26 @@ public class ChatService {
       throw new BaseException(INVALID_USER_JWT);
     }
     try {
-      return chatDao.getChatMessageByIdx(chatRoomIdx, chatMessageIdx);
+      List<GetChatMessageRes> getChatMessageResList = chatDao.getChatMessageByIdx(chatRoomIdx, chatMessageIdx);
+      if (!getChatMessageResList.isEmpty()) {
+        Collections.reverse(getChatMessageResList);
+      }
+      return getChatMessageResList;
+    }
+    catch (Exception exception) {
+      throw new BaseException(DATABASE_ERROR);
+    }
+  }
+
+  public List<GetChatMemberRes> getChatMembers(int chatRoomIdx, int userIdx) throws BaseException {
+    if (userDao.checkUser(userIdx) != 1) {
+      throw new BaseException(INVALID_USERIDX);
+    }
+    if (chatDao.checkChatMember(chatRoomIdx, userIdx) != 1) {
+      throw new BaseException(INVALID_USER_JWT);
+    }
+    try {
+      return chatDao.getChatMember(chatRoomIdx);
     }
     catch (Exception exception) {
       throw new BaseException(DATABASE_ERROR);
