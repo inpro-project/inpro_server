@@ -181,18 +181,22 @@ public class MatchDao {
                 getUserFilterParams);
     }
 
-    public DiscXy getUserDiscXy(int userIdx){
-        String getUserDiscXyQuery = "select x, y from UserDisc where userIdx = ? and isRepDisc = 'Y' and status = 'active'";
-        int getUserDiscXyParams = userIdx;
-
-        return this.jdbcTemplate.queryForObject(getUserDiscXyQuery,
-                (rs, rsNum) -> new DiscXy(
+    public SearchDiscXy getSearchDiscXy(int userIdx) {
+        String getSearchDiscXyQuery = "select case when COUNT(*) > 5 then AVG(x) else null end as x\n" +
+                "    , case when COUNT(*) > 5 then AVG(y) else null end as y\n" +
+                "from UserLike\n" +
+                "inner join User U on UserLike.likingIdx = U.userIdx and U.status = 'active'\n" +
+                "inner join UserDisc UD on U.userIdx = UD.userIdx and isRepDisc = 'Y' and UD.status = 'active'\n" +
+                "where likerIdx = ? and UserLike.status = 'active'";
+        int getSearchDiscXyParams = userIdx;
+        return jdbcTemplate.queryForObject(getSearchDiscXyQuery,
+                (rs, rsNum) -> new SearchDiscXy(
                         rs.getDouble("x"),
                         rs.getDouble("y")),
-                getUserDiscXyParams);
+                getSearchDiscXyParams);
     }
 
-    public List<GetUserMatchRes> getUserMatches(int userIdx, DiscXy discXy, List<String> ageRange, List<String> region, List<String> occupation, List<String> interests) {
+    public List<GetUserMatchRes> getUserMatches(int userIdx, List<String> ageRange, List<String> region, List<String> occupation, List<String> interests) {
         String getUserMatchesQuery = "select User.userIdx, nickName, userImgUrl\n" +
                 "     , gender, ageRange, comment, region, occupation, interests\n" +
                 "     , case when x is not null then x else 0 end as x\n" +
@@ -216,7 +220,8 @@ public class MatchDao {
                 "and interests in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n" +
                 "  and interests not in (' ')\n" +
                 "order by percent DESC, userIdx DESC";
-        Object[] getUserMatchesParams = new Object[]{discXy.getX(), discXy.getX(), discXy.getY(), userIdx, userIdx, userIdx, userIdx
+        SearchDiscXy searchDiscXy = getSearchDiscXy(userIdx);
+        Object[] getUserMatchesParams = new Object[]{searchDiscXy.getX(), searchDiscXy.getX(), searchDiscXy.getY(), userIdx, userIdx, userIdx, userIdx
                 , ageRange.get(0), ageRange.get(1), ageRange.get(2), ageRange.get(3), ageRange.get(4), ageRange.get(5)
                 , region.get(0), region.get(1), region.get(2), region.get(3), region.get(4), region.get(5), region.get(6), region.get(7)
                 , region.get(8), region.get(9), region.get(10), region.get(11), region.get(12), region.get(13), region.get(14), region.get(15), region.get(16)
