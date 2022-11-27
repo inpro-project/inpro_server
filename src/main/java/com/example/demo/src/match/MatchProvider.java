@@ -79,15 +79,6 @@ public class MatchProvider {
         }
     }
 
-    public DiscXy getUserDiscXy(int userIdx) throws BaseException {
-        try {
-            DiscXy discXy = matchDao.getUserDiscXy(userIdx);
-            return discXy;
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
     public List<GetUserMatchRes> getUserMatches(int userIdx) throws BaseException {
         try {
             // 1 : 연령대
@@ -138,7 +129,7 @@ public class MatchProvider {
                 }
             }
 
-            List<GetUserMatchRes> getUserMatchRes = matchDao.getUserMatches(userIdx, getUserDiscXy(userIdx)
+            List<GetUserMatchRes> getUserMatchRes = matchDao.getUserMatches(userIdx
                     , getAgeRangeFilter, getRegionFilter, getOccupationFilter, getInterestsFilter);
             return getUserMatchRes;
         } catch (Exception exception){
