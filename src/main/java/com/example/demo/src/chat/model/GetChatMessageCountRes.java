@@ -16,4 +16,7 @@ public class GetChatMessageCountRes {
 
   @ApiModelProperty(value = "채팅 메시지", example = "hello world!")
   private String chatMessage;
+
+  @ApiModelProperty(value = "채팅 메시지 생성 날짜", example = "2022")
+  private String createdAt;
 }

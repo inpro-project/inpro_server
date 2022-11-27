@@ -17,12 +17,9 @@ public class GetChatMessageRes {
   @ApiModelProperty(value = "멤버 유저 인덱스", example = "1")
   private int userIdx;
 
-  @ApiModelProperty(value = "멤버 닉네임", example = "member1")
-  private String nickName;
-
-  @ApiModelProperty(value = "멤버 프로필 이미지 주소", example = "-")
-  private String userImageUrl;
-
   @ApiModelProperty(value = "채팅 메시지", example = "hello world!")
   private String chatMessage;
+
+  @ApiModelProperty(value = "생성 날짜", example = "2022")
+  private String createdAt;
 }

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @ApiModel(value = "채팅방 목록 조회 API response")
-public class GetChatRoomAllRes {
+public class GetChatRoomAllRes implements Comparable<GetChatRoomAllRes> {
   @ApiModelProperty(value = "채팅방 인덱스", example = "1")
   private int chatRoomIdx;
 
@@ -25,4 +25,12 @@ public class GetChatRoomAllRes {
 
   @ApiModelProperty(value = "최근 메시지", example = "hello world!")
   private String message;
+
+  @ApiModelProperty(value = "생성 날짜", example = "2022")
+  private String createdAt;
+
+  @Override
+  public int compareTo(GetChatRoomAllRes getChatRoomAllRes) {
+    return getChatRoomAllRes.getCreatedAt().compareTo(getCreatedAt());
+  }
 }
