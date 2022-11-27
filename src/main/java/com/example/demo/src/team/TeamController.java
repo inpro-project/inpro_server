@@ -163,6 +163,31 @@ public class TeamController {
     }
 
     /**
+     * 팀 삭제 API
+     * [DELETE] /app/teams/:teamIdx
+     * @return BaseResponse<String>
+     */
+    @ApiOperation(value = "팀 삭제 API")
+    @ApiResponses({
+            @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
+            @ApiResponse(code = 427, message = "팀 삭제에 실패하였습니다.")
+    })
+    @ResponseBody
+    @DeleteMapping("/teams/{teamIdx}")
+    public BaseResponse<String> deleteTeam(@PathVariable("teamIdx") int teamIdx){
+        try {
+            int leaderIdx = jwtService.getUserIdx();
+
+            teamService.deleteTeam(teamIdx, leaderIdx);
+
+            String result = "팀이 삭제되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
      * 팀원 수락 API
      * [POST] /app/members
      * @return BaseResponse<PostMemberRes>
@@ -254,10 +279,10 @@ public class TeamController {
      */
     @ApiOperation(value = "댓글 생성 API", notes = "parentIdx = 상위 댓글이 없는 경우(그냥 댓글인 경우)에는 0, 그 외(대댓글인 경우)는 상위 댓글의 댓글 식별자(commentIdx)")
     @ApiResponses({
-        @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
-        @ApiResponse(code = 349, message = "댓글 내용을 입력해주세요."),
-        @ApiResponse(code = 350, message = "팀 인덱스를 입력해주세요."),
-        @ApiResponse(code = 351, message = "유효하지 않은 댓글 인덱스(parentIdx)입니다.")
+            @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
+            @ApiResponse(code = 349, message = "댓글 내용을 입력해주세요."),
+            @ApiResponse(code = 350, message = "팀 인덱스를 입력해주세요."),
+            @ApiResponse(code = 351, message = "유효하지 않은 댓글 인덱스(parentIdx)입니다.")
 
     })
     @ResponseBody

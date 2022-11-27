@@ -195,7 +195,10 @@ public enum BaseResponseStatus {
     MODIFY_FAIL_COMMENT(false, 425, "댓글 수정에 실패하였습니다."),
 
     // [PATCH] /app/team-deadlines/:teamIdx
-    FAIL_TEAM_DEADLINE(false, 426, "팀 모집 완료에 실패하였습니다.");
+    FAIL_TEAM_DEADLINE(false, 426, "팀 모집 완료에 실패하였습니다."),
+
+    // [DELETE] /app/teams/:teamIdx
+    DELETE_FAIL_TEAM(false, 427, "팀 삭제에 실패하였습니다.");
 
 
     private final boolean isSuccess;

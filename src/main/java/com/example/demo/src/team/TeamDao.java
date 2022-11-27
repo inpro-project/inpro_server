@@ -156,6 +156,12 @@ public class TeamDao {
                 getTeamParams);
     }
 
+    public int deleteTeam(int teamIdx){
+        String deleteTeamQuery = "update Team set status = 'deleted' where teamIdx = ?";
+        int deleteTeamParams = teamIdx;
+        return this.jdbcTemplate.update(deleteTeamQuery, deleteTeamParams);
+    }
+
     public List<Reply> getReplys(int parentIdx){
         String getReplysQuery = "select commentIdx, U.userIdx\n" +
                 "     , case when U.status in ('inactive', 'deleted') then '(탈퇴한 회원)' else nickName end as nickName\n" +
