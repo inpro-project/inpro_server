@@ -198,7 +198,10 @@ public enum BaseResponseStatus {
     FAIL_TEAM_DEADLINE(false, 426, "팀 모집 완료에 실패하였습니다."),
 
     // [DELETE] /app/teams/:teamIdx
-    DELETE_FAIL_TEAM(false, 427, "팀 삭제에 실패하였습니다.");
+    DELETE_FAIL_TEAM(false, 427, "팀 삭제에 실패하였습니다."),
+
+    // [PATCH] /app/profile-imgs
+    MODIFY_FAIL_PROFILEIMG(false, 428, "프로필 이미지 수정에 실패하였습니다.");
 
 
     private final boolean isSuccess;

@@ -33,12 +33,23 @@ public class UserService {
     private String bucket;
 
 
-    public void modifyUser(int userIdx, MultipartFile multipartFile, PatchUserReq patchUserReq) throws BaseException {
+    public void modifyUser(int userIdx, PatchUserReq patchUserReq) throws BaseException {
         try{
-            String userImgUrl = getStoreFileUrl(multipartFile);
-            int result = userDao.modifyUser(userIdx, userImgUrl, patchUserReq);
+            int result = userDao.modifyUser(userIdx, patchUserReq);
             if(result == 0){
                 throw new BaseException(MODIFY_FAIL_USER);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void modifyUserProfileImg(int userIdx, MultipartFile multipartFile) throws BaseException {
+        try{
+            String userImgUrl = getStoreFileUrl(multipartFile);
+            int result = userDao.modifyUserProfileImg(userIdx, userImgUrl);
+            if(result == 0){
+                throw new BaseException(MODIFY_FAIL_PROFILEIMG);
             }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
