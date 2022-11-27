@@ -2,7 +2,6 @@ package com.example.demo.src.disc;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.disc.model.GetDiscTestRes;
-import com.example.demo.src.disc.model.GetSearchDiscResultRes;
 import com.example.demo.src.disc.model.GetUserDiscResultRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,14 +37,6 @@ public class DiscProvider {
         }
     }
 
-    public int checkSearchDisc(int userIdx) throws BaseException {
-        try {
-            return discDao.checkSearchDisc(userIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
     public int checkUserDiscIdx(int userIdx, int userDiscIdx) throws BaseException {
         try {
             return discDao.checkUserDiscIdx(userIdx, userDiscIdx);
@@ -67,38 +58,9 @@ public class DiscProvider {
         }
     }
 
-    public int checkSearchDiscIdx(int userIdx, int searchDiscIdx) throws BaseException {
-        try {
-            return discDao.checkSearchDiscIdx(userIdx, searchDiscIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public GetSearchDiscResultRes getSearchDiscResult(int userIdx, int searchDiscIdx) throws BaseException {
-        // searchDiscIdx 유효성 검사
-        if(checkSearchDiscIdx(userIdx, searchDiscIdx) != 1){
-            throw new BaseException(SEARCHDISC_INVALID_SEARCHDISCIDX);
-        }
-        try {
-            GetSearchDiscResultRes getSearchDiscResultRes = discDao.getSearchDiscResult(searchDiscIdx);
-            return getSearchDiscResultRes;
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
     public int getUserDiscCount(int userIdx) throws BaseException {
         try {
             return discDao.getUserDiscCount(userIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public int getSearchDiscCount(int userIdx) throws BaseException {
-        try {
-            return discDao.getSearchDiscCount(userIdx);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
@@ -108,15 +70,6 @@ public class DiscProvider {
         try {
             List<GetUserDiscResultRes> getUserDiscResultRes = discDao.getUserDiscResultList(userIdx);
             return getUserDiscResultRes;
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public List<GetSearchDiscResultRes> getSearchDiscResultList(int userIdx) throws BaseException {
-        try {
-            List<GetSearchDiscResultRes> getSearchDiscResultRes = discDao.getSearchDiscResultList(userIdx);
-            return getSearchDiscResultRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

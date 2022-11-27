@@ -51,13 +51,13 @@ public class TeamDao {
     }
 
     public int checkUserIdx(int userIdx){
-        String checkUserIdxQuery = "select exists(select * from User where userIdx = ?)";
+        String checkUserIdxQuery = "select exists(select * from User where userIdx = ? and status = 'active')";
         int checkUserIdxParams = userIdx;
         return this.jdbcTemplate.queryForObject(checkUserIdxQuery, int.class, checkUserIdxParams);
     }
 
     public int checkTeamIdxByLeader(int teamIdx, int leaderIdx){
-        String checkTeamIdxByLeaderQuery = "select exists(select * from TeamMember where teamIdx = ? and userIdx = ? and role = '리더')";
+        String checkTeamIdxByLeaderQuery = "select exists(select * from TeamMember where teamIdx = ? and userIdx = ? and role = '리더' and status = 'active')";
         Object[] checkTeamIdxByLeaderParams = new Object[]{teamIdx, leaderIdx};
         return this.jdbcTemplate.queryForObject(checkTeamIdxByLeaderQuery, int.class, checkTeamIdxByLeaderParams);
     }
@@ -156,6 +156,12 @@ public class TeamDao {
                 getTeamParams);
     }
 
+    public int deleteTeam(int teamIdx){
+        String deleteTeamQuery = "update Team set status = 'deleted' where teamIdx = ?";
+        int deleteTeamParams = teamIdx;
+        return this.jdbcTemplate.update(deleteTeamQuery, deleteTeamParams);
+    }
+
     public List<Reply> getReplys(int parentIdx){
         String getReplysQuery = "select commentIdx, U.userIdx\n" +
                 "     , case when U.status in ('inactive', 'deleted') then '(탈퇴한 회원)' else nickName end as nickName\n" +
@@ -204,7 +210,7 @@ public class TeamDao {
     }
 
     public int checkCommentIdx(int commentIdx){
-        String checkCommentIdxQuery = "select exists(select * from Comment where commentIdx = ? and parentIdx = 0)";
+        String checkCommentIdxQuery = "select exists(select * from Comment where commentIdx = ? and parentIdx = 0 and status = 'active')";
         int checkCommentIdxParams = commentIdx;
         return this.jdbcTemplate.queryForObject(checkCommentIdxQuery, int.class, checkCommentIdxParams);
     }
@@ -219,7 +225,7 @@ public class TeamDao {
     }
 
     public int checkCommentByUserIdx(int commentIdx, int userIdx){
-        String checkCommentByUserIdxQuery = "select exists(select * from Comment where commentIdx = ? and userIdx = ?)";
+        String checkCommentByUserIdxQuery = "select exists(select * from Comment where commentIdx = ? and userIdx = ? and status = 'active')";
         Object[] checkCommentByUserIdxParams = new Object[]{commentIdx, userIdx};
         return this.jdbcTemplate.queryForObject(checkCommentByUserIdxQuery, int.class, checkCommentByUserIdxParams);
     }
@@ -234,6 +240,18 @@ public class TeamDao {
         String updateCommentQuery = "update Comment set content = ? where commentIdx = ?";
         Object[] updateCommentParams = new Object[]{patchCommentReq.getContent(), commentIdx};
         return this.jdbcTemplate.update(updateCommentQuery, updateCommentParams);
+    }
+
+    public int checkTeam(int teamIdx){
+        String checkTeamQuery = "select exists(select * from Team where teamIdx = ? and status = 'active')";
+        int checkTeamParams = teamIdx;
+        return this.jdbcTemplate.queryForObject(checkTeamQuery, int.class, checkTeamParams);
+    }
+
+    public int teamDeadline(int teamIdx){
+        String teamDeadlineQuery = "update Team set status = 'inactive' where teamIdx = ?";
+        int teamDeadlineParams = teamIdx;
+        return this.jdbcTemplate.update(teamDeadlineQuery, teamDeadlineParams);
     }
 
 

@@ -111,69 +111,6 @@ public class DiscController {
     }
 
     /**
-     * 유저가 찾는 팀원 업무성향 테스트 API
-     * [POST] /app/search-discs
-     * @return BaseResponse<PostTeamDiscRes>
-     */
-    @ApiOperation(value = "유저가 찾는 팀원 업무성향 테스트 API")
-    @ApiResponses({
-            @ApiResponse(code = 301, message = "JWT를 입력해주세요."),
-            @ApiResponse(code = 302, message = "유효하지 않은 JWT입니다."),
-            @ApiResponse(code = 304, message = "적합에 대한 업무 유형 테스트 결과를 입력해주세요."),
-            @ApiResponse(code = 305, message = "부적합에 대한 업무 유형 테스트 결과를 입력해주세요."),
-            @ApiResponse(code = 306, message = "업무 유형 name을 입력해주세요"),
-            @ApiResponse(code = 307, message = "올바르지 않은 discFeatureIdx입니다.")
-    })
-    @ResponseBody
-    @PostMapping("/search-discs")
-    public BaseResponse<PostSearchDiscRes> createSearchDisc(@RequestBody PostDiscReq postDiscReq) {
-        try {
-            // list size check
-            if(postDiscReq.getGoodList().size() != 9){
-                return new BaseResponse<>(POST_DISC_EMPTY_GOODLIST);
-            }
-            if(postDiscReq.getBadList().size() != 9){
-                return new BaseResponse<>(POST_DISC_EMPTY_BADLIST);
-            }
-
-            for(int i = 0; i < 9; i++){
-                // null check
-                if(postDiscReq.getGoodList().get(i).getName() == null){
-                    return new BaseResponse<>(POST_DISC_EMPTY_NAME);
-                }
-                // 특정 범위 안의 discFeatureIdx 값이 입력되었는지 확인
-                if(!(postDiscReq.getGoodList().get(i).getDiscFeatureIdx() > i * 4
-                        && postDiscReq.getGoodList().get(i).getDiscFeatureIdx() <= (i + 1) * 4)){
-                    return new BaseResponse<>(POST_DISC_INVALID_IDX);
-                }
-            }
-
-            for(int j = 0; j < 9; j++){
-                if(postDiscReq.getBadList().get(j).getName() == null){
-                    return new BaseResponse<>(POST_DISC_EMPTY_NAME);
-                }
-                if(!(postDiscReq.getBadList().get(j).getDiscFeatureIdx() > j * 4
-                        && postDiscReq.getBadList().get(j).getDiscFeatureIdx() <= (j + 1) * 4)){
-                    return new BaseResponse<>(POST_DISC_INVALID_IDX);
-                }
-            }
-
-            int userIdx = jwtService.getUserIdx();
-
-            // 첫 테스트는 자동으로 대표로 지정
-            if(discProvider.checkSearchDisc(userIdx) == 0){
-                PostSearchDiscRes postSearchDiscRes = discService.createSearchDisc(userIdx, "Y", postDiscReq);
-                return new BaseResponse<>(postSearchDiscRes);
-            }
-
-            PostSearchDiscRes postSearchDiscRes = discService.createSearchDisc(userIdx, "N", postDiscReq);
-            return new BaseResponse<>(postSearchDiscRes);
-        } catch (BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
-
-    /**
      * User Disc 결과 상세 조회 API
      * [GET] /app/user-discs/:userDiscIdx
      * @return BaseResponse<GetDiscResultRes>
@@ -191,30 +128,6 @@ public class DiscController {
         try {
             int userIdx = jwtService.getUserIdx();
             GetUserDiscResultRes getDiscResultRes = discProvider.getUserDiscResult(userIdx, userDiscIdx);
-            return new BaseResponse<>(getDiscResultRes);
-        } catch (BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
-
-    /**
-     * Search Disc 결과 상세 조회 API
-     * [GET] /app/search-discs/:searchDiscIdx
-     * @return BaseResponse<GetDiscResultRes>
-     */
-    @ApiOperation(value = "Search Disc 결과 상세 조회 API")
-    @ApiResponses({
-            @ApiResponse(code = 301, message = "JWT를 입력해주세요."),
-            @ApiResponse(code = 302, message = "유효하지 않은 JWT입니다."),
-            @ApiResponse(code = 324, message = "올바르지 않은 searchDiscIdx입니다.")
-    })
-    @ApiImplicitParam(name = "searchDiscIdx", value = "유저가 찾는 업무 성향 인덱스", example = "1")
-    @ResponseBody
-    @GetMapping("/search-discs/{searchDiscIdx}")
-    public BaseResponse<GetSearchDiscResultRes> getSearchDiscResult(@PathVariable("searchDiscIdx") int searchDiscIdx) {
-        try {
-            int userIdx = jwtService.getUserIdx();
-            GetSearchDiscResultRes getDiscResultRes = discProvider.getSearchDiscResult(userIdx, searchDiscIdx);
             return new BaseResponse<>(getDiscResultRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
@@ -246,30 +159,6 @@ public class DiscController {
     }
 
     /**
-     * Search Disc 이름 등록 및 수정
-     * [PATCH] /app/search-discs/:searchDiscIdx
-     * @return BaseResponse<String>
-     */
-    @ApiOperation(value = "Search Disc 이름 등록 및 수정 API", notes = "성공시 'Search Disc 이름이 등록 및 수정되었습니다.' 출력")
-    @ApiResponses({
-            @ApiResponse(code = 324, message = "올바르지 않은 searchDiscIdx입니다."),
-            @ApiResponse(code = 413, message = "search disc 이름 등록 및 수정에 실패하였습니다.")
-    })
-    @ApiImplicitParam(name = "name", value = "설정할 이름", example = "search disc")
-    @ResponseBody
-    @PatchMapping("/search-discs/{searchDiscIdx}")
-    public BaseResponse<String> updateSearchDiscName(@PathVariable("searchDiscIdx") int searchDiscIdx, @RequestParam(value = "name", required = false) String name){
-        try {
-            int userIdx = jwtService.getUserIdx();
-            discService.updateSearchDiscName(userIdx, searchDiscIdx, name);
-            String result = "Search Disc 이름이 등록 및 수정되었습니다.";
-            return new BaseResponse<>(result);
-        } catch (BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
-
-    /**
      * User Disc 결과 리스트 API
      * [GET] /app/user-discs
      * @return BaseResponse<List<GetUserDiscResultRes>>
@@ -286,28 +175,6 @@ public class DiscController {
             int userIdx = jwtService.getUserIdx();
             List<GetUserDiscResultRes> getUserDiscResultRes = discProvider.getUserDiscResultList(userIdx);
             return new BaseResponse<>(getUserDiscResultRes);
-        } catch (BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
-
-    /**
-     * Search Disc 결과 리스트 API
-     * [GET] /app/search-discs
-     * @return BaseResponse<GetSearchDiscResultRes>
-     */
-    @ApiOperation(value = "Search Disc 결과 리스트 API")
-    @ApiResponses({
-            @ApiResponse(code = 301, message = "JWT를 입력해주세요."),
-            @ApiResponse(code = 302, message = "유효하지 않은 JWT입니다.")
-    })
-    @ResponseBody
-    @GetMapping("/search-discs")
-    public BaseResponse<List<GetSearchDiscResultRes>> getSearchDiscResultList() {
-        try {
-            int userIdx = jwtService.getUserIdx();
-            List<GetSearchDiscResultRes> getSearchDiscResultRes = discProvider.getSearchDiscResultList(userIdx);
-            return new BaseResponse<>(getSearchDiscResultRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

@@ -107,4 +107,12 @@ public class TeamProvider {
         }
     }
 
+    public int checkTeam(int teamIdx) throws BaseException {
+        try {
+            return teamDao.checkTeam(teamIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

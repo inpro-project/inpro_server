@@ -130,13 +130,39 @@ public class TeamService {
         return teamFileUrl;
     }
 
+    public void deleteTeam(int teamIdx, int leaderIdx) throws BaseException {
+        // 유효한 팀 인덱스인지 확인
+        if(teamProvider.checkTeam(teamIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        // 현재 유저가 팀을 만든 유저가 맞는지 확인
+        if(teamProvider.checkTeamIdxByLeader(teamIdx, leaderIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        try {
+            int result = teamDao.deleteTeam(teamIdx);
+            if(result == 0){
+                throw new BaseException(DELETE_FAIL_TEAM);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public PostMemberRes createMember(int leaderIdx, PostMemberReq postMemberReq) throws BaseException {
         // 팀원으로 추가할 유저 유효성 검사
         if(teamProvider.checkUserIdx(postMemberReq.getUserIdx()) == 0){
             throw new BaseException(INVALID_USERIDX);
         }
 
-        // 현재 유저가 팀을 만든 유저가 맞는지 확인, 유효한 팀 인덱스인지 확인
+        // 유효한 팀 인덱스인지 확인
+        if(teamProvider.checkTeam(postMemberReq.getTeamIdx()) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        // 현재 유저가 팀을 만든 유저가 맞는지 확인
         if(teamProvider.checkTeamIdxByLeader(postMemberReq.getTeamIdx(), leaderIdx) == 0){
             throw new BaseException(INVALID_TEAMIDX);
         }
@@ -200,6 +226,27 @@ public class TeamService {
             int result = teamDao.updateComment(commentIdx, patchCommentReq);
             if(result == 0){
                 throw new BaseException(MODIFY_FAIL_COMMENT);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void teamDeadline(int teamIdx, int leaderIdx) throws BaseException {
+        // 유효한 팀 인덱스인지 확인
+        if(teamProvider.checkTeam(teamIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        // 현재 유저가 팀을 만든 유저가 맞는지 확인
+        if(teamProvider.checkTeamIdxByLeader(teamIdx, leaderIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        try {
+            int result = teamDao.teamDeadline(teamIdx);
+            if(result == 0){
+                throw new BaseException(FAIL_TEAM_DEADLINE);
             }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
