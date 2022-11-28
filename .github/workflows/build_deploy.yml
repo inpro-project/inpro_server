@@ -2,7 +2,7 @@ name: inpro_server
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ main ]
 
 env:
   NAME: syb0228
