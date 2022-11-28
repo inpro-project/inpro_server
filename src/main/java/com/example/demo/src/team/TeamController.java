@@ -388,5 +388,26 @@ public class TeamController {
         }
     }
 
+    /**
+     * 팀 이미지 전체 조회 API
+     * [GET] /app/team-imgs/:teamIdx
+     * @return BaseResponse<List<GetTeamImgsRes>>
+     */
+    @ApiOperation(value = "팀 이미지 전체 조회 API")
+    @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다.")
+    @ResponseBody
+    @GetMapping("/team-imgs/{teamIdx}")
+    public BaseResponse<List<GetTeamImgsRes>> getTeamImgs(@PathVariable("teamIdx") int teamIdx){
+        try {
+            jwtService.getUserIdx();
+
+            List<GetTeamImgsRes> getTeamImgsResList = teamProvider.getTeamImgs(teamIdx);
+            return new BaseResponse<>(getTeamImgsResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
 
 }

@@ -2,6 +2,7 @@ package com.example.demo.src.team;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.team.model.GetCommentsRes;
+import com.example.demo.src.team.model.GetTeamImgsRes;
 import com.example.demo.src.team.model.GetTeamRes;
 import com.example.demo.src.team.model.GetTeamsRes;
 import lombok.RequiredArgsConstructor;
@@ -110,6 +111,20 @@ public class TeamProvider {
     public int checkTeamDeleted(int teamIdx) throws BaseException {
         try {
             return teamDao.checkTeamDeleted(teamIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetTeamImgsRes> getTeamImgs(int teamIdx) throws BaseException {
+        // 유효한 팀 인덱스인지 확인
+        if(checkTeamDeleted(teamIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        try {
+            List<GetTeamImgsRes> getTeamImgsResList = teamDao.getTeamImgs(teamIdx);
+            return getTeamImgsResList;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
