@@ -48,8 +48,8 @@ public class UserDao {
     }
 
     public int updatePortfolio(int portfolioIdx, PatchPortfolioReq patchPortfolioReq){
-        String updatePortfolioQuery = "update Portfolio set title = ?, content = ?, url = ? where portfolioIdx = ?";
-        Object[] updatePortfolioParams = new Object[]{patchPortfolioReq.getTitle(), patchPortfolioReq.getContent(), patchPortfolioReq.getUrl(), portfolioIdx};
+        String updatePortfolioQuery = "update Portfolio set title = ?, content = ?, url = ?, isRepPortfolio = ? where portfolioIdx = ?";
+        Object[] updatePortfolioParams = new Object[]{patchPortfolioReq.getTitle(), patchPortfolioReq.getContent(), patchPortfolioReq.getUrl(), patchPortfolioReq.getIsRepPortfolio(), portfolioIdx};
         return this.jdbcTemplate.update(updatePortfolioQuery, updatePortfolioParams);
     }
 
