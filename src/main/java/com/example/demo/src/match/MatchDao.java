@@ -251,7 +251,7 @@ public class MatchDao {
                 "     , (select case when count(*) = 0 then 0 else teamFileUrl end as teamFileUrl\n" +
                 "        from TeamFile\n" +
                 "        where TeamFile.teamIdx = T.teamIdx and T.status = 'active' and isRepImg = 'Y') as teamRepUrl\n" +
-                "     , title, type, region, interests, status\n" +
+                "     , title, type, region, interests, T.status\n" +
                 "from TeamMember\n" +
                 "inner join Team T on TeamMember.teamIdx = T.teamIdx\n" +
                 "where TeamMember.userIdx = ? and role != '리더' and T.status != 'deleted'\n" +
