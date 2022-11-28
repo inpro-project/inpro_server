@@ -260,5 +260,20 @@ public class TeamDao {
         return this.jdbcTemplate.update(teamDeadlineQuery, teamDeadlineParams);
     }
 
+    public List<GetTeamImgsRes> getTeamImgs(int teamIdx){
+        String getTeamImgsQuery = "select teamfileIdx, isRepImg, fileName, teamFileUrl\n" +
+                "from TeamFile\n" +
+                "where teamIdx = ? and status = 'active' and type = 'Y'\n" +
+                "order by field(isRepImg, 'Y', 'N'), createdAt";
+        int getTeamImgsParams = teamIdx;
+        return this.jdbcTemplate.query(getTeamImgsQuery,
+                (rs, rsNum) -> new GetTeamImgsRes(
+                        rs.getInt("teamfileIdx"),
+                        rs.getString("isRepImg"),
+                        rs.getString("fileName"),
+                        rs.getString("teamFileUrl")),
+                        getTeamImgsParams);
+    }
+
 
 }
