@@ -201,7 +201,10 @@ public enum BaseResponseStatus {
     DELETE_FAIL_TEAM(false, 427, "팀 삭제에 실패하였습니다."),
 
     // [PATCH] /app/profile-imgs
-    MODIFY_FAIL_PROFILEIMG(false, 428, "프로필 이미지 수정에 실패하였습니다.");
+    MODIFY_FAIL_PROFILEIMG(false, 428, "프로필 이미지 수정에 실패하였습니다."),
+
+    // [PATCH] /app/team-finishes/:teamIdx
+    FAIL_TEAM_FINISH(false, 429, "팀 프로젝트 완료에 실패하였습니다.");
 
 
     private final boolean isSuccess;

@@ -104,6 +104,12 @@ public class TeamDao {
         return this.jdbcTemplate.queryForObject(checkTeamActiveQuery, int.class, checkTeamActiveParams);
     }
 
+    public int checkTeamInActive(int teamIdx){
+        String checkTeamInActiveQuery = "select exists(select * from Team where teamIdx = ? and status = 'inactive')";
+        int checkTeamInActiveParams = teamIdx;
+        return this.jdbcTemplate.queryForObject(checkTeamInActiveQuery, int.class, checkTeamInActiveParams);
+    }
+
     public int checkTeamDeleted(int teamIdx){
         String checkTeamDeletedQuery = "select exists(select * from Team where teamIdx = ? and status != 'deleted')";
         int checkTeamDeletedParams = teamIdx;
@@ -258,6 +264,12 @@ public class TeamDao {
         String teamDeadlineQuery = "update Team set status = 'inactive' where teamIdx = ?";
         int teamDeadlineParams = teamIdx;
         return this.jdbcTemplate.update(teamDeadlineQuery, teamDeadlineParams);
+    }
+
+    public int teamFinish(int teamIdx){
+        String teamFinishQuery = "update Team set status = 'finish' where teamIdx = ?";
+        int teamFinishParams = teamIdx;
+        return this.jdbcTemplate.update(teamFinishQuery, teamFinishParams);
     }
 
     public List<GetTeamImgsRes> getTeamImgs(int teamIdx){

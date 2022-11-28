@@ -108,6 +108,14 @@ public class TeamProvider {
         }
     }
 
+    public int checkTeamInActive(int teamIdx) throws BaseException {
+        try {
+            return teamDao.checkTeamInActive(teamIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public int checkTeamDeleted(int teamIdx) throws BaseException {
         try {
             return teamDao.checkTeamDeleted(teamIdx);
