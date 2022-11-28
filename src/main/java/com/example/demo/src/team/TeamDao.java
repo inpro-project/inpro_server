@@ -78,12 +78,18 @@ public class TeamDao {
     }
 
     public List<GetTeamsRes> getTeams(int userIdx){
-        String getTeamsQuery = "select teamIdx, title, type, region, interests, status from Team " +
-                "where userIdx = ? and status in('active', 'inactive') order by createdAt DESC";
+        String getTeamsQuery = "select teamIdx\n" +
+                "     , (select case when count(*) = 0 then 0 else teamFileUrl end as teamRepUrl\n" +
+                "        from TeamFile\n" +
+                "        where TeamFile.teamIdx = teamIdx and TeamFile.status = 'active' and isRepImg = 'Y') as teamRepUrl\n" +
+                "    , title, type, region, interests, status\n" +
+                "from Team\n" +
+                "where userIdx = ? and status != 'deleted' order by createdAt DESC";
         int getTeamsParams = userIdx;
         return this.jdbcTemplate.query(getTeamsQuery,
                 (rs, rsNum) -> new GetTeamsRes(
                         rs.getInt("teamIdx"),
+                        rs.getString("teamRepUrl"),
                         rs.getString("title"),
                         rs.getString("type"),
                         rs.getString("region"),
@@ -92,10 +98,16 @@ public class TeamDao {
                 getTeamsParams);
     }
 
-    public int checkTeamIdx(int teamIdx){
-        String checkTeamIdxQuery = "select exists(select * from Team where teamIdx = ? and status in ('active', 'inactive'))";
-        int checkTeamIdxParams = teamIdx;
-        return this.jdbcTemplate.queryForObject(checkTeamIdxQuery, int.class, checkTeamIdxParams);
+    public int checkTeamActive(int teamIdx){
+        String checkTeamActiveQuery = "select exists(select * from Team where teamIdx = ? and status = 'active')";
+        int checkTeamActiveParams = teamIdx;
+        return this.jdbcTemplate.queryForObject(checkTeamActiveQuery, int.class, checkTeamActiveParams);
+    }
+
+    public int checkTeamDeleted(int teamIdx){
+        String checkTeamDeletedQuery = "select exists(select * from Team where teamIdx = ? and status != 'deleted')";
+        int checkTeamDeletedParams = teamIdx;
+        return this.jdbcTemplate.queryForObject(checkTeamDeletedQuery, int.class, checkTeamDeletedParams);
     }
 
     public List<Member> getMembers(int teamIdx){
@@ -136,7 +148,7 @@ public class TeamDao {
                 "    , (select COUNT(*) from Comment where teamIdx = Team.teamIdx and status = 'active') as commentCount\n" +
                 "    , (select COUNT(*) from TeamMember where teamIdx = Team.teamIdx and status = 'active') as memberCount\n" +
                 "from Team\n" +
-                "where teamIdx = ? and status in ('active', 'inactive')";
+                "where teamIdx = ? and status != 'deleted'";
         int getTeamParams = teamIdx;
 
         return this.jdbcTemplate.query(getTeamQuery,
@@ -240,12 +252,6 @@ public class TeamDao {
         String updateCommentQuery = "update Comment set content = ? where commentIdx = ?";
         Object[] updateCommentParams = new Object[]{patchCommentReq.getContent(), commentIdx};
         return this.jdbcTemplate.update(updateCommentQuery, updateCommentParams);
-    }
-
-    public int checkTeam(int teamIdx){
-        String checkTeamQuery = "select exists(select * from Team where teamIdx = ? and status = 'active')";
-        int checkTeamParams = teamIdx;
-        return this.jdbcTemplate.queryForObject(checkTeamQuery, int.class, checkTeamParams);
     }
 
     public int teamDeadline(int teamIdx){

@@ -28,4 +28,8 @@ public class GetMatchedTeamRes {
 
     @ApiModelProperty(value = "관심 분야", example = "IT")
     private String interests;
+
+    @ApiModelProperty(value = "모집 여부", example = "active", notes = "active : 모집 중, inactive : 모집 완료, finish : 종료")
+    private String status;
+
 }

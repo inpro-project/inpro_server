@@ -55,17 +55,9 @@ public class TeamProvider {
         }
     }
 
-    public int checkTeamIdx(int teamIdx) throws BaseException {
-        try {
-            return teamDao.checkTeamIdx(teamIdx);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
     public List<GetTeamRes> getTeam(int teamIdx) throws BaseException {
         // 유효한 팀 인덱스인지, 삭제된 팀이 아닌지 확인
-        if(checkTeamIdx(teamIdx) == 0){
+        if(checkTeamDeleted(teamIdx) == 0){
             throw new BaseException(INVALID_TEAMIDX);
         }
 
@@ -79,7 +71,7 @@ public class TeamProvider {
 
     public List<GetCommentsRes> getComments(int teamIdx) throws BaseException {
         // 유효한 팀 인덱스인지 확인
-        if(checkTeamIdx(teamIdx) == 0){
+        if(checkTeamDeleted(teamIdx) == 0){
             throw new BaseException(INVALID_TEAMIDX);
         }
 
@@ -107,9 +99,17 @@ public class TeamProvider {
         }
     }
 
-    public int checkTeam(int teamIdx) throws BaseException {
+    public int checkTeamActive(int teamIdx) throws BaseException {
         try {
-            return teamDao.checkTeam(teamIdx);
+            return teamDao.checkTeamActive(teamIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkTeamDeleted(int teamIdx) throws BaseException {
+        try {
+            return teamDao.checkTeamDeleted(teamIdx);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

@@ -30,7 +30,7 @@ public class GetTeamRes {
     @ApiModelProperty(value = "팀 소개 글", example = "클라이언트, 서버, 머신러닝 개발자 구합니다.")
     private String content;
 
-    @ApiModelProperty(value = "모집 여부", example = "active", notes = "active : 모집 중, inactive : 모집 완료")
+    @ApiModelProperty(value = "모집 여부", example = "active", notes = "active : 모집 중, inactive : 모집 완료, finish : 프로젝트 종료")
     private String status;
 
     @ApiModelProperty(value = "팀 대표 이미지", example = "url")
