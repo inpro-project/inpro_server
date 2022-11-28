@@ -253,4 +253,25 @@ public class TeamService {
         }
     }
 
+    public void teamFinish(int teamIdx, int leaderIdx) throws BaseException {
+        // 팀원 모집을 완료한 팀 인덱스인지 확인
+        if(teamProvider.checkTeamInActive(teamIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        // 현재 유저가 팀을 만든 유저가 맞는지 확인
+        if(teamProvider.checkTeamIdxByLeader(teamIdx, leaderIdx) == 0){
+            throw new BaseException(INVALID_TEAMIDX);
+        }
+
+        try {
+            int result = teamDao.teamFinish(teamIdx);
+            if(result == 0){
+                throw new BaseException(FAIL_TEAM_FINISH);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }
