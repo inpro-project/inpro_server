@@ -132,7 +132,7 @@ public class TeamService {
 
     public void deleteTeam(int teamIdx, int leaderIdx) throws BaseException {
         // 유효한 팀 인덱스인지 확인
-        if(teamProvider.checkTeam(teamIdx) == 0){
+        if(teamProvider.checkTeamDeleted(teamIdx) == 0){
             throw new BaseException(INVALID_TEAMIDX);
         }
 
@@ -158,7 +158,7 @@ public class TeamService {
         }
 
         // 유효한 팀 인덱스인지 확인
-        if(teamProvider.checkTeam(postMemberReq.getTeamIdx()) == 0){
+        if(teamProvider.checkTeamActive(postMemberReq.getTeamIdx()) == 0){
             throw new BaseException(INVALID_TEAMIDX);
         }
 
@@ -181,7 +181,7 @@ public class TeamService {
 
     public PostCommentRes createComment(int userIdx, PostCommentReq postCommentReq) throws BaseException {
         // 유효한 팀 인덱스인지 확인
-        if(teamProvider.checkTeamIdx(postCommentReq.getTeamIdx()) == 0){
+        if(teamProvider.checkTeamActive(postCommentReq.getTeamIdx()) == 0){
             throw new BaseException(INVALID_TEAMIDX);
         }
 
@@ -234,7 +234,7 @@ public class TeamService {
 
     public void teamDeadline(int teamIdx, int leaderIdx) throws BaseException {
         // 유효한 팀 인덱스인지 확인
-        if(teamProvider.checkTeam(teamIdx) == 0){
+        if(teamProvider.checkTeamActive(teamIdx) == 0){
             throw new BaseException(INVALID_TEAMIDX);
         }
 

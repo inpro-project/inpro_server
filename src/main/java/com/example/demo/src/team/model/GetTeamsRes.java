@@ -13,6 +13,9 @@ public class GetTeamsRes {
     @ApiModelProperty(value = "팀 인덱스", example = "1")
     private int teamIdx;
 
+    @ApiModelProperty(value = "팀 대표 이미지 주소")
+    private String teamRepUrl;
+
     @ApiModelProperty(value = "팀 제목", example = "인플 프로젝트")
     private String title;
 
