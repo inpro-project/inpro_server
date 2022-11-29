@@ -1,6 +1,7 @@
 package com.example.demo.src.match;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.user.model.PatchPortfolioReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -226,6 +227,25 @@ public class MatchService {
                 if(matchProvider.checkTeamFilterByIdx(userIdx, teamFilterIdxlist.get(i)) == 1){
                     matchDao.deleteTeamFilter(userIdx, teamFilterIdxlist.get(i));
                 }
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createSearchDisc(int userIdx, double x, double y) throws BaseException {
+        try {
+            matchDao.createSearchDisc(userIdx, x, y);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateSearchDisc(int userIdx, double x, double y) throws BaseException {
+        try {
+            int result = matchDao.updateSearchDisc(userIdx, x, y);
+            if(result == 0){
+                throw new BaseException(FAIL_SEARCHDISC);
             }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
