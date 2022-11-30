@@ -121,6 +121,9 @@ public enum BaseResponseStatus {
     // [DELETE/PATCH] /app/comments/:commentIdx
     COMMENT_INVALID_COMMENTIDX(false, 352, "올바르지 않은 댓글 인덱스입니다."),
 
+    // [POST] /app/reviews/:teamIdx
+    POST_REVIEW_EMPTY_REVIEWS(false, 353, "팀원 평가를 위해 3개의 특성을 선택해주세요."),
+
     /**
      * 400 : Response, Database, Server 오류
      */
@@ -157,8 +160,7 @@ public enum BaseResponseStatus {
     // [PATCH] /app/user-discs/:userDiscIdx
     FAIL_USERDISCNAME(false, 412, "user disc 이름 등록 및 수정에 실패하였습니다."),
 
-    // [PATCH] /app/search-discs/:searchDiscIdx
-    FAIL_SEARCHDISCNAME(false, 413, "search disc 이름 등록 및 수정에 실패하였습니다."),
+    FAIL_SEARCHDISC(false, 413, "search disc 조정에 실패하였습니다."),
 
     // [POST] /app/blocks/:blockedUserIdx
     FAIL_BLOCK(false, 414, "유저 차단에 실패하였습니다."),
@@ -204,7 +206,10 @@ public enum BaseResponseStatus {
     MODIFY_FAIL_PROFILEIMG(false, 428, "프로필 이미지 수정에 실패하였습니다."),
 
     // [PATCH] /app/team-finishes/:teamIdx
-    FAIL_TEAM_FINISH(false, 429, "팀 프로젝트 완료에 실패하였습니다.");
+    FAIL_TEAM_FINISH(false, 429, "팀 프로젝트 완료에 실패하였습니다."),
+
+    // [POST] /app/reviews/:teamIdx
+    MODIFY_FAIL_USERDISC(false, 430, "평가 기반 User Disc 조정에 실패하였습니다.");
 
 
     private final boolean isSuccess;

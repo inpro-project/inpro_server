@@ -79,7 +79,33 @@ public class MatchProvider {
         }
     }
 
-    public List<GetUserMatchRes> getUserMatches(int userIdx) throws BaseException {
+    public int checkSearchDisc(int userIdx) throws BaseException {
+        try {
+            return matchDao.checkSearchDisc(userIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public SearchDiscXy getPastSearchDisc(int userIdx) throws BaseException {
+        try {
+            SearchDiscXy searchDiscXy = matchDao.getPastSearchDisc(userIdx);
+            return searchDiscXy;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public SearchDiscXy getNewSearchDisc(int userIdx) throws BaseException {
+        try {
+            SearchDiscXy searchDiscXy = matchDao.getNewSearchDisc(userIdx);
+            return searchDiscXy;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetUserMatchRes> getUserMatches(int userIdx, SearchDiscXy newSearchDisc) throws BaseException {
         try {
             // 1 : 연령대
             List<String> getAgeRangeFilter = matchDao.getUserFilter(userIdx, 1);
@@ -129,7 +155,7 @@ public class MatchProvider {
                 }
             }
 
-            List<GetUserMatchRes> getUserMatchRes = matchDao.getUserMatches(userIdx
+            List<GetUserMatchRes> getUserMatchRes = matchDao.getUserMatches(userIdx, newSearchDisc
                     , getAgeRangeFilter, getRegionFilter, getOccupationFilter, getInterestsFilter);
             return getUserMatchRes;
         } catch (Exception exception){

@@ -258,12 +258,26 @@ public class MatchController {
      * @return BaseResponse<GetUserMatchRes>
      */
     @ApiOperation(value = "1:1 매칭 유저 프로필 조회 API")
+    @ApiResponse(code = 413, message = "search disc 조정에 실패하였습니다.")
     @ResponseBody
     @GetMapping("/user-matches")
     public BaseResponse<List<GetUserMatchRes>> getUserMatches(){
         try {
             int userIdx = jwtService.getUserIdx();
-            List<GetUserMatchRes> getUserMatchRes = matchProvider.getUserMatches(userIdx);
+
+            // search disc - 좋아요가 5개 이상인 경우에만 생성 및 조정됨
+            SearchDiscXy newSearchDisc = matchProvider.getNewSearchDisc(userIdx);
+            if(matchProvider.checkSearchDisc(userIdx) != 0){
+                SearchDiscXy pastSearchDisc = matchProvider.getPastSearchDisc(userIdx);
+                if(pastSearchDisc.getX() != newSearchDisc.getX() || pastSearchDisc.getY() != newSearchDisc.getY()) {
+                    matchService.updateSearchDisc(userIdx, newSearchDisc.getX(), newSearchDisc.getY());
+                }
+            }
+            else {
+                matchService.createSearchDisc(userIdx, newSearchDisc.getX(), newSearchDisc.getY());
+            }
+
+            List<GetUserMatchRes> getUserMatchRes = matchProvider.getUserMatches(userIdx, newSearchDisc);
             return new BaseResponse<>(getUserMatchRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());

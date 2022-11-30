@@ -1,6 +1,7 @@
 package com.example.demo.src.match;
 
 import com.example.demo.src.match.model.*;
+import com.example.demo.src.user.model.PatchPortfolioReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -181,22 +182,52 @@ public class MatchDao {
                 getUserFilterParams);
     }
 
-    public SearchDiscXy getSearchDiscXy(int userIdx) {
-        String getSearchDiscXyQuery = "select case when COUNT(*) > 5 then AVG(x) else null end as x\n" +
+    public int checkSearchDisc(int userIdx){
+        String checkSearchDiscQuery = "select exists(select * from SearchDisc where userIdx = ?)";
+        int checkSearchDiscParams = userIdx;
+        return this.jdbcTemplate.queryForObject(checkSearchDiscQuery,
+                int.class,
+                checkSearchDiscParams);
+    }
+
+    public SearchDiscXy getPastSearchDisc(int userIdx) {
+        String getPastSearchDiscQuery = "select x, y from SearchDisc where userIdx = ?";
+        int getPastSearchDiscParams = userIdx;
+        return jdbcTemplate.queryForObject(getPastSearchDiscQuery,
+                (rs, rsNum) -> new SearchDiscXy(
+                        rs.getDouble("x"),
+                        rs.getDouble("y")),
+                getPastSearchDiscParams);
+    }
+
+    public SearchDiscXy getNewSearchDisc(int userIdx) {
+        String getNewSearchDiscQuery = "select case when COUNT(*) > 5 then AVG(x) else null end as x\n" +
                 "    , case when COUNT(*) > 5 then AVG(y) else null end as y\n" +
                 "from UserLike\n" +
                 "inner join User U on UserLike.likingIdx = U.userIdx and U.status = 'active'\n" +
                 "inner join UserDisc UD on U.userIdx = UD.userIdx and isRepDisc = 'Y' and UD.status = 'active'\n" +
                 "where likerIdx = ? and UserLike.status = 'active'";
-        int getSearchDiscXyParams = userIdx;
-        return jdbcTemplate.queryForObject(getSearchDiscXyQuery,
+        int getNewSearchDiscParams = userIdx;
+        return jdbcTemplate.queryForObject(getNewSearchDiscQuery,
                 (rs, rsNum) -> new SearchDiscXy(
                         rs.getDouble("x"),
                         rs.getDouble("y")),
-                getSearchDiscXyParams);
+                getNewSearchDiscParams);
     }
 
-    public List<GetUserMatchRes> getUserMatches(int userIdx, List<String> ageRange, List<String> region, List<String> occupation, List<String> interests) {
+    public void createSearchDisc(int userIdx, double x, double y){
+        String createSearchDiscQuery = "insert into SearchDisc (userIdx, x, y) values (?, ?, ?)";
+        Object[] createSearchDiscParams = new Object[]{userIdx, x, y};
+        this.jdbcTemplate.update(createSearchDiscQuery, createSearchDiscParams);
+    }
+
+    public int updateSearchDisc(int userIdx, double x, double y){
+        String updateSearchDiscQuery = "update SearchDisc set x = ?, y = ? where userIdx = ?";
+        Object[] updateSearchDiscParams = new Object[]{x, y, userIdx};
+        return this.jdbcTemplate.update(updateSearchDiscQuery, updateSearchDiscParams);
+    }
+
+    public List<GetUserMatchRes> getUserMatches(int userIdx, SearchDiscXy searchDiscXy, List<String> ageRange, List<String> region, List<String> occupation, List<String> interests) {
         String getUserMatchesQuery = "select User.userIdx, nickName, userImgUrl\n" +
                 "     , gender, ageRange, comment, region, occupation, interests\n" +
                 "     , case when x is not null then x else 0 end as x\n" +
@@ -207,9 +238,10 @@ public class MatchDao {
                 "from User\n" +
                 "left join UserDisc UD on User.userIdx = UD.userIdx and UD.status = 'active' and isRepDisc = 'Y'\n" +
                 "where User.userIdx not in(?)\n" +
-                "  and User.userIdx not in (select passingIdx from UserPass where passerIdx = ?)\n" +
-                "  and User.userIdx not in (select blockedUserIdx from Block where blockUserIdx = ?)\n" +
+                "  and User.userIdx not in (select passingIdx from UserPass where passerIdx = ? and UserPass.status = 'active')\n" +
+                "  and User.userIdx not in (select blockedUserIdx from Block where blockUserIdx = ? and Block.status = 'active')\n" +
                 "  and User.userIdx not in (select reportedUserIdx from Report where Report.userIdx = ?)\n" +
+                "  and User.userIdx not in (select likingIdx from UserLike where likerIdx = ? and UserLike.status = 'active')\n" +
                 "and User.status = 'active'\n" +
                 "and ageRange in (?, ?, ?, ?, ?, ?)\n" +
                 "  and ageRange not in (' ')\n" +
@@ -220,8 +252,8 @@ public class MatchDao {
                 "and interests in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n" +
                 "  and interests not in (' ')\n" +
                 "order by percent DESC, userIdx DESC";
-        SearchDiscXy searchDiscXy = getSearchDiscXy(userIdx);
-        Object[] getUserMatchesParams = new Object[]{searchDiscXy.getX(), searchDiscXy.getX(), searchDiscXy.getY(), userIdx, userIdx, userIdx, userIdx
+
+        Object[] getUserMatchesParams = new Object[]{searchDiscXy.getX(), searchDiscXy.getX(), searchDiscXy.getY(), userIdx, userIdx, userIdx, userIdx, userIdx
                 , ageRange.get(0), ageRange.get(1), ageRange.get(2), ageRange.get(3), ageRange.get(4), ageRange.get(5)
                 , region.get(0), region.get(1), region.get(2), region.get(3), region.get(4), region.get(5), region.get(6), region.get(7)
                 , region.get(8), region.get(9), region.get(10), region.get(11), region.get(12), region.get(13), region.get(14), region.get(15), region.get(16)
