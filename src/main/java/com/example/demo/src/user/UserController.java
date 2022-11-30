@@ -2,6 +2,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.match.model.SearchDiscXy;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.*;
@@ -88,7 +89,7 @@ public class UserController {
 
     /**
      * 유저 프로필 이미지 수정 API
-     * [PATCH] /app/profile-imgs
+     * [PATCH] /app/getMyProfileRes-imgs
      * @return BaseResponse<String>
      */
     @ApiOperation(value = "유저 프로필 이미지 수정 API", notes = "성공시 '프로필 이미지가 수정되었습니다.' 출력")
@@ -97,7 +98,7 @@ public class UserController {
             @ApiResponse(code = 428, message = "프로필 이미지 수정에 실패하였습니다.")
     })
     @ResponseBody
-    @PatchMapping("/profile-imgs")
+    @PatchMapping("/getMyProfileRes-imgs")
     public BaseResponse<String> modifyUserProfileImg(@RequestPart(value = "profileImg") MultipartFile multipartFile) throws IOException {
         try {
             int userIdx = jwtService.getUserIdx();
@@ -306,16 +307,16 @@ public class UserController {
     /**
      * 나의 프로필 조회 API
      * [GET] /app/profiles
-     * @return BaseResponse<GetProfileRes>
+     * @return BaseResponse<GetMyProfileRes>
      */
     @ApiOperation(value = "나의 프로필 조회 API")
     @ResponseBody
     @GetMapping("/profiles")
-    public BaseResponse<GetUserProfileRes> getProfile(){
+    public BaseResponse<GetMyProfileRes> getProfile(){
         try {
             int userIdx = jwtService.getUserIdx();
-            GetUserProfileRes getUserProfileRes = userProvider.getUserProfile(userIdx);
-            return new BaseResponse<>(getUserProfileRes);
+            GetMyProfileRes getMyProfileRes = userProvider.getMyProfile(userIdx);
+            return new BaseResponse<>(getMyProfileRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
@@ -332,9 +333,41 @@ public class UserController {
     @GetMapping("/user-profiles/{userIdx}")
     public BaseResponse<GetUserProfileRes> getUserProfile(@PathVariable("userIdx") int userIdx){
         try {
-            jwtService.getUserIdx();
-            GetUserProfileRes getUserProfileRes = userProvider.getUserProfile(userIdx);
+            int loginUserIdx = jwtService.getUserIdx();
+            GetUserProfileRes getUserProfileRes = userProvider.getUserProfile(loginUserIdx, userIdx);
             return new BaseResponse<>(getUserProfileRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 1:1 매칭 유저 프로필 조회 API
+     * [GET] /app/user-matches
+     * @return BaseResponse<GetUserMatchRes>
+     */
+    @ApiOperation(value = "1:1 매칭 유저 프로필 조회 API")
+    @ApiResponse(code = 413, message = "search disc 조정에 실패하였습니다.")
+    @ResponseBody
+    @GetMapping("/user-matches")
+    public BaseResponse<List<GetUserMatchRes>> getUserMatches(){
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            // search disc - 좋아요가 5개 이상인 경우에만 생성 및 조정됨
+            SearchDiscXy newSearchDisc = userProvider.getNewSearchDisc(userIdx);
+            if(userProvider.checkSearchDisc(userIdx) != 0){
+                SearchDiscXy pastSearchDisc = userProvider.getPastSearchDisc(userIdx);
+                if(pastSearchDisc.getX() != newSearchDisc.getX() || pastSearchDisc.getY() != newSearchDisc.getY()) {
+                    userService.updateSearchDisc(userIdx, newSearchDisc.getX(), newSearchDisc.getY());
+                }
+            }
+            else {
+                userService.createSearchDisc(userIdx, newSearchDisc.getX(), newSearchDisc.getY());
+            }
+
+            List<GetUserMatchRes> getUserMatchRes = userProvider.getUserMatches(userIdx, newSearchDisc);
+            return new BaseResponse<>(getUserMatchRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

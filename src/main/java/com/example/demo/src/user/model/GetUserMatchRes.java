@@ -8,10 +8,14 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Getter @Setter
+@Getter
+@Setter
 @AllArgsConstructor
-@ApiModel(value = "유저 프로필 상세 조회 API")
-public class GetUserProfileRes {
+@ApiModel(value = "1:1 매칭 유저 프로필 조회 API")
+public class GetUserMatchRes {
+
+    @ApiModelProperty(value = "유저 인덱스", example = "1")
+    private int userIdx;
 
     @ApiModelProperty(value = "닉네임", example = "신예빈")
     private String nickName;
@@ -54,4 +58,5 @@ public class GetUserProfileRes {
 
     @ApiModelProperty(value = "대표 포트폴리오")
     private List<RepPortfolio> repPortfolio;
+
 }

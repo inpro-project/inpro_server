@@ -10,9 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @ApiModel(value = "유저 업무 성향")
-public class GetUserDiscRes {
-    @ApiModelProperty(value = "유저 업무 성향 인덱스", example = "1")
-    private int userDiscIdx;
+public class UserDisc {
     @ApiModelProperty(value = "x좌표", example = "-6.692130429902465")
     private double x;
     @ApiModelProperty(value = "y좌표", example = "-2.828427124746188")
