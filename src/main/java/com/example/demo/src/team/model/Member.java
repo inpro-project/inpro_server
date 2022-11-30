@@ -33,10 +33,4 @@ public class Member {
 
     @ApiModelProperty(value = "유저 프로필 이미지", example = "url")
     private String userImgUrl;
-
-    @ApiModelProperty(value = "user disc x 좌표", example = "0.1")
-    private double x;
-
-    @ApiModelProperty(value = "user disc y 좌표", example = "0.2")
-    private double y;
 }

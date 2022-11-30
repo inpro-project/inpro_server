@@ -1,10 +1,8 @@
 package com.example.demo.src.team;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.team.model.GetCommentsRes;
-import com.example.demo.src.team.model.GetTeamImgsRes;
-import com.example.demo.src.team.model.GetTeamRes;
-import com.example.demo.src.team.model.GetTeamsRes;
+import com.example.demo.src.team.model.*;
+import com.example.demo.src.user.model.UserDisc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -56,15 +54,30 @@ public class TeamProvider {
         }
     }
 
-    public List<GetTeamRes> getTeam(int teamIdx) throws BaseException {
+    public List<GetTeamRes> getTeam(int teamIdx, int userIdx) throws BaseException {
         // 유효한 팀 인덱스인지, 삭제된 팀이 아닌지 확인
         if(checkTeamDeleted(teamIdx) == 0){
             throw new BaseException(INVALID_TEAMIDX);
         }
 
         try {
-            List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx);
-            return getTeamRes;
+            // 팀의 리더의 search disc나 유저의 user disc 중에 하나라도 없어도 0
+            if(teamDao.checkSearchDiscByTeamIdx(teamIdx) == 0 || teamDao.checkUserDisc(userIdx) == 0){
+                SearchDiscAndPercent searchDiscAndPercent = new SearchDiscAndPercent(0.0, 0.0, 0);
+                List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx, searchDiscAndPercent);
+                return getTeamRes;
+            }
+            else {
+                // 현재 로그인한 유저의 user disc
+                UserDiscXy userDiscXy = teamDao.getUserDiscXy(userIdx);
+
+                // 리더의 search disc와 현재 로그인한 유저와의 일치 퍼센트
+                int leaderIdx = teamDao.getLeaderIdx(teamIdx);
+                SearchDiscAndPercent searchDiscAndPercent = teamDao.getSearchDiscAndPercent(leaderIdx, userDiscXy);
+
+                List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx, searchDiscAndPercent);
+                return getTeamRes;
+            }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
