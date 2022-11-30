@@ -65,7 +65,7 @@ public class MatchService {
             int userFilterIdx = 0;
             for(int i = 0; i < ageRange.size(); i++){
                 // 기존 존재 여부 확인
-                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, ageRange.get(i));
+                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, 1, ageRange.get(i));
                 // 존재하지 않으면 새로 추가
                 if(userFilterIdx == 0){
                     matchDao.createAgeRangeFilter(userIdx, ageRange.get(i));
@@ -85,7 +85,7 @@ public class MatchService {
         try {
             int userFilterIdx = 0;
             for(int i = 0; i < region.size(); i++){
-                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, region.get(i));
+                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, 2, region.get(i));
                 if(userFilterIdx == 0){
                     matchDao.createRegionFilter(userIdx, region.get(i));
                 }
@@ -100,7 +100,7 @@ public class MatchService {
         try {
             int userFilterIdx = 0;
             for(int i = 0; i < occupation.size(); i++){
-                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, occupation.get(i));
+                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, 3, occupation.get(i));
                 if(userFilterIdx == 0) {
                     matchDao.createOccupationFilter(userIdx, occupation.get(i));
                 }
@@ -115,7 +115,7 @@ public class MatchService {
         try {
             int userFilterIdx = 0;
             for(int i = 0; i < interests.size(); i++){
-                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, interests.get(i));
+                userFilterIdx = matchProvider.checkUserFilterByName(userIdx, 4, interests.get(i));
                 if(userFilterIdx == 0) {
                     matchDao.createInterestsFilter(userIdx, interests.get(i));
                 }
@@ -174,7 +174,7 @@ public class MatchService {
             int teamFilterIdx = 0;
             for(int i = 0; i < type.size(); i++){
                 // 기존 존재 여부 확인
-                teamFilterIdx = matchProvider.checkTeamFilterByName(userIdx, type.get(i));
+                teamFilterIdx = matchProvider.checkTeamFilterByName(userIdx, 1, type.get(i));
                 // 존재하지 않으면 새로 추가
                 if(teamFilterIdx == 0){
                     matchDao.createTeamTypeFilter(userIdx, type.get(i));
@@ -194,7 +194,7 @@ public class MatchService {
         try {
             int teamFilterIdx = 0;
             for(int i = 0; i < region.size(); i++){
-                teamFilterIdx = matchProvider.checkTeamFilterByName(userIdx, region.get(i));
+                teamFilterIdx = matchProvider.checkTeamFilterByName(userIdx, 2, region.get(i));
                 if(teamFilterIdx == 0){
                     matchDao.createTeamRegionFilter(userIdx, region.get(i));
                 }
@@ -209,7 +209,7 @@ public class MatchService {
         try {
             int teamFilterIdx = 0;
             for(int i = 0; i < interests.size(); i++){
-                teamFilterIdx = matchProvider.checkTeamFilterByName(userIdx, interests.get(i));
+                teamFilterIdx = matchProvider.checkTeamFilterByName(userIdx, 3, interests.get(i));
                 if(teamFilterIdx == 0) {
                     matchDao.createTeamInterestsFilter(userIdx, interests.get(i));
                 }

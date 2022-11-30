@@ -83,10 +83,10 @@ public class MatchDao {
                 getUserFiltersParams);
     }
 
-    public int checkUserFilterByName(int userIdx, String name){
+    public int checkUserFilterByName(int userIdx, int category, String name){
         String checkUserFilterByNameQuery = "select case when count(*) = 0 then 0 else userFilterIdx end as userFilterIdx\n" +
-                "    from UserFilter where userIdx = ? and name like concat('%', ?,'%')";
-        Object[] checkUserFilterByNameParams = new Object[]{userIdx, name};
+                "    from UserFilter where userIdx = ? and category = ? and name like concat('%', ?,'%')";
+        Object[] checkUserFilterByNameParams = new Object[]{userIdx, category, name};
         return this.jdbcTemplate.queryForObject(checkUserFilterByNameQuery,
                 int.class,
                 checkUserFilterByNameParams);
@@ -144,10 +144,10 @@ public class MatchDao {
                 getTeamFiltersParams);
     }
 
-    public int checkTeamFilterByName(int userIdx, String name){
+    public int checkTeamFilterByName(int userIdx, int category, String name){
         String checkTeamFilterByNameQuery = "select case when count(*) = 0 then 0 else teamFilterIdx end as teamFilterIdx\n" +
-                "    from TeamFilter where userIdx = ? and name like concat('%', ?,'%')";
-        Object[] checkTeamFilterByNameParams = new Object[]{userIdx, name};
+                "    from TeamFilter where userIdx = ? and category = ? and name like concat('%', ?,'%')";
+        Object[] checkTeamFilterByNameParams = new Object[]{userIdx, category, name};
         return this.jdbcTemplate.queryForObject(checkTeamFilterByNameQuery,
                 int.class,
                 checkTeamFilterByNameParams);

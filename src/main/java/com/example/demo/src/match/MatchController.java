@@ -169,9 +169,9 @@ public class MatchController {
         try {
             int userIdx = jwtService.getUserIdx();
 
-           if(postTeamFilterReq.getType() != null){
-               matchService.createTeamTypeFilter(userIdx, postTeamFilterReq.getType());
-           }
+            if(postTeamFilterReq.getType() != null){
+                matchService.createTeamTypeFilter(userIdx, postTeamFilterReq.getType());
+            }
 
             if(postTeamFilterReq.getRegion() != null){
                 matchService.createTeamRegionFilter(userIdx, postTeamFilterReq.getRegion());

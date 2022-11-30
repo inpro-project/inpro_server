@@ -39,9 +39,9 @@ public class MatchProvider {
         }
     }
 
-    public int checkUserFilterByName(int userIdx, String name) throws BaseException {
+    public int checkUserFilterByName(int userIdx, int category, String name) throws BaseException {
         try {
-            return matchDao.checkUserFilterByName(userIdx, name);
+            return matchDao.checkUserFilterByName(userIdx, category, name);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
@@ -64,9 +64,9 @@ public class MatchProvider {
         }
     }
 
-    public int checkTeamFilterByName(int userIdx, String name) throws BaseException {
+    public int checkTeamFilterByName(int userIdx, int category, String name) throws BaseException {
         try {
-            return matchDao.checkTeamFilterByName(userIdx, name);
+            return matchDao.checkTeamFilterByName(userIdx, category, name);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
