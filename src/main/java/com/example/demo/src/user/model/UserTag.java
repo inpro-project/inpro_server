@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 @ApiModel(value = "유저 태그 리스트")
-public class GetUserTagRes {
+public class UserTag {
     @ApiModelProperty(value = "유저 태그 인덱스", example = "1")
     private int userTagIdx;
 

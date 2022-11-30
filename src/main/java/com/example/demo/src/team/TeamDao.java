@@ -1,6 +1,7 @@
 package com.example.demo.src.team;
 
 import com.example.demo.src.team.model.*;
+import com.example.demo.src.user.model.UserDisc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -119,8 +120,6 @@ public class TeamDao {
     public List<Member> getMembers(int teamIdx){
         String getMembersQuery = "select TeamMember.userIdx, role, nickName, ageRange, region, occupation, interests\n" +
                 "    , case when userImgUrl is null then 0 else userImgUrl end as userImgUrl\n" +
-                "    , case when x is null then 0 else x end as x\n" +
-                "     , case when y is null then 0 else y end as y\n" +
                 "from TeamMember\n" +
                 "inner join User U on TeamMember.userIdx = U.userIdx and U.status = 'active'\n" +
                 "left join UserDisc UD on U.userIdx = UD.userIdx and isRepDisc = 'Y' and UD.status = 'active'\n" +
@@ -137,13 +136,57 @@ public class TeamDao {
                         rs.getString("region"),
                         rs.getString("occupation"),
                         rs.getString("interests"),
-                        rs.getString("userImgUrl"),
-                        rs.getDouble("x"),
-                        rs.getDouble("y")),
+                        rs.getString("userImgUrl")),
                 getMembersParams);
     }
 
-    public List<GetTeamRes> getTeam(int teamIdx) {
+    public int checkUserDisc(int userIdx){
+        String checkUserDiscQuery = "select exists(select * from UserDisc\n" +
+                "where userIdx = ? and status = 'active' and isRepDisc = 'Y')";
+        int checkUserDiscParams = userIdx;
+        return this.jdbcTemplate.queryForObject(checkUserDiscQuery, int.class, checkUserDiscParams);
+    }
+
+    public int checkSearchDiscByTeamIdx(int teamIdx){
+        String checkSearchDiscQuery = "select exists(select * from Team\n" +
+                "inner join SearchDisc SD on Team.userIdx = SD.userIdx where teamIdx = ?)";
+        int checkSearchDiscParams = teamIdx;
+        return this.jdbcTemplate.queryForObject(checkSearchDiscQuery, int.class, checkSearchDiscParams);
+    }
+
+    public int getLeaderIdx(int teamIdx){
+        String getLeaderIdxQuery = "select userIdx from Team where teamIdx = ?";
+        int getLeaderIdxParams = teamIdx;
+        return this.jdbcTemplate.queryForObject(getLeaderIdxQuery, int.class, getLeaderIdxParams);
+    }
+
+    public UserDiscXy getUserDiscXy(int userIdx){
+        String getUserDiscXyQuery = "select x, y from UserDisc\n" +
+                "where userIdx = ? and status = 'active' and isRepDisc = 'Y'";
+        int getUserDiscXyParams = userIdx;
+        return this.jdbcTemplate.queryForObject(getUserDiscXyQuery,
+                (rs, rsNum) -> new UserDiscXy(
+                        rs.getDouble("x"),
+                        rs.getDouble("y")),
+                getUserDiscXyParams);
+    }
+
+    public SearchDiscAndPercent getSearchDiscAndPercent(int userIdx, UserDiscXy userDiscXy){
+        String getSearchDiscQuery = "select x, y, case when x is not null and ? is not null\n" +
+                "    then ROUND(100 - SQRT(POWER(x - (?), 2) + POWER(y - (?), 2)) / 33.07752975109958 * 100)\n" +
+                "    else 0 end as percent\n" +
+                "from SearchDisc\n" +
+                "where SearchDisc.userIdx = ? and SearchDisc.status = 'active'";
+        Object[] getSearchDiscParams = new Object[]{userDiscXy.getX(), userDiscXy.getX(), userDiscXy.getY(), userIdx};
+        return this.jdbcTemplate.queryForObject(getSearchDiscQuery,
+                (rs, rsNum) -> new SearchDiscAndPercent(
+                        rs.getDouble("x"),
+                        rs.getDouble("y"),
+                        rs.getInt("percent")),
+                getSearchDiscParams);
+    }
+
+    public List<GetTeamRes> getTeam(int teamIdx, SearchDiscAndPercent searchDiscAndPercent) {
         String getTeamQuery = "select userIdx as leaderIdx, type, region, interests, title\n" +
                 "     , case when length(content) > 40 then CONCAT(LEFT(content, 40), '..')\n" +
                 "         else LEFT(content, 40) end as content\n" +
@@ -160,6 +203,7 @@ public class TeamDao {
         return this.jdbcTemplate.query(getTeamQuery,
                 (rs, rsNum) -> new GetTeamRes(
                         rs.getInt("leaderIdx"),
+                        searchDiscAndPercent,
                         rs.getString("type"),
                         rs.getString("region"),
                         rs.getString("interests"),

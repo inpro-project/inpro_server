@@ -233,23 +233,4 @@ public class MatchService {
         }
     }
 
-    public void createSearchDisc(int userIdx, double x, double y) throws BaseException {
-        try {
-            matchDao.createSearchDisc(userIdx, x, y);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public void updateSearchDisc(int userIdx, double x, double y) throws BaseException {
-        try {
-            int result = matchDao.updateSearchDisc(userIdx, x, y);
-            if(result == 0){
-                throw new BaseException(FAIL_SEARCHDISC);
-            }
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
 }

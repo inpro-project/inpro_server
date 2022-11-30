@@ -245,8 +245,8 @@ public class TeamController {
     @GetMapping("/teams/{teamIdx}")
     public BaseResponse<List<GetTeamRes>> getTeam(@PathVariable("teamIdx") int teamIdx){
         try {
-            jwtService.getUserIdx();
-            List<GetTeamRes> getTeamRes = teamProvider.getTeam(teamIdx);
+            int userIdx = jwtService.getUserIdx();
+            List<GetTeamRes> getTeamRes = teamProvider.getTeam(teamIdx, userIdx);
             return new BaseResponse<>(getTeamRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());

@@ -1,6 +1,5 @@
-package com.example.demo.src.match.model;
+package com.example.demo.src.user.model;
 
-import com.example.demo.src.user.model.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,11 +11,8 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@ApiModel(value = "1:1 매칭 유저 프로필 조회 API")
-public class GetUserMatchRes {
-
-    @ApiModelProperty(value = "유저 인덱스", example = "1")
-    private int userIdx;
+@ApiModel(value = "유저 프로필 상세 조회 API")
+public class GetMyProfileRes {
 
     @ApiModelProperty(value = "닉네임", example = "신예빈")
     private String nickName;
@@ -42,28 +38,18 @@ public class GetUserMatchRes {
     @ApiModelProperty(value = "관심 분야", example = "IT")
     private String interests;
 
-    @ApiModelProperty(value = "disc x좌표", example = "-6.6921304299025")
+    @ApiModelProperty(value = "x좌표", example = "-6.692130429902465")
     private double x;
 
-    @ApiModelProperty(value = "disc y좌표", example = "-2.828427124746188")
+    @ApiModelProperty(value = "y좌표", example = "-2.828427124746188")
     private double y;
 
-    @ApiModelProperty(value = "disc 일치 퍼센트", example = "58")
-    private int percent;
+    @ApiModelProperty(value = "업무 성향 특징 태그 리스트")
+    private List<DiscFeature> discFeatures;
 
-//    @ApiModelProperty(value = "유저 대표 업무 성향")
-//    private List<GetUserDiscRes> userDisc;
-//
-//    @ApiModelProperty(value = "유저가 찾는 대표 업무 성향")
-//    private List<GetSearchDiscRes> searchDisc;
-//
-//    @ApiModelProperty(value = "업무 성향 특징 태그 리스트")
-//    private List<GetDiscFeatureRes> discFeatures;
-//
-//    @ApiModelProperty(value = "유저 태그 리스트")
-//    private List<GetUserTagRes> userTags;
-//
-//    @ApiModelProperty(value = "대표 포트폴리오")
-//    private List<GetRepPortfolioRes> repPortfolio;
+    @ApiModelProperty(value = "유저 태그 리스트")
+    private List<UserTag> userTags;
 
+    @ApiModelProperty(value = "대표 포트폴리오")
+    private List<RepPortfolio> repPortfolio;
 }

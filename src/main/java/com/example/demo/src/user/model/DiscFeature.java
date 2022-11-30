@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @ApiModel(value = "업무 성향 특징 태그 리스트")
-public class GetDiscFeatureRes {
+public class DiscFeature {
     @ApiModelProperty(value = "업무 성향 특징 인덱스", example = "1")
     private int discFeatureIdx;
     @ApiModelProperty(value = "업무 성향 특징", example = "근면")
