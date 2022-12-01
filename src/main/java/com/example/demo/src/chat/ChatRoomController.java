@@ -2,10 +2,12 @@ package com.example.demo.src.chat;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.chat.model.GetChatMatchRoomRes;
 import com.example.demo.src.chat.model.GetChatMemberRes;
 import com.example.demo.src.chat.model.GetChatMessageRes;
 import com.example.demo.src.chat.model.GetChatRoomAllRes;
 import com.example.demo.src.chat.model.GetChatRoomRes;
+import com.example.demo.src.chat.model.PostChatRoomReq;
 import com.example.demo.src.chat.model.PostChatRoomRes;
 import com.example.demo.utils.JwtService;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -54,6 +57,23 @@ public class ChatRoomController {
       int userIdx = jwtService.getUserIdx();
       int chatRoomIdx = chatService.createRoom(userIdx, name, content);
       int chatMemberIdx = chatService.joinRoom(chatRoomIdx, userIdx);
+      PostChatRoomRes postChatRoomRes = new PostChatRoomRes(chatRoomIdx, chatMemberIdx);
+      return new BaseResponse<>(postChatRoomRes);
+    }
+    catch (BaseException exception) {
+      return new BaseResponse<>(exception.getStatus());
+    }
+  }
+
+  // 채팅방 생성
+  @PostMapping("/room/match")
+  @ResponseBody
+  public BaseResponse<PostChatRoomRes> createRoom(@RequestBody PostChatRoomReq postChatRoomReq) {
+    try{
+      int userIdx = jwtService.getUserIdx();
+      int chatRoomIdx = chatService.createRoom(userIdx, postChatRoomReq.getName(), postChatRoomReq.getContent());
+      int chatMemberIdx = chatService.joinRoom(chatRoomIdx, userIdx);
+      chatService.joinRoom(chatRoomIdx, postChatRoomReq.getMatchedUserIdx());
       PostChatRoomRes postChatRoomRes = new PostChatRoomRes(chatRoomIdx, chatMemberIdx);
       return new BaseResponse<>(postChatRoomRes);
     }
@@ -124,6 +144,19 @@ public class ChatRoomController {
       int userIdx = jwtService.getUserIdx();
       List<GetChatMemberRes> getChatMemberResList = chatService.getChatMembers(roomId, userIdx);
       return new BaseResponse<>(getChatMemberResList);
+    }
+    catch (BaseException exception) {
+      return new BaseResponse<>(exception.getStatus());
+    }
+  }
+
+  @GetMapping("/room/match/{matchedUserIdx}")
+  @ResponseBody
+  public BaseResponse<GetChatMatchRoomRes> getChatMatchRoom(@PathVariable int matchedUserIdx) {
+    try {
+      int userIdx = jwtService.getUserIdx();
+      GetChatMatchRoomRes getChatMatchRoomResList = chatService.getChatMatchRoom(userIdx, matchedUserIdx);
+      return new BaseResponse<>(getChatMatchRoomResList);
     }
     catch (BaseException exception) {
       return new BaseResponse<>(exception.getStatus());
