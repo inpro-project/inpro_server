@@ -1,7 +1,6 @@
 package com.example.demo.src.team;
 
 import com.example.demo.src.team.model.*;
-import com.example.demo.src.user.model.UserDisc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -109,6 +108,12 @@ public class TeamDao {
         String checkTeamInActiveQuery = "select exists(select * from Team where teamIdx = ? and status = 'inactive')";
         int checkTeamInActiveParams = teamIdx;
         return this.jdbcTemplate.queryForObject(checkTeamInActiveQuery, int.class, checkTeamInActiveParams);
+    }
+
+    public int checkTeamFinish(int teamIdx){
+        String checkTeamFinishQuery = "select exists(select * from Team where teamIdx = ? and status = 'finish')";
+        int checkTeamFinishParams = teamIdx;
+        return this.jdbcTemplate.queryForObject(checkTeamFinishQuery, int.class, checkTeamFinishParams);
     }
 
     public int checkTeamDeleted(int teamIdx){
@@ -329,6 +334,44 @@ public class TeamDao {
                         rs.getString("fileName"),
                         rs.getString("teamFileUrl")),
                         getTeamImgsParams);
+    }
+
+    public PastUserDisc getPastUserDisc(int userIdx){
+        String getPastUserDiscQuery = "select userDiscIdx, x, y, dPercent, ipercent, sPercent, cPercent from UserDisc\n" +
+                "where userIdx = ? and isRepDisc = 'Y' and status = 'active'";
+        int getPastUserDiscParams = userIdx;
+        return this.jdbcTemplate.queryForObject(getPastUserDiscQuery,
+                (rs, rsNum) -> new PastUserDisc(
+                        rs.getInt("userDiscIdx"),
+                        rs.getDouble("x"),
+                        rs.getDouble("y"),
+                        rs.getDouble("dPercent"),
+                        rs.getDouble("iPercent"),
+                        rs.getDouble("sPercent"),
+                        rs.getDouble("cPercent")),
+                getPastUserDiscParams);
+    }
+
+    public int updateUserDisc(int userDiscIdx, double x, double y, double dPercent, double iPercent, double sPercent, double cPercent){
+        String updateUserDiscQuery = "update UserDisc set x = ?, y = ?, dPercent = ?, ipercent = ?, sPercent = ?, cPercent = ? where userDiscIdx = ?";
+        Object[] updateUserDiscParams = new Object[]{x, y, dPercent, iPercent, sPercent, cPercent, userDiscIdx};
+        return this.jdbcTemplate.update(updateUserDiscQuery, updateUserDiscParams);
+    }
+
+    public int checkPastReview(int teamIdx, int reviewerIdx, int reviewingIdx){
+        String checkPastReviewQuery = "select exists(select * from Review where teamIdx = ? and reviewerIdx = ? and reviewingIdx = ? and status = 'active')";
+        Object[] checkPastReviewParams = new Object[]{teamIdx, reviewerIdx, reviewingIdx};
+        return this.jdbcTemplate.queryForObject(checkPastReviewQuery, int.class, checkPastReviewParams);
+    }
+
+    public int createReview(int reviewerIdx, int reviewingIdx, PostReviewReq postReviewReq, double[] reviewDisc) {
+        String createReviewQuery = "insert into Review (reviewerIdx, reviewingIdx, teamIdx, name1, name2, name3, x, y) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        Object[] createReviewParams = new Object[]{reviewerIdx, reviewingIdx, postReviewReq.getTeamIdx(), postReviewReq.getReviews().get(0).getName(), postReviewReq.getReviews().get(1).getName()
+                , postReviewReq.getReviews().get(2).getName(), reviewDisc[0], reviewDisc[1]};
+        this.jdbcTemplate.update(createReviewQuery, createReviewParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
 
