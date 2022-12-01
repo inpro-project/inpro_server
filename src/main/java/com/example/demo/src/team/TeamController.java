@@ -437,6 +437,52 @@ public class TeamController {
         }
     }
 
+    /**
+     * 팀원 평가 API
+     * [POST] /app/reviews/:reviewingIdx
+     * @return BaseResponse<PostReviewRes>
+     */
+    @ApiOperation(value = "팀원 평가 API")
+    @ApiResponses({
+            @ApiResponse(code = 306, message = "업무 유형 name을 입력해주세요"),
+            @ApiResponse(code = 307, message = "올바르지 않은 discFeatureIdx입니다."),
+            @ApiResponse(code = 326, message = "유효하지 않은 유저 인덱스입니다."),
+            @ApiResponse(code = 344, message = "유효하지 않은 팀 인덱스입니다."),
+            @ApiResponse(code = 353, message = "팀원 평가를 위해 3개의 특성을 선택해주세요."),
+            @ApiResponse(code = 354, message = "해당 팀에 속하지 않는 유저입니다."),
+            @ApiResponse(code = 355, message = "이미 리뷰를 남긴 유저입니다. 중복 리뷰는 불가능합니다."),
+            @ApiResponse(code = 430, message = "평가 기반 User Disc 조정에 실패하였습니다.")
+    })
+    @ResponseBody
+    @PostMapping("/reviews/{reviewingIdx}")
+    public BaseResponse<PostReviewRes> createReview(@PathVariable("reviewingIdx") int reviewingIdx, @RequestBody PostReviewReq postReviewReq){
+        try {
+            int reviewerIdx = jwtService.getUserIdx();
+
+            // list size check
+            if(postReviewReq.getReviews().size() != 3){
+                return new BaseResponse<>(POST_REVIEW_EMPTY_REVIEWS);
+            }
+
+            for(int i = 0; i < 3; i++){
+                // 이름 null check
+                if(postReviewReq.getReviews().get(i).getName() == null || postReviewReq.getReviews().get(i).getName().length() < 2){
+                    return new BaseResponse<>(POST_DISC_EMPTY_NAME);
+                }
+                // 특정 범위(1-12) 안의 discFeatureIdx 값이 입력되었는지 확인
+                if(postReviewReq.getReviews().get(i).getDiscFeatureIdx() <= 0
+                        || postReviewReq.getReviews().get(i).getDiscFeatureIdx() > 12){
+                    return new BaseResponse<>(POST_DISC_INVALID_IDX);
+                }
+            }
+
+            PostReviewRes postReviewRes = teamService.createReview(reviewerIdx, reviewingIdx, postReviewReq);
+            return new BaseResponse<>(postReviewRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 
 }

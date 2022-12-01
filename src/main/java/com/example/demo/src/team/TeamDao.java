@@ -110,21 +110,29 @@ public class TeamDao {
         return this.jdbcTemplate.queryForObject(checkTeamInActiveQuery, int.class, checkTeamInActiveParams);
     }
 
+    public int checkTeamFinish(int teamIdx){
+        String checkTeamFinishQuery = "select exists(select * from Team where teamIdx = ? and status = 'finish')";
+        int checkTeamFinishParams = teamIdx;
+        return this.jdbcTemplate.queryForObject(checkTeamFinishQuery, int.class, checkTeamFinishParams);
+    }
+
     public int checkTeamDeleted(int teamIdx){
         String checkTeamDeletedQuery = "select exists(select * from Team where teamIdx = ? and status != 'deleted')";
         int checkTeamDeletedParams = teamIdx;
         return this.jdbcTemplate.queryForObject(checkTeamDeletedQuery, int.class, checkTeamDeletedParams);
     }
 
-    public List<Member> getMembers(int teamIdx){
+    public List<Member> getMembers(int userIdx, int teamIdx){
         String getMembersQuery = "select TeamMember.userIdx, role, nickName, ageRange, region, occupation, interests\n" +
                 "    , case when userImgUrl is null then 0 else userImgUrl end as userImgUrl\n" +
+                "    , (select COUNT(*) from Review\n" +
+                "        where teamIdx = TeamMember.teamIdx and reviewerIdx = ? and reviewingIdx = TeamMember.userIdx and status = 'active') as isReview\n" +
                 "from TeamMember\n" +
                 "inner join User U on TeamMember.userIdx = U.userIdx and U.status = 'active'\n" +
                 "left join UserDisc UD on U.userIdx = UD.userIdx and isRepDisc = 'Y' and UD.status = 'active'\n" +
                 "where teamIdx = ? and TeamMember.status = 'active'\n" +
-                "order by TeamMember.updatedAt";
-        int getMembersParams = teamIdx;
+                "order by TeamMember.createdAt";
+        Object[] getMembersParams = new Object[]{userIdx, teamIdx};
 
         return this.jdbcTemplate.query(getMembersQuery,
                 (rs, rsNum) -> new Member(
@@ -135,7 +143,8 @@ public class TeamDao {
                         rs.getString("region"),
                         rs.getString("occupation"),
                         rs.getString("interests"),
-                        rs.getString("userImgUrl")),
+                        rs.getString("userImgUrl"),
+                        rs.getInt("isReview")),
                 getMembersParams);
     }
 
@@ -214,7 +223,7 @@ public class TeamDao {
                         rs.getInt("likeCount"),
                         rs.getInt("commentCount"),
                         rs.getInt("memberCount"),
-                        getMembers(teamIdx)),
+                        getMembers(userIdx, teamIdx)),
                 getTeamParams);
     }
 
@@ -329,6 +338,44 @@ public class TeamDao {
                         rs.getString("fileName"),
                         rs.getString("teamFileUrl")),
                         getTeamImgsParams);
+    }
+
+    public PastUserDisc getPastUserDisc(int userIdx){
+        String getPastUserDiscQuery = "select userDiscIdx, x, y, dPercent, ipercent, sPercent, cPercent from UserDisc\n" +
+                "where userIdx = ? and isRepDisc = 'Y' and status = 'active'";
+        int getPastUserDiscParams = userIdx;
+        return this.jdbcTemplate.queryForObject(getPastUserDiscQuery,
+                (rs, rsNum) -> new PastUserDisc(
+                        rs.getInt("userDiscIdx"),
+                        rs.getDouble("x"),
+                        rs.getDouble("y"),
+                        rs.getDouble("dPercent"),
+                        rs.getDouble("iPercent"),
+                        rs.getDouble("sPercent"),
+                        rs.getDouble("cPercent")),
+                getPastUserDiscParams);
+    }
+
+    public int updateUserDisc(int userDiscIdx, double x, double y, double dPercent, double iPercent, double sPercent, double cPercent){
+        String updateUserDiscQuery = "update UserDisc set x = ?, y = ?, dPercent = ?, ipercent = ?, sPercent = ?, cPercent = ? where userDiscIdx = ?";
+        Object[] updateUserDiscParams = new Object[]{x, y, dPercent, iPercent, sPercent, cPercent, userDiscIdx};
+        return this.jdbcTemplate.update(updateUserDiscQuery, updateUserDiscParams);
+    }
+
+    public int checkPastReview(int teamIdx, int reviewerIdx, int reviewingIdx){
+        String checkPastReviewQuery = "select exists(select * from Review where teamIdx = ? and reviewerIdx = ? and reviewingIdx = ? and status = 'active')";
+        Object[] checkPastReviewParams = new Object[]{teamIdx, reviewerIdx, reviewingIdx};
+        return this.jdbcTemplate.queryForObject(checkPastReviewQuery, int.class, checkPastReviewParams);
+    }
+
+    public int createReview(int reviewerIdx, int reviewingIdx, PostReviewReq postReviewReq, double[] reviewDisc) {
+        String createReviewQuery = "insert into Review (reviewerIdx, reviewingIdx, teamIdx, name1, name2, name3, x, y) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        Object[] createReviewParams = new Object[]{reviewerIdx, reviewingIdx, postReviewReq.getTeamIdx(), postReviewReq.getReviews().get(0).getName(), postReviewReq.getReviews().get(1).getName()
+                , postReviewReq.getReviews().get(2).getName(), reviewDisc[0], reviewDisc[1]};
+        this.jdbcTemplate.update(createReviewQuery, createReviewParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
 

@@ -33,4 +33,7 @@ public class Member {
 
     @ApiModelProperty(value = "유저 프로필 이미지", example = "url")
     private String userImgUrl;
+
+    @ApiModelProperty(value = "현재 로그인을 한 유저가 리뷰를 남긴 멤버인지 여부", example = "1")
+    private int isReview;
 }

@@ -123,6 +123,8 @@ public enum BaseResponseStatus {
 
     // [POST] /app/reviews/:teamIdx
     POST_REVIEW_EMPTY_REVIEWS(false, 353, "팀원 평가를 위해 3개의 특성을 선택해주세요."),
+    POST_REVIEW_INVALID_USERIDX(false, 354, "해당 팀에 속하지 않는 유저입니다."),
+    POST_REVIEW_INVALID_REVIEWERIDX(false, 355, "이미 리뷰를 남긴 유저입니다. 중복 리뷰는 불가능합니다."),
 
     /**
      * 400 : Response, Database, Server 오류

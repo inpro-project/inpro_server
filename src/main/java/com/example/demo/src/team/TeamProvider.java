@@ -2,7 +2,6 @@ package com.example.demo.src.team;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.team.model.*;
-import com.example.demo.src.user.model.UserDisc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -64,7 +63,7 @@ public class TeamProvider {
             // 팀의 리더의 search disc나 유저의 user disc 중에 하나라도 없어도 0
             if(teamDao.checkSearchDiscByTeamIdx(teamIdx) == 0 || teamDao.checkUserDisc(userIdx) == 0){
                 SearchDiscAndPercent searchDiscAndPercent = new SearchDiscAndPercent(0.0, 0.0, 0);
-                List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx, searchDiscAndPercent);
+                List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx, userIdx, searchDiscAndPercent);
                 return getTeamRes;
             }
             else {
@@ -75,7 +74,7 @@ public class TeamProvider {
                 int leaderIdx = teamDao.getLeaderIdx(teamIdx);
                 SearchDiscAndPercent searchDiscAndPercent = teamDao.getSearchDiscAndPercent(leaderIdx, userDiscXy);
 
-                List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx, searchDiscAndPercent);
+                List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx, userIdx, searchDiscAndPercent);
                 return getTeamRes;
             }
         } catch (Exception exception){
@@ -129,6 +128,14 @@ public class TeamProvider {
         }
     }
 
+    public int checkTeamFinish(int teamIdx) throws BaseException {
+        try {
+            return teamDao.checkTeamFinish(teamIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public int checkTeamDeleted(int teamIdx) throws BaseException {
         try {
             return teamDao.checkTeamDeleted(teamIdx);
@@ -146,6 +153,23 @@ public class TeamProvider {
         try {
             List<GetTeamImgsRes> getTeamImgsResList = teamDao.getTeamImgs(teamIdx);
             return getTeamImgsResList;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkPastReview(int teamIdx, int reviewerIdx, int reviewingIdx) throws BaseException {
+        try {
+            return teamDao.checkPastReview(teamIdx, reviewerIdx, reviewingIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PastUserDisc getPastUserDisc(int userIdx) throws BaseException {
+        try {
+            PastUserDisc pastUserDisc = teamDao.getPastUserDisc(userIdx);
+            return pastUserDisc;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
