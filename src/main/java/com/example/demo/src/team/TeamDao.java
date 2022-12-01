@@ -122,15 +122,17 @@ public class TeamDao {
         return this.jdbcTemplate.queryForObject(checkTeamDeletedQuery, int.class, checkTeamDeletedParams);
     }
 
-    public List<Member> getMembers(int teamIdx){
+    public List<Member> getMembers(int userIdx, int teamIdx){
         String getMembersQuery = "select TeamMember.userIdx, role, nickName, ageRange, region, occupation, interests\n" +
                 "    , case when userImgUrl is null then 0 else userImgUrl end as userImgUrl\n" +
+                "    , (select COUNT(*) from Review\n" +
+                "        where teamIdx = TeamMember.teamIdx and reviewerIdx = ? and reviewingIdx = TeamMember.userIdx and status = 'active') as isReview\n" +
                 "from TeamMember\n" +
                 "inner join User U on TeamMember.userIdx = U.userIdx and U.status = 'active'\n" +
                 "left join UserDisc UD on U.userIdx = UD.userIdx and isRepDisc = 'Y' and UD.status = 'active'\n" +
                 "where teamIdx = ? and TeamMember.status = 'active'\n" +
-                "order by TeamMember.updatedAt";
-        int getMembersParams = teamIdx;
+                "order by TeamMember.createdAt";
+        Object[] getMembersParams = new Object[]{userIdx, teamIdx};
 
         return this.jdbcTemplate.query(getMembersQuery,
                 (rs, rsNum) -> new Member(
@@ -141,7 +143,8 @@ public class TeamDao {
                         rs.getString("region"),
                         rs.getString("occupation"),
                         rs.getString("interests"),
-                        rs.getString("userImgUrl")),
+                        rs.getString("userImgUrl"),
+                        rs.getInt("isReview")),
                 getMembersParams);
     }
 
@@ -191,7 +194,7 @@ public class TeamDao {
                 getSearchDiscParams);
     }
 
-    public List<GetTeamRes> getTeam(int teamIdx, SearchDiscAndPercent searchDiscAndPercent) {
+    public List<GetTeamRes> getTeam(int teamIdx, int userIdx, SearchDiscAndPercent searchDiscAndPercent) {
         String getTeamQuery = "select userIdx as leaderIdx, type, region, interests, title\n" +
                 "     , case when length(content) > 40 then CONCAT(LEFT(content, 40), '..')\n" +
                 "         else LEFT(content, 40) end as content\n" +
@@ -219,7 +222,7 @@ public class TeamDao {
                         rs.getInt("likeCount"),
                         rs.getInt("commentCount"),
                         rs.getInt("memberCount"),
-                        getMembers(teamIdx)),
+                        getMembers(userIdx, teamIdx)),
                 getTeamParams);
     }
 

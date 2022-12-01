@@ -63,7 +63,7 @@ public class TeamProvider {
             // 팀의 리더의 search disc나 유저의 user disc 중에 하나라도 없어도 0
             if(teamDao.checkSearchDiscByTeamIdx(teamIdx) == 0 || teamDao.checkUserDisc(userIdx) == 0){
                 SearchDiscAndPercent searchDiscAndPercent = new SearchDiscAndPercent(0.0, 0.0, 0);
-                List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx, searchDiscAndPercent);
+                List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx, userIdx, searchDiscAndPercent);
                 return getTeamRes;
             }
             else {
@@ -74,7 +74,7 @@ public class TeamProvider {
                 int leaderIdx = teamDao.getLeaderIdx(teamIdx);
                 SearchDiscAndPercent searchDiscAndPercent = teamDao.getSearchDiscAndPercent(leaderIdx, userDiscXy);
 
-                List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx, searchDiscAndPercent);
+                List<GetTeamRes> getTeamRes = teamDao.getTeam(teamIdx, userIdx, searchDiscAndPercent);
                 return getTeamRes;
             }
         } catch (Exception exception){
