@@ -31,9 +31,9 @@ public class TeamService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public PostTeamRes createTeam(int userIdx, PostTeamReq postTeamReq) throws BaseException {
+    public PostTeamRes createTeam(int userIdx, int chatRoomIdx, PostTeamReq postTeamReq) throws BaseException {
         try {
-            int teamIdx = teamDao.createTeam(userIdx, postTeamReq);
+            int teamIdx = teamDao.createTeam(userIdx, chatRoomIdx, postTeamReq);
             return new PostTeamRes(teamIdx);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);

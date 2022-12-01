@@ -2,6 +2,7 @@ package com.example.demo.src.team;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.chat.ChatService;
 import com.example.demo.src.team.model.*;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +31,7 @@ public class TeamController {
 
     private final TeamProvider teamProvider;
     private final TeamService teamService;
+    private final ChatService chatService;
     private final JwtService jwtService;
 
     /**
@@ -134,9 +136,10 @@ public class TeamController {
                     }
                 }
             }
-
+            int chatRoomIdx = chatService.createRoom(userIdx, postTeamReq.getTitle(), postTeamReq.getContent());
+            chatService.joinRoom(userIdx, chatRoomIdx);
             // 팀 제목, 내용, 팀 유형, 지역, 분야 등록
-            PostTeamRes postTeamRes = teamService.createTeam(userIdx, postTeamReq);
+            PostTeamRes postTeamRes = teamService.createTeam(userIdx, chatRoomIdx, postTeamReq);
 
             // 현재 유저를 멤버의 리더로 등록
             teamService.createTeamLeader(postTeamRes.getTeamIdx(), userIdx);

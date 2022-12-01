@@ -15,6 +15,9 @@ public class GetTeamRes {
     @ApiModelProperty(value = "리더 인덱스", example = "1")
     private int leaderIdx;
 
+    @ApiModelProperty(value = "팀 채팅방 인덱스", example = "1")
+    private int chatRoomIdx;
+
     @ApiModelProperty(value = "리더 search disc x, y 좌표와 percent")
     private SearchDiscAndPercent searchDiscAndPercent;
 
