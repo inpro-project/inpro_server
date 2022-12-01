@@ -18,9 +18,9 @@ public class TeamDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public int createTeam(int userIdx, PostTeamReq postTeamReq) {
-        String createTeamQuery = "insert into Team (userIdx, title, content, type, region, interests) VALUES (?, ?, ?, ?, ?, ?)";
-        Object[] createTeamParams = new Object[]{userIdx, postTeamReq.getTitle(), postTeamReq.getContent(), postTeamReq.getType(), postTeamReq.getRegion(), postTeamReq.getInterests()};
+    public int createTeam(int userIdx, int chatRoomIdx, PostTeamReq postTeamReq) {
+        String createTeamQuery = "insert into Team (userIdx, title, content, type, region, interests, chatRoomIdx) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        Object[] createTeamParams = new Object[]{userIdx, postTeamReq.getTitle(), postTeamReq.getContent(), postTeamReq.getType(), postTeamReq.getRegion(), postTeamReq.getInterests(), chatRoomIdx};
         this.jdbcTemplate.update(createTeamQuery, createTeamParams);
 
         String lastInsertIdQuery = "select last_insert_id()";
@@ -194,8 +194,8 @@ public class TeamDao {
                 getSearchDiscParams);
     }
 
-    public List<GetTeamRes> getTeam(int teamIdx, int userIdx, SearchDiscAndPercent searchDiscAndPercent) {
-        String getTeamQuery = "select userIdx as leaderIdx, type, region, interests, title\n" +
+    public List<GetTeamRes> getTeam(int teamIdx, SearchDiscAndPercent searchDiscAndPercent) {
+        String getTeamQuery = "select userIdx as leaderIdx, chatRoomIdx, type, region, interests, title\n" +
                 "     , case when length(content) > 40 then CONCAT(LEFT(content, 40), '..')\n" +
                 "         else LEFT(content, 40) end as content\n" +
                 "     , status\n" +
@@ -211,6 +211,7 @@ public class TeamDao {
         return this.jdbcTemplate.query(getTeamQuery,
                 (rs, rsNum) -> new GetTeamRes(
                         rs.getInt("leaderIdx"),
+                        rs.getInt("chatRoomIdx"),
                         searchDiscAndPercent,
                         rs.getString("type"),
                         rs.getString("region"),

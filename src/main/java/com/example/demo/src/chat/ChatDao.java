@@ -1,5 +1,6 @@
 package com.example.demo.src.chat;
 
+import com.example.demo.src.chat.model.GetChatMatchRoomRes;
 import com.example.demo.src.chat.model.GetChatMemberRes;
 import com.example.demo.src.chat.model.GetChatMessageCountRes;
 import com.example.demo.src.chat.model.GetChatMessageRes;
@@ -184,4 +185,19 @@ public class ChatDao {
     return this.jdbcTemplate.queryForObject(checkChatMemberQuery, int.class, checkChatMemberParams);
   }
 
+  public GetChatMatchRoomRes getChatMatchRoom(int userIdx, int matchedUserIdx){
+    String getChatMatchRoomQuery = "select CM.chatRoomIdx\n" +
+        "from ChatMember CM\n" +
+        "inner join (select chatRoomIdx, userIdx\n" +
+        "from ChatMember\n" +
+        "where userIdx = ? and status = 'active') as MU\n" +
+        "on MU.chatRoomIdx = CM.chatRoomIdx\n" +
+        "where CM.userIdx = ?\n";
+    Object[] getChatMatchRoomParams = new Object[]{matchedUserIdx, userIdx};
+
+    return this.jdbcTemplate.queryForObject(getChatMatchRoomQuery,
+        (rs, rsNum) -> new GetChatMatchRoomRes(
+            rs.getInt("chatRoomIdx")),
+        getChatMatchRoomParams);
+  }
 }

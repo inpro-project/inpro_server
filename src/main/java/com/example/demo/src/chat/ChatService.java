@@ -5,6 +5,7 @@ import static com.example.demo.config.BaseResponseStatus.INVALID_USERIDX;
 import static com.example.demo.config.BaseResponseStatus.INVALID_USER_JWT;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.chat.model.GetChatMatchRoomRes;
 import com.example.demo.src.chat.model.GetChatMemberRes;
 import com.example.demo.src.chat.model.GetChatMessageCountRes;
 import com.example.demo.src.chat.model.GetChatMessageRes;
@@ -169,6 +170,22 @@ public class ChatService {
     }
     try {
       return chatDao.getChatMember(chatRoomIdx);
+    }
+    catch (Exception exception) {
+      throw new BaseException(DATABASE_ERROR);
+    }
+  }
+
+  public GetChatMatchRoomRes getChatMatchRoom(int userIdx, int matchedUserIdx) throws BaseException {
+    if (userDao.checkUser(userIdx) != 1) {
+      throw new BaseException(INVALID_USERIDX);
+    }
+    if (userDao.checkUser(matchedUserIdx) != 1) {
+      throw new BaseException(INVALID_USERIDX);
+    }
+    // 둘이 서로 매칭된건지 확인하는 로직 필요
+    try {
+      return chatDao.getChatMatchRoom(userIdx, matchedUserIdx);
     }
     catch (Exception exception) {
       throw new BaseException(DATABASE_ERROR);

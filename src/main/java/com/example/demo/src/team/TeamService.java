@@ -35,9 +35,9 @@ public class TeamService {
     private final double weights [] = {WEIGHT1, WEIGHT2, WEIGHT3};
     private final double percentWeights [] = {PERCENTWEIGHT1, PERCENTWEIGHT2};
 
-    public PostTeamRes createTeam(int userIdx, PostTeamReq postTeamReq) throws BaseException {
+    public PostTeamRes createTeam(int userIdx, int chatRoomIdx, PostTeamReq postTeamReq) throws BaseException {
         try {
-            int teamIdx = teamDao.createTeam(userIdx, postTeamReq);
+            int teamIdx = teamDao.createTeam(userIdx, chatRoomIdx, postTeamReq);
             return new PostTeamRes(teamIdx);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
