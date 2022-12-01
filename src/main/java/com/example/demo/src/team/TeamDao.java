@@ -194,7 +194,7 @@ public class TeamDao {
                 getSearchDiscParams);
     }
 
-    public List<GetTeamRes> getTeam(int teamIdx, SearchDiscAndPercent searchDiscAndPercent) {
+    public List<GetTeamRes> getTeam(int teamIdx, int userIdx, SearchDiscAndPercent searchDiscAndPercent) {
         String getTeamQuery = "select userIdx as leaderIdx, chatRoomIdx, type, region, interests, title\n" +
                 "     , case when length(content) > 40 then CONCAT(LEFT(content, 40), '..')\n" +
                 "         else LEFT(content, 40) end as content\n" +
