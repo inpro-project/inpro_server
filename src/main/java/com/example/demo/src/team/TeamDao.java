@@ -122,6 +122,19 @@ public class TeamDao {
         return this.jdbcTemplate.queryForObject(checkTeamDeletedQuery, int.class, checkTeamDeletedParams);
     }
 
+    public List<GetReviewRes> getReview(){
+        String getReviewQuery = "select discFeatureIdx, name, feature\n" +
+                "from DiscFeature\n" +
+                "inner join Disc D on DiscFeature.discIdx = D.discIdx\n" +
+                "where discFeatureIdx in (5, 10, 7, 4, 13, 18, 19, 20, 33, 30, 35, 32)\n" +
+                "order by FIELD(discFeatureIdx, 5, 10, 7, 4, 13, 18, 19, 20, 33, 30, 35, 32)";
+        return this.jdbcTemplate.query(getReviewQuery,
+                (rs, rsNum) -> new GetReviewRes(
+                        rs.getInt("discFeatureIdx"),
+                        rs.getString("name"),
+                        rs.getString("feature")));
+    }
+
     public List<Member> getMembers(int userIdx, int teamIdx){
         String getMembersQuery = "select TeamMember.userIdx, role, nickName, ageRange, region, occupation, interests\n" +
                 "    , case when userImgUrl is null then 0 else userImgUrl end as userImgUrl\n" +

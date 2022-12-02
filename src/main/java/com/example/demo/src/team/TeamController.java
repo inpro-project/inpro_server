@@ -438,6 +438,24 @@ public class TeamController {
     }
 
     /**
+     * 팀원 평가지 조회 API
+     * [GET] /app/reviews
+     * @return BaseResponse<List<GetReviewRes>>
+     */
+    @ApiOperation(value = "팀원 평가지 조회 API")
+    @ResponseBody
+    @GetMapping("/reviews")
+    public BaseResponse<List<GetReviewRes>> getReview(){
+        try {
+            jwtService.getUserIdx();
+            List<GetReviewRes> getReviewRes = teamProvider.getReview();
+            return new BaseResponse<>(getReviewRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
      * 팀원 평가 API
      * [POST] /app/reviews/:reviewingIdx
      * @return BaseResponse<PostReviewRes>
@@ -465,13 +483,13 @@ public class TeamController {
             }
 
             for(int i = 0; i < 3; i++){
-                // 이름 null check
-                if(postReviewReq.getReviews().get(i).getName() == null || postReviewReq.getReviews().get(i).getName().length() < 2){
+                // 이름 null, size check
+                if(postReviewReq.getReviews().get(i).getName() == null || postReviewReq.getReviews().get(i).getName().length() < 1){
                     return new BaseResponse<>(POST_DISC_EMPTY_NAME);
                 }
-                // 특정 범위(1-12) 안의 discFeatureIdx 값이 입력되었는지 확인
+                // 특정 범위(1-36) 안의 discFeatureIdx 값이 입력되었는지 확인
                 if(postReviewReq.getReviews().get(i).getDiscFeatureIdx() <= 0
-                        || postReviewReq.getReviews().get(i).getDiscFeatureIdx() > 12){
+                        || postReviewReq.getReviews().get(i).getDiscFeatureIdx() > 36){
                     return new BaseResponse<>(POST_DISC_INVALID_IDX);
                 }
             }

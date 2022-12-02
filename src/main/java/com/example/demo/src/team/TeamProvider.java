@@ -158,6 +158,15 @@ public class TeamProvider {
         }
     }
 
+    public List<GetReviewRes> getReview() throws BaseException {
+        try {
+            List<GetReviewRes> getReviewRes = teamDao.getReview();
+            return getReviewRes;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public int checkPastReview(int teamIdx, int reviewerIdx, int reviewingIdx) throws BaseException {
         try {
             return teamDao.checkPastReview(teamIdx, reviewerIdx, reviewingIdx);
