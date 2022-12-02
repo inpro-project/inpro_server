@@ -3,6 +3,7 @@ package com.example.demo.src.team;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.team.model.*;
+import com.example.demo.src.team.model.GetTeamMatchRes;
 import com.example.demo.utils.JwtService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -498,6 +499,23 @@ public class TeamController {
         }
     }
 
+    /**
+     * 1:팀 매칭 팀 프로필 조회 API
+     * [GET] /app/team-matches
+     * @return BaseResponse<List<GetTeamMatchRes>>
+     */
+    @ApiOperation(value = "1:팀 매칭 팀 프로필 조회 API")
+    @ResponseBody
+    @GetMapping("/team-matches")
+    public BaseResponse<List<GetTeamMatchRes>> getTeamMatches(){
+        try {
+            int userIdx = jwtService.getUserIdx();
 
+            List<GetTeamMatchRes> getTeamMatchRes = teamProvider.getTeamMatches(userIdx);
+            return new BaseResponse<>(getTeamMatchRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 }

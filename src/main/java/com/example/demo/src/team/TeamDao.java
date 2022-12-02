@@ -1,6 +1,7 @@
 package com.example.demo.src.team;
 
 import com.example.demo.src.team.model.*;
+import com.example.demo.src.team.model.GetTeamMatchRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -390,5 +391,76 @@ public class TeamDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
+    public List<String> getTeamFilter(int userIdx, int category) {
+        String getTeamFilterQuery = "select name from TeamFilter where userIdx = ? and category = ? and status = 'active'";
+        Object[] getTeamFilterParams = new Object[]{userIdx, category};
+
+        return this.jdbcTemplate.query(getTeamFilterQuery,
+                (rs, rsNum) -> (rs.getString("name")),
+                getTeamFilterParams);
+    }
+
+    public List<GetTeamMatchRes> getTeamMatches(UserDiscXy userDiscXy, int userIdx, List<String> type, List<String> region, List<String> interests) {
+        String getTeamMatchesQuery = "select teamIdx, userIdx as leaderIdx\n" +
+                "      , (select x from SearchDisc\n" +
+                "        where SearchDisc.userIdx = Team.userIdx and SearchDisc.status = 'active') as x\n" +
+                "     , (select y from SearchDisc\n" +
+                "        where SearchDisc.userIdx = Team.userIdx and SearchDisc.status = 'active') as y\n" +
+                "     , (select case when x is not null then x else 0 end\n" +
+                "        from SearchDisc\n" +
+                "        where SearchDisc.userIdx = Team.userIdx and SearchDisc.status = 'active') as x\n" +
+                "     , (select case when x is not null and ? is not null\n" +
+                "        then ROUND(100 - SQRT(POWER(x - (?), 2) + POWER(y - (?), 2)) / 33.07752975109958 * 100)\n" +
+                "        else 0 end as percent\n" +
+                "        from SearchDisc\n" +
+                "        where SearchDisc.userIdx = Team.userIdx and SearchDisc.status = 'active') as percent\n" +
+                "     , type, region, interests, title\n" +
+                "     , case when length(content) > 40 then CONCAT(LEFT(content, 40), '..')\n" +
+                "         else LEFT(content, 40) end as content\n" +
+                "    , (select case when COUNT(*) = 0  then 0 else teamFileUrl end\n" +
+                "       from TeamFile where TeamFile.teamIdx = Team.teamIdx and isRepImg = 'Y' and status = 'active') as teamImgUrl\n" +
+                "    , (select COUNT(*) from TeamLike where likingIdx = Team.teamIdx and status = 'active') as likeCount\n" +
+                "    , (select COUNT(*) from Comment where teamIdx = Team.teamIdx and status = 'active') as commentCount\n" +
+                "    , (select COUNT(*) from TeamMember where teamIdx = Team.teamIdx and status = 'active') as memberCount\n" +
+                "from Team\n" +
+                "where status = 'active' and userIdx != ?\n" +
+                "    and teamIdx not in (select likingIdx from TeamLike where likerIdx = ? and TeamLike.status = 'active')\n" +
+                "    and teamIdx not in (select passingIdx from TeamPass where passerIdx = ? and TeamPass.status = 'active')\n" +
+                "    and userIdx not in (select blockedUserIdx from Block where blockUserIdx = ? and Block.status = 'active')\n" +
+                "    and userIdx not in (select reportedUserIdx from Report where Report.userIdx = ?)\n" +
+                "    and type in (?, ?, ?, ?, ?, ?)\n" +
+                "        and type not in (' ')\n" +
+                "    and region in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n" +
+                "        and region not in (' ')\n" +
+                "    and interests in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n" +
+                "        and interests not in (' ')\n" +
+                "order by percent desc, teamIdx desc";
+
+        Object[] getTeamMatchesParams = new Object[]{userDiscXy.getX(), userDiscXy.getX(), userDiscXy.getY(), userIdx, userIdx, userIdx, userIdx, userIdx
+                , type.get(0), type.get(1), type.get(2), type.get(3), type.get(4), type.get(5)
+                , region.get(0), region.get(1), region.get(2), region.get(3), region.get(4), region.get(5), region.get(6), region.get(7)
+                , region.get(8), region.get(9), region.get(10), region.get(11), region.get(12), region.get(13), region.get(14), region.get(15), region.get(16)
+                , interests.get(0), interests.get(1), interests.get(2), interests.get(3), interests.get(4), interests.get(5)
+                , interests.get(6), interests.get(7), interests.get(8), interests.get(9), interests.get(10), interests.get(11), interests.get(12), interests.get(13)};
+
+        return this.jdbcTemplate.query(getTeamMatchesQuery,
+                (rs, rsNum) -> new GetTeamMatchRes(
+                        rs.getInt("teamIdx"),
+                        rs.getInt("leaderIdx"),
+                        rs.getDouble("x"),
+                        rs.getDouble("y"),
+                        rs.getInt("percent"),
+                        rs.getString("type"),
+                        rs.getString("region"),
+                        rs.getString("interests"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getString("teamImgUrl"),
+                        rs.getInt("likeCount"),
+                        rs.getInt("commentCount"),
+                        rs.getInt("memberCount"),
+                        getMembers(userIdx, rs.getInt("teamIdx"))),
+                getTeamMatchesParams);
+    }
 
 }
