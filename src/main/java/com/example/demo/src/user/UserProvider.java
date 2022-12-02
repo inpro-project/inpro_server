@@ -198,7 +198,7 @@ public class UserProvider {
             List<String> getInterestsFilter = userDao.getUserFilter(userIdx, 4);
             int interestsSize = 14 - getInterestsFilter.size();
             if(getInterestsFilter.get(0).equals("무관")){
-                getInterestsFilter = Arrays.asList(new String[]{"경영/사무", "마케팅/광고/홍보", "IT/인터넷", "디자인", "무역/유통", "영업/고객상담", "서비스", "연구개발/설계", "생산/제조", "교육", "건설", "의료", "미디어", "전문/특수직"});
+                getInterestsFilter = Arrays.asList(new String[]{"경영/사무", "마케팅/광고", "IT/인터넷", "디자인", "무역/유통", "영업/고객상담", "서비스", "연구개발/설계", "생산/제조", "교육", "건설", "의료", "미디어", "전문/특수직"});
             }
             else {
                 for(int i = 0; i < interestsSize; i++){
