@@ -2,11 +2,13 @@ package com.example.demo.src.team;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.team.model.*;
+import com.example.demo.src.team.model.GetTeamMatchRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
@@ -179,6 +181,54 @@ public class TeamProvider {
         try {
             PastUserDisc pastUserDisc = teamDao.getPastUserDisc(userIdx);
             return pastUserDisc;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetTeamMatchRes> getTeamMatches(int userIdx) throws BaseException {
+        try {
+            // 1 : 팀 유형
+            List<String> getTypeFilter = teamDao.getTeamFilter(userIdx, 1);
+            int typeSize = 6 - getTypeFilter.size();
+            if(getTypeFilter.get(0).equals("무관")){
+                getTypeFilter = Arrays.asList(new String[]{"프로젝트", "스터디", "대외활동", "창업", "공모전", "동아리"});
+            }
+            else{
+                for(int i = 0; i < typeSize; i++){
+                    getTypeFilter.add(null);
+                }
+            }
+
+            // 2 : 지역
+            List<String> getRegionFilter = teamDao.getTeamFilter(userIdx, 2);
+            int regionSize = 17 - getRegionFilter.size();
+            if(getRegionFilter.get(0).equals("무관")){
+                getRegionFilter = Arrays.asList(new String[]{"서울", "인천", "경기", "강원", "충북", "충남", "세종", "대전", "전북", "전남", "광주", "경북", "경남", "대구", "울산", "부산", "제주"});;
+            }
+            else{
+                for(int i = 0; i < regionSize; i++){
+                    getRegionFilter.add(null);
+                }
+            }
+
+            // 3 : 분야
+            List<String> getInterestsFilter = teamDao.getTeamFilter(userIdx, 3);
+            int interestsSize = 14 - getInterestsFilter.size();
+            if(getInterestsFilter.get(0).equals("무관")){
+                getInterestsFilter = Arrays.asList(new String[]{"경영/사무", "마케팅/광고", "IT/인터넷", "디자인", "무역/유통", "영업/고객상담", "서비스", "연구개발/설계", "생산/제조", "교육", "건설", "의료", "미디어", "전문/특수직"});
+            }
+            else {
+                for(int i = 0; i < interestsSize; i++){
+                    getInterestsFilter.add(null);
+                }
+            }
+
+            // 현재 로그인한 유저의 user disc
+            UserDiscXy userDiscXy = teamDao.getUserDiscXy(userIdx);
+
+            List<GetTeamMatchRes> getTeamMatchRes = teamDao.getTeamMatches(userDiscXy, userIdx, getTypeFilter, getRegionFilter, getInterestsFilter);
+            return getTeamMatchRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
