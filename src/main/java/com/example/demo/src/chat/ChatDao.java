@@ -172,9 +172,9 @@ public class ChatDao {
     return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
   }
 
-  public int deleteChatMember(int chatMemberIdx){
-    String deleteChatMemberQuery = "update ChatMember set status = 'deleted' where chatMemberIdx = ?";
-    int deleteChatMemberParams = chatMemberIdx;
+  public int deleteChatMember(int chatRoomIdx, int userIdx){
+    String deleteChatMemberQuery = "update ChatMember set status = 'deleted' where chatRoomIdx = ? and userIdx = ?";
+    Object[] deleteChatMemberParams = new Object[]{chatRoomIdx, userIdx};
     return this.jdbcTemplate.update(deleteChatMemberQuery, deleteChatMemberParams);
   }
 
