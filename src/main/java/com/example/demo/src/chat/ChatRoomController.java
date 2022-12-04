@@ -10,11 +10,13 @@ import com.example.demo.src.chat.model.GetChatRoomRes;
 import com.example.demo.src.chat.model.PostChatRoomReq;
 import com.example.demo.src.chat.model.PostChatRoomRes;
 import com.example.demo.utils.JwtService;
+import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,7 +67,7 @@ public class ChatRoomController {
     }
   }
 
-  // 채팅방 생성
+  @ApiOperation(value = "채팅방 생성 및 채팅방 멤버")
   @PostMapping("/room/match")
   @ResponseBody
   public BaseResponse<PostChatRoomRes> createRoom(@RequestBody PostChatRoomReq postChatRoomReq) {
@@ -82,6 +84,7 @@ public class ChatRoomController {
     }
   }
 
+  @ApiOperation(value = "채팅방 참여")
   @PostMapping("/room/join")
   @ResponseBody
   public BaseResponse<PostChatRoomRes> joinRoom(@RequestParam int chatRoomIdx) {
@@ -96,6 +99,22 @@ public class ChatRoomController {
     }
   }
 
+  @ApiOperation(value = "채팅방 나가기")
+  @PatchMapping("/room/join")
+  @ResponseBody
+  public BaseResponse<PostChatRoomRes> exitRoom(@RequestParam int chatRoomIdx) {
+    try{
+      int userIdx = jwtService.getUserIdx();
+      int chatMemberIdx = chatService.exitRoom(chatRoomIdx, userIdx);
+      PostChatRoomRes postChatRoomRes = new PostChatRoomRes(chatRoomIdx, chatMemberIdx);
+      return new BaseResponse<>(postChatRoomRes);
+    }
+    catch (BaseException exception) {
+      return new BaseResponse<>(exception.getStatus());
+    }
+  }
+
+  @ApiOperation(value = "")
   @GetMapping("/room/enter/{chatRoomId}/{chatMessageIdx}")
   @ResponseBody
   public BaseResponse<List<GetChatMessageRes>> getChatRoom(@PathVariable int chatRoomId, @PathVariable int chatMessageIdx) {
