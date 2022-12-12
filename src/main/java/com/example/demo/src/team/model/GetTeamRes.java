@@ -54,4 +54,10 @@ public class GetTeamRes {
     @ApiModelProperty(value = "팀에 속한 멤버 리스트")
     private List<Member> members;
 
+    @ApiModelProperty(value = "현재 로그인한 유저의 user disc x좌표", example = "-6.692130429902465")
+    private double userDiscX;
+
+    @ApiModelProperty(value = "현재 로그인한 유저의 user disc y좌표", example = "-6.692130429902465")
+    private double userDiscY;
+
 }

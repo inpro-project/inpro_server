@@ -208,7 +208,7 @@ public class TeamDao {
                 getSearchDiscParams);
     }
 
-    public List<GetTeamRes> getTeam(int teamIdx, int userIdx, SearchDiscAndPercent searchDiscAndPercent) {
+    public List<GetTeamRes> getTeam(int teamIdx, int userIdx, SearchDiscAndPercent searchDiscAndPercent, double userDiscX, double userDiscY) {
         String getTeamQuery = "select userIdx as leaderIdx, chatRoomIdx, type, region, interests, title\n" +
                 "     , case when length(content) > 40 then CONCAT(LEFT(content, 40), '..')\n" +
                 "         else LEFT(content, 40) end as content\n" +
@@ -237,7 +237,8 @@ public class TeamDao {
                         rs.getInt("likeCount"),
                         rs.getInt("commentCount"),
                         rs.getInt("memberCount"),
-                        getMembers(userIdx, teamIdx)),
+                        getMembers(userIdx, teamIdx),
+                        userDiscX, userDiscY),
                 getTeamParams);
     }
 

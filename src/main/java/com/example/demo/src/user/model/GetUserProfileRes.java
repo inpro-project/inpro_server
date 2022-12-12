@@ -43,10 +43,10 @@ public class GetUserProfileRes {
     @ApiModelProperty(value = "user disc y좌표", example = "-2.828427124746188")
     private double y;
 
-    @ApiModelProperty(value = "search disc x좌표", example = "")
+    @ApiModelProperty(value = "현재 로그인한 유저의 search disc x좌표", example = "")
     private double searchX;
 
-    @ApiModelProperty(value = "search disc y좌표", example = "")
+    @ApiModelProperty(value = "현재 로그인한 유저의 search disc y좌표", example = "")
     private double searchY;
 
     @ApiModelProperty(value = "disc 일치 퍼센트", example = "58")
