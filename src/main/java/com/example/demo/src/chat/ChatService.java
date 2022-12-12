@@ -107,6 +107,21 @@ public class ChatService {
     }
   }
 
+  public int exitRoom(int chatRoomIdx, int userIdx) throws BaseException {
+    if (userDao.checkUser(userIdx) != 1) {
+      throw new BaseException(INVALID_USERIDX);
+    }
+    if (chatDao.checkChatMember(chatRoomIdx, userIdx) != 1) {
+      throw new BaseException(INVALID_USER_JWT);
+    }
+    try {
+      return chatDao.deleteChatMember(chatRoomIdx, userIdx);
+    }
+    catch (Exception exception) {
+      throw new BaseException(DATABASE_ERROR);
+    }
+  }
+
   public List<GetChatMessageRes> getChatMessage(int chatRoomIdx, int userIdx) throws BaseException {
     if (userDao.checkUser(userIdx) != 1) {
       throw new BaseException(INVALID_USERIDX);
