@@ -37,11 +37,17 @@ public class GetUserProfileRes {
     @ApiModelProperty(value = "관심 분야", example = "IT")
     private String interests;
 
-    @ApiModelProperty(value = "x좌표", example = "-6.692130429902465")
+    @ApiModelProperty(value = "user disc x좌표", example = "-6.692130429902465")
     private double x;
 
-    @ApiModelProperty(value = "y좌표", example = "-2.828427124746188")
+    @ApiModelProperty(value = "user disc y좌표", example = "-2.828427124746188")
     private double y;
+
+    @ApiModelProperty(value = "search disc x좌표", example = "")
+    private double searchX;
+
+    @ApiModelProperty(value = "search disc y좌표", example = "")
+    private double searchY;
 
     @ApiModelProperty(value = "disc 일치 퍼센트", example = "58")
     private int percent;

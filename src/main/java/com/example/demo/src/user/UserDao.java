@@ -201,7 +201,7 @@ public class UserDao {
                 getUserProfileParams);
     }
 
-    public GetUserProfileRes getUserProfile(double x, double y, int userIdx){
+    public GetUserProfileRes getUserProfile(double x, double y, double searchX, double searchY, int userIdx){
         String getUserProfileQuery = "select nickName, userImgUrl, gender, ageRange, comment, region, occupation, interests\n" +
                 "    , case when x is not null then x else 0 end as x\n" +
                 "    , case when y is not null then y else 0 end as y\n" +
@@ -225,6 +225,7 @@ public class UserDao {
                         rs.getString("interests"),
                         rs.getDouble("x"),
                         rs.getDouble("y"),
+                        searchX, searchY,
                         rs.getInt("percent"),
                         getDiscFeatures(userIdx),
                         getUserTags(userIdx),

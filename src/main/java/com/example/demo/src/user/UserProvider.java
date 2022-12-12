@@ -105,16 +105,32 @@ public class UserProvider {
             throw new BaseException(INVALID_USERIDX);
         }
         try{
-            // 현재 로그인한 유저의 업무 성향 검사 내역이 없다면
-            if(checkUserDisc(loginUserIdx) == 0){
+            if(checkUserDisc(loginUserIdx) == 0 && checkSearchDisc(loginUserIdx) == 0){
                 double x = 0.0;
                 double y = 0.0;
-                GetUserProfileRes getUserProfileRes = userDao.getUserProfile(x, y, userIdx);
+                double searchX = 0.0;
+                double searchY = 0.0;
+                GetUserProfileRes getUserProfileRes = userDao.getUserProfile(x, y, searchX, searchY, userIdx);
+                return getUserProfileRes;
+            }
+            else if(checkUserDisc(loginUserIdx) == 0){
+                double x = 0.0;
+                double y = 0.0;
+                SearchDiscXy searchDiscXy = getPastSearchDisc(loginUserIdx);
+                GetUserProfileRes getUserProfileRes = userDao.getUserProfile(x, y, searchDiscXy.getX(), searchDiscXy.getY(), userIdx);
+                return getUserProfileRes;
+            }
+            else if(checkSearchDisc(loginUserIdx) == 0){
+                UserDisc userDisc = getUserDisc(loginUserIdx);
+                double searchX = 0.0;
+                double searchY = 0.0;
+                GetUserProfileRes getUserProfileRes = userDao.getUserProfile(userDisc.getX(), userDisc.getY(), searchX, searchY, userIdx);
                 return getUserProfileRes;
             }
             else {
                 UserDisc userDisc = getUserDisc(loginUserIdx);
-                GetUserProfileRes getUserProfileRes = userDao.getUserProfile(userDisc.getX(), userDisc.getY(), userIdx);
+                SearchDiscXy searchDiscXy = getPastSearchDisc(loginUserIdx);
+                GetUserProfileRes getUserProfileRes = userDao.getUserProfile(userDisc.getX(), userDisc.getY(), searchDiscXy.getX(), searchDiscXy.getY(), userIdx);
                 return getUserProfileRes;
             }
         } catch (Exception exception){
